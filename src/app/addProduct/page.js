@@ -59,7 +59,7 @@ const Page = () => {
         autoClose: 3000,
       });
 
-      console.log(response.data);
+
 
       // reset form
       setName("");

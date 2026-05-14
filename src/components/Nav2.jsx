@@ -9,14 +9,14 @@ import {
 
 const Nav2 = ({ handleLogout, setOpen }) => {
   return (
-    <div className="fixed top-0 left-0 h-screen w-[280px] bg-black/90 backdrop-blur-2xl border-r border-white/10 shadow-2xl text-white p-6 flex flex-col justify-between">
+    <div className="fixed top-0 left-0 h-screen w-50 bg-transparent backdrop-blur-4xl border-r border-white/10 shadow-2xl text-white p-6 flex flex-col justify-between">
 
       {/* TOP */}
       <div>
 
         {/* LOGO */}
         <div className="mb-10">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold bg-linear-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
             MeroKheti
           </h1>
 
@@ -31,7 +31,7 @@ const Nav2 = ({ handleLogout, setOpen }) => {
           <Link
             href="/"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+            className="w-40 flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
           >
             <FiHome className="text-xl text-green-400 group-hover:scale-110 transition" />
 
@@ -43,7 +43,7 @@ const Nav2 = ({ handleLogout, setOpen }) => {
           <Link
             href="/product"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+            className=" w-40 flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
           >
             <FiShoppingBag className="text-xl text-green-400 group-hover:scale-110 transition" />
 
@@ -55,7 +55,7 @@ const Nav2 = ({ handleLogout, setOpen }) => {
           <Link
             href="/dashboard"
             onClick={() => setOpen(false)}
-            className="flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+            className="w-40 flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
           >
             <FiGrid className="text-xl text-green-400 group-hover:scale-110 transition" />
 

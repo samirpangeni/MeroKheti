@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
+import Link from "next/link";
 
 export default function ProductFeed({ products, setProducts, search }) {
 
@@ -152,7 +153,9 @@ export default function ProductFeed({ products, setProducts, search }) {
                 )}
               </div>
               <div className= "flex justify-between p-4">
-                <button className=" p-1 bg-gray-400 rounded-lg border-0"> View Details </button>
+                <Link href={`/product/${item._id}`}>
+                  <button className=" p-1 bg-gray-400 rounded-lg border-0"> View Details </button>
+                </Link>
                 <button className=" p-1 bg-green-500 text-white rounded-lg border-0"> Buy Now </button>
               </div>
             </div>

@@ -1,12 +1,11 @@
 import DashboardNav from '@/components/DashboardNav'
+import Review from '@/components/Review'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-     <section className='p-2 mt-2 h- screen border-2 w-fit bg-white/70 rounded-lg'>
-        <DashboardNav/>
-     </section>
+      <DashboardNav />
     </div>
   )
 }

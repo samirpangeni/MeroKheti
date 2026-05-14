@@ -8,6 +8,7 @@ const Search = ({ search, setSearch, setProducts }) => {
         e.preventDefault();
         try {
             const query = search.trim();
+            let url =   "";
             if (!query) {
                 url = "/api/product";
             } else {

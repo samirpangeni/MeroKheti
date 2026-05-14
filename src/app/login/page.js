@@ -19,7 +19,7 @@ export default function Home() {
         password,
       });
       const newData = response.data;
-      console.log(newData);
+      
       alert("login successful");
       setTimeout(() => {
         router.push("/");

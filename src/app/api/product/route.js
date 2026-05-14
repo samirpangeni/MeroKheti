@@ -1,13 +1,15 @@
 import connectDB from "../../../../lib/mongoose";
 import cloudinary from "../../../../lib/cloudinary";
 import Product from "../../../../models/product";
+import User from "../../../../models/User";
 import { NextResponse } from "next/server";
+import jwt from "jsonwebtoken";
 export async function GET(req) {
   try {
     await connectDB();
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search");
-    console.log("search query:", search);
+
     let filter = {};
 
     if (search) {
@@ -21,8 +23,11 @@ export async function GET(req) {
       };
     }
 
-    const product = await Product.find(filter);
-
+    const product = await Product.find(filter).populate(
+      "userId",
+      "firstName lastName",
+    );
+    
     return NextResponse.json({
       message: "success",
       product,
@@ -38,6 +43,12 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     await connectDB();
+    const token = req.cookies.get("token")?.value;
+    if (!token) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    const decode = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decode.userId || decode.id || decode._id;
 
     const formData = await req.formData();
 
@@ -83,6 +94,7 @@ export async function POST(req) {
     }
 
     const product = await Product.create({
+      userId,
       name,
       price,
       description,

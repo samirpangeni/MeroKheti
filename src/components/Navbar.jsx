@@ -46,14 +46,14 @@ const Navbar = () => {
       {/* MOBILE MENU BUTTON */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed top-1 left-3 z-100 bg-transparent backdrop-blur-lg p-3   text-white md:hidden"
+        className="fixed top-[-3] left-3 z-100 bg-transparent p-3  text-white md:hidden"
       >
         {open ? <FiX size={22} /> : <FiMenu size={22} />}
       </button>
 
       {/* MOBILE NAV */}
       <div
-        className={`fixed top-0 left-0 w-50 h-screen bg-transparent backdrop-blur-2xl overflow-hidden z-99 transition-all duration-300 ${open
+        className={`fixed top-0 left-0 w-full h-screen bg-transparent backdrop-blur-lg overflow-hidden z-99 transition-all duration-300 ${open
             ? "opacity-100 visible"
             : "opacity-0 invisible"
           }`}

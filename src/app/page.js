@@ -32,8 +32,7 @@ const Page = () => {
       <Navbar />
 
       {/* HERO */}
-      <section className="relative flex flex-col items-center justify-center text-center px-6 pt-20 pb-16 overflow-hidden">
-
+      <section >
         <Hero search={search} setSearch={setSearch} products={products} setProducts={setProducts} />
       </section>
 

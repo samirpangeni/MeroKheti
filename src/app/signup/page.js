@@ -31,7 +31,6 @@ const page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(firstName, lastName, email, password, mobile);
     if (password !== confirmPassword) {
       alert("password do not match");
       return;
