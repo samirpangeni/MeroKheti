@@ -6,6 +6,7 @@ import axios from "axios";
 import use from "react";
 import Review from "@/components/Review";
 import ShowReview from "@/components/ShowReview";
+import AddToCart from "@/components/AddToCart";
 const Page = ({ params }) => {
   const resolvedParams = React.use(params); // 🔥 IMPORTANT FIX
   const { id } = resolvedParams;
@@ -92,9 +93,7 @@ const Page = ({ params }) => {
                   Buy Now
                 </button>
 
-                <button className="flex-1 bg-white/10 hover:bg-white/20 transition py-3 rounded-xl font-medium">
-                  Add to Cart
-                </button>
+                <AddToCart product={item}/>
               </div>
             </div>
             <div className="mt-10 w-full">

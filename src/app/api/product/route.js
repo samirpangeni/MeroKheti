@@ -1,6 +1,6 @@
 import connectDB from "../../../../lib/mongoose";
 import cloudinary from "../../../../lib/cloudinary";
-import Product from "../../../../models/product";
+import Product from "../../../../models/Product";
 import User from "../../../../models/User";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
@@ -27,7 +27,7 @@ export async function GET(req) {
       "userId",
       "firstName lastName",
     );
-    
+
     return NextResponse.json({
       message: "success",
       product,

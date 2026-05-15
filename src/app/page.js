@@ -6,6 +6,7 @@ import Product from "@/components/product";
 import ProductFeed from "@/components/ProductFeed";
 import Feature from "@/components/Feature";
 import Hero from "@/components/Hero";
+import Card from "@/components/Cart";
 
 const Page = () => {
   const [user, setUser] = useState(null);
@@ -27,37 +28,45 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-black text-white">  
+    <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-black text-white">
       {/* NAVBAR */}
       <Navbar />
 
       {/* HERO */}
-      <section >
-        <Hero search={search} setSearch={setSearch} products={products} setProducts={setProducts} />
+      <section>
+        <Hero
+          search={search}
+          setSearch={setSearch}
+          products={products}
+          setProducts={setProducts}
+        />
       </section>
 
       {/* FEATURE STRIP (clean Airbnb-like minimal cards) */}
-      <section >
-          <Feature/>
+      <section>
+        <Feature />
       </section>
 
       {/* PRODUCT FEED */}
       <section className="max-w-7xl mx-auto px-6 pb-24">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-semibold">
-            Recommended for you
-          </h2>
+          <h2 className="text-xl font-semibold">Recommended for you</h2>
           <p className="text-xs text-gray-500">
             Based on freshness & availability
           </p>
         </div>
 
-        <ProductFeed search={search} products={products} setProducts={setProducts} />
+        <ProductFeed
+          search={search}
+          products={products}
+          setProducts={setProducts}
+        />
+        <Card />
       </section>
 
       {/* FLOATING BUTTON */}
-      <div className="fixed right-6 bottom-6">
-        <div className="p-4 rounded-full shadow-lg transition">
+      <div className="fixed right-6 bottom-3">
+        <div className="p-4 rounded-2xl shadow-lg transition">
           <Product />
         </div>
       </div>
