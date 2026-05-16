@@ -2,8 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const ShowReview = ({ productId }) => {
+    const router = useRouter();
     const [review, setReview] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -11,6 +13,7 @@ const ShowReview = ({ productId }) => {
         if (!productId) return;
 
         const getReview = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get(
                     `/api/review?productId=${productId}`
@@ -71,6 +74,7 @@ const ShowReview = ({ productId }) => {
                             </p>
                         </div>
                     ))}
+                    
                 </div>
             )}
         </div>

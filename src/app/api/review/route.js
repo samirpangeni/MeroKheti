@@ -12,18 +12,21 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const productId = searchParams.get("productId");
 
-    const review = await Review.find({ productId })
-     .populate("userId", "firstName lastName");
-
+    if (!productId) {
+      return NextResponse.json(
+        { message: "product id required" },
+        { status: 400 },
+      );
+    }
+    const review = await Review.find({ productId}).populate(
+      "userId",
+      "firstName lastName",
+    );
+   
     return NextResponse.json({ review });
-
   } catch (err) {
     console.log(err);
-
-    return NextResponse.json(
-      { message: "error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "error" }, { status: 500 });
   }
 }
 
@@ -34,10 +37,7 @@ export async function POST(req) {
     const token = req.cookies.get("token")?.value;
 
     if (!token) {
-      return NextResponse.json(
-        { message: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const decode = jwt.verify(token, process.env.JWT_SECRET);
@@ -55,13 +55,9 @@ export async function POST(req) {
     });
 
     return NextResponse.json(newReview);
-
   } catch (err) {
     console.log(err);
 
-    return NextResponse.json(
-      { message: "you have an error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "you have an error" }, { status: 500 });
   }
 }

@@ -6,7 +6,7 @@ import Product from "@/components/product";
 import ProductFeed from "@/components/ProductFeed";
 import Feature from "@/components/Feature";
 import Hero from "@/components/Hero";
-import Card from "@/components/Cart";
+
 
 const Page = () => {
   const [user, setUser] = useState(null);
@@ -61,7 +61,7 @@ const Page = () => {
           products={products}
           setProducts={setProducts}
         />
-        <Card />
+       
       </section>
 
       {/* FLOATING BUTTON */}
