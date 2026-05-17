@@ -69,8 +69,8 @@ const Page = () => {
     <div className="min-h-screen bg-linear-to-br from-gray-950 via-black to-gray-900 text-white flex items-center justify-center px-6 relative overflow-hidden">
 
       {/* GREEN BLUR BACKGROUNDS (same as your product page) */}
-      <div className="absolute top-[-80px] left-[-80px] w-96 h-96 bg-green-500/20 blur-3xl rounded-full"></div>
-      <div className="absolute bottom-[-80px] right-[-80px] w-96 h-96 bg-emerald-500/20 blur-3xl rounded-full"></div>
+      <div className="absolute -top-20 -left-20 w-96 h-96 bg-green-500/20 blur-3xl rounded-full"></div>
+      <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-emerald-500/20 blur-3xl rounded-full"></div>
 
       {/* SIGNUP CARD */}
       <div className="w-full max-w-2xl bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-xl">
