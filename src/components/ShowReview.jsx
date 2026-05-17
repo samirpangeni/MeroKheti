@@ -5,7 +5,6 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 const ShowReview = ({ productId }) => {
-    const router = useRouter();
     const [review, setReview] = useState([]);
     const [loading, setLoading] = useState(true);
 

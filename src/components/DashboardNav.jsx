@@ -43,11 +43,10 @@ const DashboardNav = () => {
     return (
       <Link href={href}>
         <li
-          className={`px-3 py-2 rounded-lg cursor-pointer transition ${
-            isActive
+          className={`px-3 py-2 rounded-lg cursor-pointer transition ${isActive
               ? "bg-green-500/20 text-green-400"
               : "hover:bg-green-500/10 hover:text-green-400"
-          }`}
+            }`}
         >
           {label}
         </li>
@@ -76,8 +75,8 @@ const DashboardNav = () => {
               {loading
                 ? "Loading..."
                 : user
-                ? `${user.firstName} ${user.lastName}`
-                : "No User"}
+                  ? `${user.firstName} ${user.lastName}`
+                  : "No User"}
             </p>
           </div>
         </div>
@@ -97,10 +96,7 @@ const DashboardNav = () => {
             <li className="px-3 py-2 rounded-lg hover:bg-green-500/10 hover:text-green-400 transition">
               History
             </li>
-
-            <li className="px-3 py-2 rounded-lg hover:bg-green-500/10 hover:text-green-400 transition">
-              Settings
-            </li>
+            {menuItem("/dashboard/setting", "Setting")}
           </ul>
         </div>
 

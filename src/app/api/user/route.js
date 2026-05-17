@@ -75,3 +75,34 @@ export async function POST(req) {
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
+export async function PUT(req) {
+  try {
+    await connectDB();
+    const token = req.cookies.get("token")?.value;
+    if (!token) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+    const body = await req.json();
+    const { currentPassword, password } = body;
+
+    const decode = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decode.userId || decode.id || decode._id);
+    if (!user) {
+      return NextResponse.json({ message: "user not found" }, { status: 404 });
+    }
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return NextResponse.json(
+        { message: "Current password is incorrect" },
+        { status: 400 },
+      );
+    }
+    const hashPassword = await bcrypt.hash(password, 10);
+    user.password = hashPassword;
+    await user.save();
+    return NextResponse.json({ message: "Updata successfully" });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json({ message: "error" }, { status: 500 });
+  }
+}

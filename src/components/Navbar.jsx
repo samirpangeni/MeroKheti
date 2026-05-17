@@ -40,6 +40,7 @@ const Navbar = () => {
     }
   }
 
+
   return (
     <div>
 
@@ -54,8 +55,8 @@ const Navbar = () => {
       {/* MOBILE NAV */}
       <div
         className={`fixed top-0 left-0 w-full h-screen bg-transparent backdrop-blur-lg overflow-hidden z-99 transition-all duration-300 ${open
-            ? "opacity-100 visible"
-            : "opacity-0 invisible"
+          ? "opacity-100 visible"
+          : "opacity-0 invisible"
           }`}
       >
         <div className="p-6">
