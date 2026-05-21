@@ -102,13 +102,13 @@ const Page = () => {
                 <div className="mt-4 text-xs text-gray-500 flex justify-between">
                   <span>{new Date(r.createdAt).toLocaleDateString()}</span>
                   <Link href={`/product/${r.productId?._id}`}>
-                    <button className=" p-2 bg-gray-400 rounded-lg border-0">
+                    <button className="p-2 bg-green-400 rounded-lg border-0 text-black">
                       {" "}
                       View Details{" "}
                     </button>
                   </Link>
                 </div>
-                <span className="text-green-400 opacity-0 group-hover:opacity-100 transition">
+                <span className="text-green-400 opacity-0 group-hover:opacity-100 transition p-2">
                   Review ID: {r._id.slice(-4)}
                 </span>
 
