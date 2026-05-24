@@ -11,6 +11,7 @@ import PriceInput from "../../components/PriceInput";
 import BasicInfo from "../../components/BasicInfo";
 import Description from "../../components/Description";
 import Indicator from "../../components/Indicator";
+import Navbar from "@/components/Navbar"
 import { FiPackage, FiGrid, FiX, FiCheckCircle } from "react-icons/fi";
 
 import { FaLeaf } from "react-icons/fa";
@@ -58,8 +59,6 @@ const Page = () => {
         position: "top-right",
         autoClose: 3000,
       });
-
-
 
       // reset form
       setName("");
@@ -126,102 +125,95 @@ const Page = () => {
   }).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-gray-900 via-gray-800 to-gray-900 p-4">
-      <ToastContainer theme="dark" />
+    <div className="min-h-screen bg-[#0f172a] text-white">
+      <Navbar />
 
-      {/* Close Button */}
-      <Link href="/">
-        <button className="fixed top-6 right-6 bg-white/10 backdrop-blur-sm hover:bg-white/20 rounded-full p-3 transition-all duration-300 z-50 group">
-          <FiX className="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" />
-        </button>
-      </Link>
-
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-3xl bg-white/5 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/10 overflow-hidden"
-      >
+      <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
-        <div className="bg-linear-to-r from-green-600 to-blue-600 px-8 py-6">
-          <h1 className="text-3xl font-bold text-white text-center flex items-center justify-center gap-3">
-            <FiPackage className="w-8 h-8" />
-            Add New Product
-          </h1>
-          <p className="text-white/80 text-center mt-2 text-sm">
-            Fill in the details below to list your agricultural product
+        <div className="mb-8">
+          <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-400 px-4 py-2 rounded-full text-sm">
+            🌾 Fresh Farm Product
+          </div>
+
+          <h1 className="text-4xl font-bold mt-4">Add Your Product</h1>
+
+          <p className="text-gray-400 mt-2 text-lg">
+            Sell fresh vegetables, fruits and grains directly to customers
           </p>
         </div>
 
-        <div className="p-8 space-y-6">
-          {/* Progress indicator */}
-          <Indicator isValid={isValid} getValidationMessage={getValidationMessage} completionPercentage={completionPercentage} />
-
-          {/* Basic Information Section */}
-          <div className="space-y-4">
-            <BasicInfo
-              name={name}
-              setName={setName}
-              category={category}
-              setCategory={setCategory}
-            />
-          </div>
-
-          {/* Images Section */}
-          <div>
-            <Image files={files} setFiles={setFiles} />
-          </div>
-
-          {/* Pricing & Stock Section */}
-          <div className="space-y-4">
-            <PriceInput
-              unit={unit}
-              setUnit={setUnit}
-              price={price}
-              setPrice={setPrice}
-              quantity={quantity}
-              setQuantity={setQuantity}
-            />
-          </div>
-
-          {/* Location Section */}
-          <div className="space-y-4">
-            <Location location={location} setLocation={setLocation} />
-          </div>
-
-          {/* Dates Section */}
-          <div className="space-y-4">
-            <DateSection
-              expiryDate={expiryDate}
-              setExpiryDate={setExpiryDate}
-              harvestDate={harvestDate}
-              setHarvestDate={setHarvestDate}
-            />
-          </div>
-
-          {/* Description & Organic Section */}
-          <div className="space-y-4">
-            <Description
-              description={description}
-              setDescription={setDescription}
-              organic={organic}
-              setOrganic={setOrganic}
-            />
-          </div>
-
-          {/* Submit Button */}
-          <Button
-            isSubmitting={isSubmitting}
-            setIsSubmitting={setIsSubmitting}
-            isValid={isValid}
+        {/* Form */}
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8 space-y-8"
+        >
+          {/* Product Name */}
+          <BasicInfo
+            name={name}
+            setName={setName}
+            category={category}
+            setCategory={setCategory}
           />
 
-          {/* Required fields note */}
-          <div className="text-center text-xs text-gray-500 pt-4 border-t border-white/10">
-            <p>
-              <span className="text-red-400">*</span> Required fields
-            </p>
+          {/* Images */}
+          <Image files={files} setFiles={setFiles} />
+
+          {/* Price */}
+          <PriceInput
+            unit={unit}
+            setUnit={setUnit}
+            price={price}
+            setPrice={setPrice}
+            quantity={quantity}
+            setQuantity={setQuantity}
+          />
+
+          {/* Location */}
+          <Location location={location} setLocation={setLocation} />
+
+          {/* Dates */}
+          <DateSection
+            expiryDate={expiryDate}
+            setExpiryDate={setExpiryDate}
+            harvestDate={harvestDate}
+            setHarvestDate={setHarvestDate}
+          />
+
+          {/* Description */}
+          <Description
+            description={description}
+            setDescription={setDescription}
+            organic={organic}
+            setOrganic={setOrganic}
+          />
+
+          {/* Bottom Submit Area */}
+          <div className="border-t border-white/10 pt-6">
+            {/* Progress */}
+            <div className="mb-6">
+              <Indicator
+                isValid={isValid}
+                getValidationMessage={getValidationMessage}
+                completionPercentage={completionPercentage}
+              />
+            </div>
+
+            {/* Submit */}
+            <Button
+              isSubmitting={isSubmitting}
+              setIsSubmitting={setIsSubmitting}
+              isValid={isValid}
+            />
+
+            {/* Farmer Helper */}
+            <div className="mt-5 bg-green-500/10 border border-green-500/20 rounded-2xl p-4">
+              <p className="text-sm text-green-300">
+                💡 Products with clear photos and accurate prices sell faster.
+              </p>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };

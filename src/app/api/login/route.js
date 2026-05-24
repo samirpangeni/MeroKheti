@@ -11,23 +11,33 @@ export async function POST(req) {
     if (!user) {
       return Response.json({ message: "user not found" }, { status: 404 });
     }
+  
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return Response.json({ message: "Invalid password" }, { status: 401 });
     }
     const token = jwt.sign(
-      { userId: user._id, email: user.email },
+      { userId: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "7d" },
     );
-    const response = NextResponse.json({ message: "login successful" });
+    const response = NextResponse.json({
+      message: "login successful",
+
+      user: {
+        role: user.role,
+        firstName: user.firstName,
+        email: user.email,
+      },
+    });
     response.cookies.set("token", token, {
       path: "/",
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 30,
     });
-    return response;  
+    return response;
   } catch (err) {
-    return Response.json({ message: err.message }, { status: 500 });
+    console.log(err);
+    return Response.json({ message: "err" }, { status: 500 });
   }
 }

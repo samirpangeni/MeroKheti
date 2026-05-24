@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   FiHome,
@@ -6,8 +6,18 @@ import {
   FiGrid,
   FiLogOut,
 } from "react-icons/fi";
+import axios from "axios";
 
 const Nav2 = ({ handleLogout, setOpen }) => {
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const data = async () => {
+      const response = await axios.get("/api/user")
+      setUser(response.data)
+
+    }
+    data();
+  },[])
   return (
     <div className="fixed top-0 left-0 h-screen w-50 bg-transparent backdrop-blur-4xl border-r border-white/10 shadow-2xl text-white p-6 flex flex-col justify-between">
 
@@ -51,19 +61,32 @@ const Nav2 = ({ handleLogout, setOpen }) => {
               Products
             </span>
           </Link>
+          {user?.role == "customer" && (
+            <Link
+              href="/customer"
+              onClick={() => setOpen(false)}
+              className="w-40 flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+            >
+              <FiGrid className="text-xl text-green-400 group-hover:scale-110 transition" />
 
-          <Link
-            href="/dashboard"
-            onClick={() => setOpen(false)}
-            className="w-40 flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
-          >
-            <FiGrid className="text-xl text-green-400 group-hover:scale-110 transition" />
+              <span className="font-medium">
+                Dashboard
+              </span>
+            </Link>
+          )}
+          {user?.role == "farmer" && (
+            <Link
+              href="/farmer"
+              onClick={() => setOpen(false)}
+              className="w-40 flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+            >
+              <FiGrid className="text-xl text-green-400 group-hover:scale-110 transition" />
 
-            <span className="font-medium">
-              Dashboard
-            </span>
-          </Link>
-
+              <span className="font-medium">
+                Dashboard
+              </span>
+            </Link>
+          )}
         </ul>
       </div>
 

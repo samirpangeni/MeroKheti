@@ -1,6 +1,16 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
-const Nav1 = ({handleLogout}) => {
+import axios from 'axios';
+const Nav1 = ({ handleLogout }) => {
+    const [user, setUser] = useState(null)
+    useEffect(() => {
+        const getData = async () => {
+            const response = await axios.get('/api/user')
+            setUser(response.data)
+
+        }
+        getData();
+    }, [])
     return (
         <div className="flex items-center justify-between bg-black/40 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 text-white">
 
@@ -23,19 +33,23 @@ const Nav1 = ({handleLogout}) => {
                     </Link>
                 </li>
                 <li>
-                    <Link href="/dashboard" className="hover:text-blue-400 transition">
+                    {user?.role == "customer" && (<Link href="/customer" className="hover:text-blue-400 transition">
                         Dashboard
-                    </Link>
+                    </Link>)}
+
                 </li>
 
                 <li>
-                    <button
-                        onClick={handleLogout}
-                        className="hover:text-red-400 transition"
-                    >
-                        Logout
-                    </button>
-                </li>
+                    {user?.role == "farmer" && (<Link href="/farmer" className="hover:text-blue-400 transition">Dashboard</Link>)}
+                    </li>
+                    <li>
+                        <button
+                            onClick={handleLogout}
+                            className="hover:text-red-400 transition"
+                        >
+                            Logout
+                        </button>
+                    </li>
             </ul>
         </div>
     )

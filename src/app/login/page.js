@@ -14,26 +14,27 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      await axios.post("/api/login", { email, password });
-      alert("Login successful");
-      router.push("/");
+      const response = await axios.post("/api/login", { email, password });
+      if (response.data.user.role == "admin") {
+        return router.push("/admin");
+      } else {
+        return router.push("/");
+      }
     } catch (err) {
+      console.log(err)
       alert(err.response?.data?.message || "Login failed");
     }
   };
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-950 via-black to-gray-900 text-white flex items-center justify-center px-6 relative overflow-hidden">
-
       {/* BACKGROUND BLURS */}
       <div className="absolute -top-20 -left-20 w-96 h-96 bg-green-500/20 blur-3xl rounded-full"></div>
       <div className="absolute -bottom-20 -right-20 w-96 h-96 bg-emerald-500/20 blur-3xl rounded-full"></div>
 
       {/* LOGIN CARD */}
       <div className="w-full max-w-md bg-white/5 border border-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-xl">
-
         {/* BRANDING */}
         <div className="text-center mb-6">
           <h1 className="text-4xl font-bold tracking-wide">
@@ -47,7 +48,6 @@ export default function LoginPage() {
 
         {/* FORM */}
         <form onSubmit={handleSubmit} className="space-y-4">
-
           {/* EMAIL */}
           <div>
             <label className="text-xs text-gray-400">Email</label>
@@ -112,7 +112,6 @@ export default function LoginPage() {
               Sign up
             </Link>
           </p>
-
         </form>
       </div>
     </div>

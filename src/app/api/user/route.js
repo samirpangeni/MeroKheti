@@ -23,7 +23,15 @@ export async function GET(req) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user);
+    const response = NextResponse.json({
+      message: "login successful",
+
+      user: {
+        role: user.role,
+        firstName: user.firstName,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.log(error);
     return NextResponse.json(
@@ -35,7 +43,8 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     await connectDB();
-    const { firstName, lastName, mobile, email, password } = await req.json();
+    const { firstName, lastName, mobile, email, password, role } =
+      await req.json();
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -53,11 +62,13 @@ export async function POST(req) {
       email,
       mobile,
       password: hashedPassword,
+      role,
     });
     const token = jwt.sign(
       {
         userId: user._id,
         email: user.email,
+        role: user.role,
       },
       process.env.JWT_SECRET,
       { expiresIn: "30d" },

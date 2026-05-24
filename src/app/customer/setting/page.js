@@ -88,7 +88,7 @@ const Page = () => {
               <div className="mt-6 w-full flex flex-col gap-3">
                 <div className="bg-black/20 p-3 rounded-xl flex items-center gap-3">
                   <User className="text-green-400" size={18} />
-                  <span className="text-sm">Farmer Dashboard User</span>
+                  <span className="text-sm">{data?.role} Dashboard user</span>
                 </div>
               </div>
             </div>

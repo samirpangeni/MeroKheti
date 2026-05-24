@@ -26,7 +26,6 @@ const Page = () => {
     }
     fetchUser();
   }, []);
-
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-black text-white">
       {/* NAVBAR */}
@@ -67,7 +66,9 @@ const Page = () => {
       {/* FLOATING BUTTON */}
       <div className="fixed right-6 bottom-3">
         <div className="p-4 rounded-2xl shadow-lg transition">
+         {user?.role =="farmer"&&(
           <Product />
+         )}
         </div>
       </div>
     </div>

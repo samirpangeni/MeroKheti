@@ -61,7 +61,7 @@ const DashboardNav = () => {
       {/* SIDEBAR */}
       <div
         className="flex flex-col items-center 
-        bg-gradient-to-b from-green-900/60 to-black 
+        bg-linear-to-b from-green-900/60 to-black 
         border-r border-green-500/20
         h-screen w-64 p-5 justify-between 
         text-white shadow-2xl"
@@ -84,19 +84,19 @@ const DashboardNav = () => {
         {/* MENU */}
         <div className="flex flex-col gap-2 w-full px-2">
           <ul className="flex flex-col gap-2 font-medium">
-            {menuItem("/dashboard", "Home")}
-            {menuItem("/dashboard/cart", "Cart")}
+            {menuItem("/customer", "Home")}
+            {menuItem("/customer/cart", "Cart")}
 
             <li className="px-3 py-2 rounded-lg hover:bg-green-500/10 hover:text-green-400 transition">
               Orders
             </li>
 
-            {menuItem("/dashboard/myReview", "My Reviews")}
+            {menuItem("/customer/myReview", "My Reviews")}
 
             <li className="px-3 py-2 rounded-lg hover:bg-green-500/10 hover:text-green-400 transition">
               History
             </li>
-            {menuItem("/dashboard/setting", "Setting")}
+            {menuItem("/customer/setting", "Setting")}
           </ul>
         </div>
 

@@ -10,16 +10,20 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("search");
 
-    let filter = {};
+    let filter = {
+      status: "approved"
+    };
 
     if (search) {
       filter = {
+        
         $or: [
           { name: { $regex: search, $options: "i" } },
           { description: { $regex: search, $options: "i" } },
           { category: { $regex: search, $options: "i" } },
           { location: { $regex: search, $options: "i" } },
         ],
+        
       };
     }
 
