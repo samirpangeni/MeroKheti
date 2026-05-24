@@ -16,7 +16,7 @@ const Nav1 = ({ handleLogout }) => {
 
             {/* LOGO */}
             <h1 className="text-xl font-bold tracking-wide">
-                Merokheti 🌱
+                <span className="text-green-400">Mero</span>Kheti
             </h1>
 
             {/* NAV LINKS */}
@@ -41,15 +41,15 @@ const Nav1 = ({ handleLogout }) => {
 
                 <li>
                     {user?.role == "farmer" && (<Link href="/farmer" className="hover:text-blue-400 transition">Dashboard</Link>)}
-                    </li>
-                    <li>
-                        <button
-                            onClick={handleLogout}
-                            className="hover:text-red-400 transition"
-                        >
-                            Logout
-                        </button>
-                    </li>
+                </li>
+                <li>
+                    <button
+                        onClick={handleLogout}
+                        className="hover:text-red-400 transition"
+                    >
+                        Logout
+                    </button>
+                </li>
             </ul>
         </div>
     )

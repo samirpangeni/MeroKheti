@@ -23,7 +23,7 @@ export async function GET(req) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    const response = NextResponse.json({
+    return NextResponse.json({
       message: "login successful",
 
       user: {

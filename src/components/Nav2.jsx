@@ -27,7 +27,7 @@ const Nav2 = ({ handleLogout, setOpen }) => {
         {/* LOGO */}
         <div className="mb-10">
           <h1 className="text-3xl font-bold bg-linear-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">
-            MeroKheti
+           <span className="text-green-400">Mero</span>Kheti
           </h1>
 
           <p className="text-sm text-gray-400 mt-1">
