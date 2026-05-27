@@ -16,7 +16,7 @@ const DashboardNav = () => {
       const response = await axios.get("/api/user", {
         withCredentials: true,
       });
-      setUser(response.data);
+      setUser(response.data.user);
     } catch (err) {
       console.log(err);
     } finally {

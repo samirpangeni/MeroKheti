@@ -3,6 +3,7 @@ import User from "../../../../models/User";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
+import Activity from "../../../../models/Activity";
 export async function POST(req) {
   try {
     await connectDB();
@@ -21,6 +22,10 @@ export async function POST(req) {
       process.env.JWT_SECRET,
       { expiresIn: "7d" },
     );
+    await Activity.create({
+      message: `${user.firstName} logged in`,
+      type: "login"
+    })
     const response = NextResponse.json({
       message: "login successful",
 

@@ -6,11 +6,13 @@ const Nav1 = ({ handleLogout }) => {
     useEffect(() => {
         const getData = async () => {
             const response = await axios.get('/api/user')
-            setUser(response.data)
-
+            setUser(response.data.user)
+        
         }
         getData();
     }, [])
+
+
     return (
         <div className="flex items-center justify-between bg-black/40 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 text-white">
 
@@ -42,6 +44,11 @@ const Nav1 = ({ handleLogout }) => {
                 <li>
                     {user?.role == "farmer" && (<Link href="/farmer" className="hover:text-blue-400 transition">Dashboard</Link>)}
                 </li>
+                    {/* <li>
+                        <Link href="/customer" className="hover:text-blue-400 transition">
+                            Dashboard
+                        </Link>
+                    </li> */}
                 <li>
                     <button
                         onClick={handleLogout}

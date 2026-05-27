@@ -1,36 +1,43 @@
 import connectDB from "../../../../lib/mongoose";
 import cloudinary from "../../../../lib/cloudinary";
 import Product from "../../../../models/Product";
-import User from "../../../../models/User";
+import cron from "node-cron";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import Activity from "../../../../models/Activity";
+import User from "../../../../models/User"
 export async function GET(req) {
   try {
     await connectDB();
     const { searchParams } = new URL(req.url);
+    const status = searchParams.get("status");
     const search = searchParams.get("search");
+    const category = searchParams.get("category");
+    const organic = searchParams.get("organic");
 
-    let filter = {
-      status: "approved"
-    };
+    let filter = {};
 
+    if (status) {
+      filter.status = status;
+    }
+    if (category) {
+      filter.category = category;
+    }
+    if (organic === "true") filter.organic = true;
     if (search) {
       filter = {
-        
         $or: [
           { name: { $regex: search, $options: "i" } },
           { description: { $regex: search, $options: "i" } },
           { category: { $regex: search, $options: "i" } },
           { location: { $regex: search, $options: "i" } },
         ],
-        
       };
     }
 
-    const product = await Product.find(filter).populate(
-      "userId",
-      "firstName lastName",
-    );
+    const product = await Product.find(filter)
+      .populate("userId", "firstName lastName")
+      .sort({ createdAt: -1 });
 
     return NextResponse.json({
       message: "success",
@@ -53,6 +60,7 @@ export async function POST(req) {
     }
     const decode = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decode.userId || decode.id || decode._id;
+    const user = await User.findById(userId)
 
     const formData = await req.formData();
 
@@ -111,6 +119,10 @@ export async function POST(req) {
       organic,
       image: uploadedImages,
     });
+    await Activity.create({
+      message: `${userId.firstName} added a new product`,
+      type: "product"
+    })
 
     return NextResponse.json({
       message: "Product added",
@@ -121,3 +133,60 @@ export async function POST(req) {
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
+
+export async function PUT(req) {
+  try {
+    await connectDB();
+    const body = await req.json();
+    const { status, id } = body;
+    const updateProduct = await Product.findByIdAndUpdate(
+      id,
+      { status },
+      { new: true },
+    );
+    if (!id || !status) {
+      return NextResponse.json({ message: "Missing fields" }, { status: 400 });
+    }
+    await Activity.create({
+      message: `Admin ${status} ${updateProduct.name}`,
+      type: "approved",
+    })
+    return NextResponse.json({
+      message: "updated successfully",
+      updateProduct,
+    });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json({ message: "error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req) {
+  try {
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    await Product.findByIdAndDelete(id);
+    return NextResponse.json({ message: "delete successfully" });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json({ message: "error" }, { status: 500 });
+  }
+}
+
+cron.schedule("0 0 * * *", async () => {
+  try {
+    await connectDB();
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    await Product.deleteMany({
+      harvestDate: { $lte: today },
+    });
+
+    console.log("Expired products deleted");
+  } catch (err) {
+    console.log(err);
+  }
+});
