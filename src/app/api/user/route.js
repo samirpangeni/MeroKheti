@@ -59,7 +59,7 @@ export async function POST(req) {
       email,
       mobile,
       password: hashedPassword,
-      role: "customer",
+      role,
     });
     const token = jwt.sign(
       {

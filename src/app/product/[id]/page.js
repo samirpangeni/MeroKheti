@@ -7,8 +7,11 @@ import use from "react";
 import Review from "@/components/Review";
 import ShowReview from "@/components/ShowReview";
 import AddToCart from "@/components/AddToCart";
+import Report from "@/components/Report";
 const Page = ({ params }) => {
-  const resolvedParams = React.use(params); // 🔥 IMPORTANT FIX
+  const [openReport, setOpenReport] = useState(false);
+
+  const resolvedParams = React.use(params);
   const { id } = resolvedParams;
 
   const [item, setItem] = useState(null);
@@ -27,7 +30,7 @@ const Page = ({ params }) => {
 
     getProductDetails();
   }, [id]);
- 
+
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-950 via-black to-gray-900 text-white">
       <Navbar />
@@ -93,7 +96,7 @@ const Page = ({ params }) => {
                   Buy Now
                 </button>
 
-                <AddToCart product={item}/>
+                <AddToCart product={item} />
               </div>
             </div>
             <div className="mt-10 w-full">
@@ -102,9 +105,13 @@ const Page = ({ params }) => {
             <div>
               <ShowReview productId={id} />
             </div>
+            <button onClick={() => setOpenReport(true)} className="absolute top-10 right-10 bg-red-900 p-2 rounded-lg">Report</button>
+
+            {openReport && (
+              <Report productId={id} setOpenReport={setOpenReport} />
+            )}
           </div>
         )}
-       
       </div>
     </div>
   );

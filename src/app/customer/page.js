@@ -13,7 +13,6 @@ const page = () => {
       try {
         const response = await axios.get("/api/user");
         setUser(response.data);
-        console.log(response.data);
 
         const review = await axios.get("api/review/my");
         setReview(

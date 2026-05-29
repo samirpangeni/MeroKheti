@@ -17,7 +17,7 @@ const SlideBarForAdmin = () => {
     const pathname = usePathname();
     const handleLogout = async () => {
         try {
-            await axios.post("api/logout", {}, { withCredentials: true });
+            await axios.post("/api/logout", {}, { withCredentials: true });
             window.location.href = "/login"
         } catch (err) {
             console.log(err)

@@ -23,7 +23,7 @@ const Page = () => {
   // APPROVE / REJECT FUNCTION
   const updateStatus = async (id, status) => {
     try {
-      await axios.put("/api/product", { id, status });
+      await axios.put("/api/admin", { id, status });
 
       // remove from UI after action
       setProduct((prev) => prev.filter((item) => item._id !== id));

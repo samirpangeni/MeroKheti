@@ -5,7 +5,9 @@ import cron from "node-cron";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import Activity from "../../../../models/Activity";
-import User from "../../../../models/User"
+import Review from "../../../../models/Review";
+import Report from "../../../../models/Report";
+import User from "../../../../models/User";
 export async function GET(req) {
   try {
     await connectDB();
@@ -60,7 +62,7 @@ export async function POST(req) {
     }
     const decode = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decode.userId || decode.id || decode._id;
-    const user = await User.findById(userId)
+    const user = await User.findById(userId);
 
     const formData = await req.formData();
 
@@ -121,8 +123,8 @@ export async function POST(req) {
     });
     await Activity.create({
       message: `${userId.firstName} added a new product`,
-      type: "product"
-    })
+      type: "product",
+    });
 
     return NextResponse.json({
       message: "Product added",
@@ -150,7 +152,7 @@ export async function PUT(req) {
     await Activity.create({
       message: `Admin ${status} ${updateProduct.name}`,
       type: "approved",
-    })
+    });
     return NextResponse.json({
       message: "updated successfully",
       updateProduct,
@@ -166,14 +168,22 @@ export async function DELETE(req) {
     await connectDB();
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
+    if (!id) {
+      return NextResponse.json(
+        { message: "no product found" },
+        { status: 400 },
+      );
+    }
+
     await Product.findByIdAndDelete(id);
-    return NextResponse.json({ message: "delete successfully" });
+    await Review.deleteMany({ productId: id });
+    await Report.deleteMany({ productId: id });
+    return NextResponse.json({ message: "product delete successfully" });
   } catch (err) {
     console.log(err);
     return NextResponse.json({ message: "error" }, { status: 500 });
   }
 }
-
 cron.schedule("0 0 * * *", async () => {
   try {
     await connectDB();

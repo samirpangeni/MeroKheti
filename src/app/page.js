@@ -19,7 +19,7 @@ const Page = () => {
         const res = await axios.get("/api/user", {
           withCredentials: true,
         });
-        setUser(res.data);
+        setUser(res.data.user);
       } catch (err) {
         console.log(err.response?.data);
       }
