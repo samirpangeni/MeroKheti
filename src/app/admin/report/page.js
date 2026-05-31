@@ -33,7 +33,7 @@ const Page = () => {
       <SlideBarForAdmin />
 
       {/* Main Content */}
-      <div className="flex-1 p-8 bg-gradient-to-br from-black via-[#07130b] to-[#0d1f14]">
+      <div className="flex-1 p-8 pl-70 bg-gradient-to-br from-black via-[#07130b] to-[#0d1f14]">
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-4xl font-bold text-green-400">

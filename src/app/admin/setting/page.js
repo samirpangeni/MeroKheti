@@ -77,7 +77,7 @@ const Page = () => {
       <SlideBarForAdmin />
 
       {/* MAIN */}
-      <div className="flex-1 p-8 bg-gradient-to-br from-black via-[#07130b] to-[#0d1f14] overflow-y-auto">
+      <div className="flex-1 p-8 pl-70 bg-gradient-to-br from-black via-[#07130b] to-[#0d1f14] overflow-y-auto">
         {/* TOP HEADER */}
         <div className="flex items-center justify-between mb-10">
           <div>

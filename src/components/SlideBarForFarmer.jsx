@@ -1,0 +1,66 @@
+"use client"
+import axios from 'axios'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import React, { useState, useEffect } from 'react'
+
+const SlideBarForFarmer = () => {
+    const pathname = usePathname();
+    const [user, setUser] = useState([])
+    const handleLogout = async () => {
+        try {
+            await axios.post("/api/logout", {}, { withCredentials: true });
+            window.location.href = "/login"
+        } catch (err) {
+            console.log(err)
+        }
+    }
+    useEffect(() => {
+        const getData = async () => {
+            try {
+                const req = await axios.get("/api/user")
+                setUser(req.data.user)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        getData();
+    }, [])
+    const menuItem = (href, label) => {
+        const isActive = pathname === href;
+        return (
+            <Link href={href}>
+                <li className={`px-3 py-2 rounded-lg cursor-pointer transition ${isActive ? "bg-green-500/20 text-green-400" : "hover:bg-green-500/10 hover:text-green-400"}`}>{label}</li>
+            </Link>
+        )
+    }
+    return (
+        <div className='flex flex-col fixed top-0 bottom-0 items-center bg-linear-to-b from-green-900/60 to-black border-r border-green-500/20 h-screen w-64 p-5 justify-between text-white shadow-2xl'>
+            <div className='mb-10'>
+                <h1 className='text-3xl font-bold'>
+                    <span className='text-green-400'>Mero</span>kheti
+                </h1>
+                <p className="text-gary-400 text-sm mt-1 text-center">
+                    {user?.firstName} {user?.lastName}
+                </p>
+            </div>
+            <div className='flex flex-col gap-2 w-full px-2'>
+                <ul className='flex flex-col gap-2 font-medium'>
+                    {menuItem("/farmer", "Dashboard")}
+                    {menuItem("/farmer/product", "Product")}
+                    {menuItem("/farmer/manage", "Manage")}
+                    {menuItem("/farmer/order", "Order")}
+                    {menuItem("/farmer/list", "List")}
+                    {menuItem("/farmer/setting", "Setting")}
+                </ul>
+            </div>
+            <div className="w-full text-center">
+                <button className='p-2 bg-red-500/20 border-red-500/30 text-red-400 px-4 py-2 w-full transition rounded-lg'
+                    onClick={handleLogout}>
+                    Logout
+                </button>
+            </div>
+        </div>
+    )
+}
+export default SlideBarForFarmer

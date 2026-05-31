@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, } from "react";
+import{usePathname} from 'next/navigation'
 import Link from "next/link";
-import {
-  FiHome,
-  FiShoppingBag,
-  FiGrid,
-  FiLogOut,
-} from "react-icons/fi";
 import axios from "axios";
 
 const Nav2 = ({ handleLogout, setOpen }) => {
+  const pathname = usePathname();
   const [user, setUser] = useState(null);
   useEffect(() => {
     const data = async () => {
@@ -17,6 +13,13 @@ const Nav2 = ({ handleLogout, setOpen }) => {
     }
     data();
   }, [])
+
+  const menuItem = (href, label)=>{
+    const isActive = pathname == href;
+    return(
+    <Link href={href} className="w-40 flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"> {label}</Link>
+    )
+  }
   return (
     <div className="fixed top-0 left-0 h-screen w-50 bg-transparent backdrop-blur-4xl border-r border-white/10 shadow-2xl text-white p-6 flex flex-col justify-between">
 
@@ -36,72 +39,21 @@ const Nav2 = ({ handleLogout, setOpen }) => {
 
         {/* NAVIGATION */}
         <ul className="flex flex-col gap-3">
-
-          <Link
-            href="/"
-            onClick={() => setOpen(false)}
-            className="w-40 flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
-          >
-            <FiHome className="text-xl text-green-400 group-hover:scale-110 transition" />
-
-            <span className="font-medium">
-              Home
-            </span>
-          </Link>
-
-          <Link
-            href="/product"
-            onClick={() => setOpen(false)}
-            className=" w-40 flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
-          >
-            <FiShoppingBag className="text-xl text-green-400 group-hover:scale-110 transition" />
-
-            <span className="font-medium">
-              Products
-            </span>
-          </Link>
-          {user?.role == "customer" && (
-            <Link
-              href="/customer"
-              onClick={() => setOpen(false)}
-              className="w-40 flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
-            >
-              <FiGrid className="text-xl text-green-400 group-hover:scale-110 transition" />
-
-              <span className="font-medium">
-                Dashboard
-              </span>
-            </Link>
-          )}
-          {user?.role == "farmer" && (
-            <Link
-              href="/farmer"
-              onClick={() => setOpen(false)}
-              className="w-40 flex items-center gap-4 px-4 py-3 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
-            >
-              <FiGrid className="text-xl text-green-400 group-hover:scale-110 transition" />
-
-              <span className="font-medium">
-                Dashboard
-              </span>
-            </Link>
-          )}
-          
+          {menuItem("/", "Home")}
+          {menuItem("/product", "Product")}
+          {user?.role == "customer" && menuItem("/customer", "Dashnoard")}
+          {user?.role == "farmer" && menuItem("/farmer", "Dashnoard")}
         </ul>
       </div>
 
       {/* BOTTOM */}
       <div className="border-t border-white/10 pt-5">
-
         <button
           onClick={handleLogout}
           className="w-40 flex items-center justify-center gap-3 bg-red-500  hover:bg-red-600 transition-all duration-300 px-4 py-3 rounded-2xl font-medium shadow-lg"
         >
-          <FiLogOut className="text-lg" />
-
           Logout
         </button>
-
       </div>
     </div>
   );

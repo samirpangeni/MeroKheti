@@ -32,7 +32,7 @@ const Page = () => {
   return (
     <div className="flex gap-2">
       <SlideBarForAdmin />
-      <div className="px-10 py-10 w-full">
+      <div className="py-10 w-full pl-70">
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5 w-full">
           {/* TOTAL USERS */}
 

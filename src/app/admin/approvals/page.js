@@ -43,7 +43,7 @@ const Page = () => {
     <div className="flex min-h-screen bg-black text-white">
       <SlideBarForAdmin />
 
-      <div className="flex-1 p-8 bg-linear-to-br from-black via-gray-950 to-green-950">
+      <div className="flex-1 p-8 bg-linear-to-br from-black via-gray-950 to-green-950 pl-70">
         {/* HEADER */}
         <div className="flex justify-between items-center mb-10">
           <div>

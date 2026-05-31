@@ -22,7 +22,7 @@ export default function ProductFeed({ products, setProducts, search }) {
   const fetchProducts = async (pageNumber, selectedCategory) => {
     try {
       const res = await axios.get(
-       `/api/product?page=${pageNumber}&limit=${LIMIT}&category=${selectedCategory}&search=${search}`
+       `/api/product?status=approved&page=${pageNumber}&limit=${LIMIT}&category=${selectedCategory}&search=${search}`
       );
 
       const newProducts = res.data.product || [];
@@ -82,7 +82,7 @@ export default function ProductFeed({ products, setProducts, search }) {
           onChange={(e) => setCategory(e.target.value)}
           className="bg-white/10 border border-white/20 px-3 py-2 rounded-xl text-white outline-none"
         >
-          {["", "Vegetables", "Fruits", "Grains", "Dairy", "Meat"].map((cat) => (
+          {["", "vegetables", "fruits", "grains", "dairy", "meat"].map((cat) => (
             <option key={cat} value={cat} className="text-black">
               {cat === "" ? "All Categories" : cat}
             </option>

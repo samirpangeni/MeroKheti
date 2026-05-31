@@ -22,7 +22,7 @@ export async function GET(req) {
     if (status) {
       filter.status = status;
     }
-    if (category) {
+    if (category && category !== "All Categories") {
       filter.category = category;
     }
     if (organic === "true") filter.organic = true;
@@ -133,33 +133,6 @@ export async function POST(req) {
   } catch (err) {
     console.log("ERROR:", err);
     return NextResponse.json({ message: "Server error" }, { status: 500 });
-  }
-}
-
-export async function PUT(req) {
-  try {
-    await connectDB();
-    const body = await req.json();
-    const { status, id } = body;
-    const updateProduct = await Product.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true },
-    );
-    if (!id || !status) {
-      return NextResponse.json({ message: "Missing fields" }, { status: 400 });
-    }
-    await Activity.create({
-      message: `Admin ${status} ${updateProduct.name}`,
-      type: "approved",
-    });
-    return NextResponse.json({
-      message: "updated successfully",
-      updateProduct,
-    });
-  } catch (err) {
-    console.log(err);
-    return NextResponse.json({ message: "error" }, { status: 500 });
   }
 }
 

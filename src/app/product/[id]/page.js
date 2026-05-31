@@ -58,7 +58,7 @@ const Page = ({ params }) => {
               <p className="text-green-400">
                 Farmer Name:
                 <span className="text-gray-400 ml-1">
-                  {item.userId.firstName} {item.userId.lastName}
+                  {item.userId?.firstName} {item.userId?.lastName}
                 </span>
               </p>
               <div className="text-2xl font-semibold text-green-400">

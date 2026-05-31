@@ -1,13 +1,18 @@
 import connectDB from "../../../../../lib/mongoose";
 import Product from "../../../../../models/Product";
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 export async function GET(req, { params }) {
   try {
     await connectDB();
-    const { id } = await params;
-    const product = await Product.findById(id).populate("userId", "firstName lastName");
+
+    const { id } =await params;
+
+    const product = await Product.findById(id).populate(
+      "userId",
+      "firstName lastName",
+    );
 
     if (!product) {
       return NextResponse.json(

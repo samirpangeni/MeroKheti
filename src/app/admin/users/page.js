@@ -27,7 +27,7 @@ const page = () => {
   return (
     <div className="flex">
       <SlideBarForAdmin />
-      <div className="px-10 py-10 w-full">
+      <div className="pl-70 py-10 w-full">
         <div className="w-full">
           {/* HEADER */}
           <div className="mb-6">
