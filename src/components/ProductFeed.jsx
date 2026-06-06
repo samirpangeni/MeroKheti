@@ -3,36 +3,31 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-
+import { useRouter } from "next/navigation";
+import Checkout from "./Checkout";
 export default function ProductFeed({ products, setProducts, search }) {
-
+  const router = useRouter();
   const [page, setPage] = useState(1);
-
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-
   const [category, setCategory] = useState("");
   const [hasMore, setHasMore] = useState(true);
-
+  const [selectProduct, setSelectProduct] = useState(null);
   const observerRef = useRef(null);
-
   const LIMIT = 6;
 
   // FETCH DATA
   const fetchProducts = async (pageNumber, selectedCategory) => {
     try {
       const res = await axios.get(
-       `/api/product?status=approved&page=${pageNumber}&limit=${LIMIT}&category=${selectedCategory}&search=${search}`
+        `/api/product?status=approved&page=${pageNumber}&limit=${LIMIT}&category=${selectedCategory}&search=${search}`
       );
-
       const newProducts = res.data.product || [];
-
       if (pageNumber === 1) {
         setProducts(newProducts);
       } else {
         setProducts((prev) => [...prev, ...newProducts]);
       }
-
       setHasMore(newProducts.length === LIMIT);
     } catch (err) {
       console.log(err);
@@ -47,12 +42,11 @@ export default function ProductFeed({ products, setProducts, search }) {
     setLoading(true);
     setPage(1);
     fetchProducts(1, category);
-  }, [category]);
+  }, [category, search]);
 
   // INFINITE SCROLL
   useEffect(() => {
     if (loading) return;
-
     const observer = new IntersectionObserver((entries) => {
       if (entries[0].isIntersecting && hasMore) {
         const nextPage = page + 1;
@@ -63,19 +57,16 @@ export default function ProductFeed({ products, setProducts, search }) {
     });
 
     if (observerRef.current) observer.observe(observerRef.current);
-
     return () => observer.disconnect();
   }, [page, hasMore, loading]);
 
   return (
     <section className="max-w-6xl mx-auto px-6 pb-20">
-
       {/* HEADER */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
         <h2 className="text-2xl font-bold">
           🌱 Fresh Marketplace
         </h2>
-
         {/* FILTER */}
         <select
           value={category}
@@ -89,7 +80,6 @@ export default function ProductFeed({ products, setProducts, search }) {
           ))}
         </select>
       </div>
-
       {/* GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
@@ -114,7 +104,7 @@ export default function ProductFeed({ products, setProducts, search }) {
           products.map((item) => (
             <div
               key={item._id}
-              className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:scale-[1.02] transition"
+              className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden transition"
             >
               {/* IMAGE */}
               <img
@@ -152,12 +142,18 @@ export default function ProductFeed({ products, setProducts, search }) {
                   </span>
                 )}
               </div>
-              <div className= "flex justify-between p-4">
+              <div className="flex justify-between p-4">
                 <Link href={`/product/${item._id}`}>
-                  <button className=" p-1 bg-gray-400 rounded-lg border-0"> View Details </button>
+                  <button className=" p-2 bg-gray-400 rounded-lg border-0"> View Details </button>
                 </Link>
-                <button className=" p-1 bg-green-500 text-white rounded-lg border-0"> Buy Now </button>
+                <button className=" p-2 bg-green-500 text-white rounded-lg border-0"
+                  onClick={() => setSelectProduct(item._id)}
+                > Buy Now </button>
               </div>
+              {selectProduct === item._id && (
+                <div className='fixed inset-0 bg-transparent backdrop-blur-2xl flex items-center justify-center z-50'>
+                  <Checkout productId={selectProduct} onClose={() => setSelectProduct(null)} />
+                </div>)}
             </div>
           ))}
       </div>

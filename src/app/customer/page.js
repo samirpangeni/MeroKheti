@@ -8,6 +8,7 @@ const page = () => {
   const [products, setProducts] = useState([]);
   const [review, setReview] = useState([]);
   const [user, setUser] = useState([]);
+  const[search, setSearch] = useState("");
   useEffect(() => {
     const getData = async () => {
       try {
@@ -92,7 +93,7 @@ const page = () => {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold">Recommended Products</h2>
           </div>
-          <ProductFeed products={products} setProducts={setProducts} />
+          <ProductFeed products={products} setProducts={setProducts} search={search} setSearch={setSearch}/>
         </div>
       </div>
     </div>

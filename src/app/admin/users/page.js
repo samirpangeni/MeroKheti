@@ -8,7 +8,8 @@ const page = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const uRes = await axios.get(`/api/admin?role=${role}`);
+        const url = role ? `/api/admin?role=${role}` : `/api/admin?role=All`;
+        const uRes = await axios.get(url);
         setUsers(uRes.data.user);
       } catch (err) {
         console.log(err);

@@ -30,7 +30,7 @@ const Page = () => {
   // DELETE PRODUCT
   const deleteProduct = async (id) => {
     try {
-      await axios.delete(`/api/product?id=${id}`);
+      await axios.delete(`/api/admin?id=${id}`);
 
       setProduct((prev) => prev.filter((item) => item._id !== id));
     } catch (err) {

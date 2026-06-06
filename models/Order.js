@@ -2,35 +2,27 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
+    transaction_uuid: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
-      required: true,
-    },
-
-    farmerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-
-    quantity: {
-      type: Number,
-      required: true,
-      default: 1,
-    },
-
-    price: {
-      type: Number,
-      required: true,
-    },
-
+    product: [
+      {
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+          required: true,
+        },
+        price: Number,
+        quantity: Number,
+      },
+    ],
     totalAmount: {
       type: Number,
       required: true,
@@ -38,7 +30,8 @@ const orderSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      default: "Khalti",
+      enum: ["khalti", "esewa", "Cash"],
+      required: true,
     },
 
     paymentStatus: {
@@ -52,19 +45,6 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "confirmed", "shipped", "delivered", "cancelled"],
       default: "pending",
     },
-
-    customerName:{
-        type: String,
-        required: true
-    },
-    phone:{
-        type: String,
-        required: true
-    },
-    address:{
-        type: String,
-        required: true
-    }
   },
   {
     timestamps: true,

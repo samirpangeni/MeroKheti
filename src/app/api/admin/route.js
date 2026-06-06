@@ -9,7 +9,12 @@ export async function GET(req) {
     await connectDB();
     const { searchParams } = new URL(req.url);
     const role = searchParams.get("role");
-    let filter = {};
+    
+    let filter = {
+      role: {
+        $ne: "admin",
+      },
+    };
     if (role && role !== "All") {
       filter.role = role;
     }
