@@ -8,21 +8,18 @@ import { NextResponse } from "next/server";
 export async function GET(req) {
   try {
     await connectDB();
-
-    const { searchParams } = new URL(req.url);
-    const productId = searchParams.get("productId");
-
-    if (!productId) {
-      return NextResponse.json(
-        { message: "product id required" },
-        { status: 400 },
-      );
+    const token = req.cookies.get("token")?.value;
+    if (!token) {
+      return NextResponse({ message: "unauthorized" }, { status: 401 })
     }
-    const review = await Review.find({ productId}).populate(
+    const decode = jwt.verify(token, process.env.JWT_SECRET)
+    const userId = decode.id || decode.userId || decode._id
+    
+    const review = await Review.find({ userId }).populate(
       "userId",
       "firstName lastName",
     );
-   
+
     return NextResponse.json({ review });
   } catch (err) {
     console.log(err);

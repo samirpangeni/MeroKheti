@@ -22,7 +22,7 @@ const Page = () => {
     <div className="flex min-h-screen bg-black">
       <SlideBarForFarmer />
 
-      <div className="flex-1 p-8 pl-70">
+      <div className="flex-1 p-2 md:pl-70">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>

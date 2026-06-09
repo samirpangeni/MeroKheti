@@ -64,6 +64,7 @@ export async function POST(req) {
       success: true,
       message: "Payment verified & order confirmed",
       order,
+      result
     });
 
   } catch (err) {

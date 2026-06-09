@@ -3,17 +3,27 @@ import DashboardNav from "@/components/DashboardNav";
 import React, { useEffect, useState } from "react";
 import ProductFeed from "@/components/ProductFeed";
 import axios from "axios";
+import { startPPRNavigation } from "next/dist/client/components/router-reducer/ppr-navigations";
 
 const page = () => {
   const [products, setProducts] = useState([]);
   const [review, setReview] = useState([]);
   const [user, setUser] = useState([]);
-  const[search, setSearch] = useState("");
+  const [order, setOrder] = useState([]);
+  const [cart, setCart] = useState([]);
+  const [pending, setPending] = useState([]);
+  const [search, setSearch] = useState("");
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get("/api/user");
-        setUser(response.data);
+        const uRes = await axios.get("/api/user");
+        const oRes = await axios.get("/api/order")
+        const cRes = await axios.get("/api/cart")
+        const pRes = await axios.get("/api/order?paymentStatus=pending")
+        setOrder(oRes.data.order)
+        setPending(pRes.data.order)
+        setCart(cRes.data.carts)
+        setUser(uRes.data);
 
         const review = await axios.get("api/review/my");
         setReview(
@@ -32,7 +42,7 @@ const page = () => {
   return (
     <div className="flex gap-2">
       <DashboardNav />
-      <div className="w-full p-2 md:px-20 md:py-20">
+      <div className="w-full p-2 md:px-20 md:pl-70 pt-20">
         {/* Welcome */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Welcome Back 👋</h1>
@@ -48,17 +58,17 @@ const page = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
             <p className="text-gray-400 text-sm">Orders</p>
-            <h2 className="text-3xl font-bold mt-2">12</h2>
+            <h2 className="text-3xl font-bold mt-2">{order.length}</h2>
           </div>
 
           <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
             <p className="text-gray-400 text-sm">Pending</p>
-            <h2 className="text-3xl font-bold mt-2">2</h2>
+            <h2 className="text-3xl font-bold mt-2">{pending.length}</h2>
           </div>
 
           <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
-            <p className="text-gray-400 text-sm">Wishlist</p>
-            <h2 className="text-3xl font-bold mt-2">5</h2>
+            <p className="text-gray-400 text-sm">Cart</p>
+            <h2 className="text-3xl font-bold mt-2">{cart.length}</h2>
           </div>
 
           <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
@@ -93,7 +103,7 @@ const page = () => {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold">Recommended Products</h2>
           </div>
-          <ProductFeed products={products} setProducts={setProducts} search={search} setSearch={setSearch}/>
+          <ProductFeed products={products} setProducts={setProducts} search={search} setSearch={setSearch} />
         </div>
       </div>
     </div>

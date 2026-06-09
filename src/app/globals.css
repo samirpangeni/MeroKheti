@@ -35,10 +35,12 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
-/* hide scrollbar */
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hide {
+  -ms-overflow-style: none;
   scrollbar-width: none;
 }

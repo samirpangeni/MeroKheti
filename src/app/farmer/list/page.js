@@ -25,7 +25,7 @@ const Page = () => {
     <div className="flex min-h-screen bg-black text-white">
       <SlideBarForFarmer />
 
-      <div className="flex-1 p-8 pl-70">
+      <div className="flex-1 p-8 p-2 md:pl-70">
         <h1 className="text-4xl font-bold text-green-500 mb-2">
           Farmer Leaderboard
         </h1>

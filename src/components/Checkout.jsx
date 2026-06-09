@@ -1,17 +1,16 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import PayWithEsewa from "@/components/PayWithEsewa"
+import PayWithEsewa from "@/components/PayWithEsewa";
 
 const Checkout = ({ productId, onClose }) => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [payMethod, setPayMethod] = useState("Cash");
   const [ordering, setOrdering] = useState(false);
 
-  // FETCH PRODUCT
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -27,28 +26,16 @@ const Checkout = ({ productId, onClose }) => {
     if (productId) fetchProduct();
   }, [productId]);
 
-  // QUANTITY HANDLER (SAFE)
-  const handleQuantityChange = (e) => {
-    const value = Number(e.target.value);
-
-    if (!product) return;
-
-    if (value > product.quantity) {
-      alert(`Only ${product.quantity} items available in stock`);
-      return;
-    }
-
-    if (value < 1) return;
-
-    setQuantity(value);
-  };
-
-  // KHALTI PAYMENT
   const handleKhaltiPayment = async () => {
-    setPayMethod("Khalti");
-
     try {
+      const orderRes = await axios.post("api/order",{
+        productId,
+        quantity,
+        payMethod: "khalti"
+      })
+      const orderId = orderRes.data.orderId;
       const res = await axios.post("/api/payment/khalti/initiate", {
+        orderId,
         productId,
         quantity,
         amount: product.price * quantity,
@@ -61,12 +48,10 @@ const Checkout = ({ productId, onClose }) => {
     }
   };
 
-  // MAIN ORDER HANDLER
   const handleOrder = async (e) => {
     e.preventDefault();
 
     if (payMethod !== "Cash") return;
-
     try {
       setOrdering(true);
 
@@ -77,7 +62,6 @@ const Checkout = ({ productId, onClose }) => {
       });
 
       alert("Order placed successfully!");
-
       onClose?.();
     } catch (err) {
       console.log(err);
@@ -87,129 +71,210 @@ const Checkout = ({ productId, onClose }) => {
     }
   };
 
-  // LOADING UI
   if (loading) {
     return (
-      <div className="bg-white p-6 rounded-xl w-96 text-center">
-        Loading...
+      <div className="flex justify-center items-center h-screen bg-black">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-green-400">Loading Product...</p>
+        </div>
       </div>
     );
   }
 
-  // ERROR UI
   if (!product) {
     return (
-      <div className="bg-white p-6 rounded-xl w-96 text-center">
+      <div className="text-center text-white p-10">
         Product not found
       </div>
     );
   }
 
+  const total = product.price * quantity;
+
   return (
-    <div className="bg-white text-black p-6 rounded-2xl shadow-2xl w-full max-w-md relative">
+  <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3 z-50">
+    <div
+      className="
+        w-full
+        max-w-lg
+        max-h-[90vh]
+        overflow-y-auto
+        scrollbar-hide
+        rounded-3xl
+        bg-zinc-900
+        border border-zinc-800
+        shadow-2xl
+        text-zinc-200
+      "
+    >
+      {/* Header */}
+      <div className="sticky top-0 bg-zinc-900/95 backdrop-blur p-5 border-b border-zinc-800 flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-semibold">
+            Checkout
+          </h2>
+          <p className="text-sm text-zinc-400">
+            Complete your order
+          </p>
+        </div>
 
-      {/* CLOSE BUTTON */}
-      {onClose && (
-        <button
-          onClick={onClose}
-          className="absolute top-3 right-3 text-red-500 text-xl font-bold"
-        >
-          ✕
-        </button>
-      )}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="w-9 h-9 rounded-full bg-zinc-800 hover:bg-zinc-700 transition"
+          >
+            ✕
+          </button>
+        )}
+      </div>
 
-      {/* TITLE */}
-      <h2 className="text-2xl font-bold mb-4">
-        Checkout
-      </h2>
-
-      {/* PRODUCT IMAGE */}
+      {/* Image */}
       <img
         src={product.image?.[0]?.url}
         alt={product.name}
-        className="w-full h-40 object-cover rounded-lg mb-4"
+        className="w-full h-64 object-cover"
       />
 
-      {/* PRODUCT INFO */}
-      <h3 className="text-lg font-semibold">
-        {product.name}
-      </h3>
+      <div className="p-5">
 
-      <p className="text-gray-600 text-sm mb-2">
-        {product.description}
-      </p>
+        {/* Product Info */}
+        <div>
+          <h3 className="text-2xl font-semibold">
+            {product.name}
+          </h3>
 
-      <p className="text-green-600 font-bold"
-      >
-        NPR {product.price}
-      </p>
+          <p className="text-zinc-400 mt-2 text-sm leading-relaxed">
+            {product.description}
+          </p>
+        </div>
 
-      <p className="text-sm text-gray-500">
-        Stock: {product.quantity}
-      </p>
+        {/* Price Card */}
+        <div className="mt-5 bg-zinc-800 rounded-2xl p-4 flex justify-between items-center">
+          <div>
+            <p className="text-zinc-400 text-sm">
+              Price
+            </p>
 
-      {/* QUANTITY */}
-      <div className="mt-4">
-        <label className="text-sm font-medium">
-          Quantity
-        </label>
+            <h3 className="text-2xl text-green-500 font-semibold">
+              NPR {product.price}
+            </h3>
+          </div>
 
-        <input
-          type="number"
-          value={quantity}
-          onChange={handleQuantityChange}
-          className="w-full border p-2 rounded mt-1"
-        />
-      </div>
+          <div className="text-right">
+            <p className="text-zinc-400 text-sm">
+              Stock
+            </p>
 
-      {/* TOTAL PRICE */}
-      <div className="mt-3 p-2 bg-gray-100 rounded">
-        <p className="font-semibold"
-        >
-          Total: NPR {product.price * quantity}
-        </p>
-      </div>
+            <p>
+              {product.quantity}
+            </p>
+          </div>
+        </div>
 
-      {/* PAYMENT METHODS */}
-      <div className="mt-5 space-y-2">
+        {/* Quantity */}
+        <div className="mt-6">
+          <p className="text-zinc-400 text-sm mb-3">
+            Quantity
+          </p>
 
-        <button
-          type="button"
-          onClick={handleKhaltiPayment}
-          className="w-full bg-purple-600 text-white p-2 rounded hover:bg-purple-700"
-        >
-          Pay with Khalti
-        </button>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() =>
+                quantity > 1 &&
+                setQuantity(quantity - 1)
+              }
+              className="w-11 h-11 rounded-full bg-zinc-800 hover:bg-zinc-700 transition"
+            >
+              -
+            </button>
 
-        <PayWithEsewa payMethod={payMethod} price={price} productId={productId}/>
+            <span className="text-xl font-medium">
+              {quantity}
+            </span>
 
-        <button
-          type="button"
-          onClick={() => setPayMethod("Cash")}
-          className={`w-full p-2 rounded text-white ${payMethod === "Cash"
-            ? "bg-yellow-700"
-            : "bg-yellow-500"
+            <button
+              onClick={() =>
+                quantity < product.quantity &&
+                setQuantity(quantity + 1)
+              }
+              className="w-11 h-11 rounded-full bg-green-600 hover:bg-green-500 transition"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        {/* Total */}
+        <div className="mt-6 bg-zinc-800 rounded-2xl p-4">
+          <p className="text-zinc-400 text-sm">
+            Total Amount
+          </p>
+
+          <h2 className="text-3xl text-green-500 font-semibold mt-1">
+            NPR {product.price * quantity}
+          </h2>
+        </div>
+
+        {/* Payment Methods */}
+        <div className="mt-6 space-y-3">
+
+          <button
+            onClick={handleKhaltiPayment}
+            className="w-full p-4 rounded-2xl bg-purple-700 hover:bg-purple-600 transition"
+          >
+            Pay with Khalti
+          </button>
+
+          <PayWithEsewa
+            payMethod={payMethod}
+            price={product.price * quantity}
+            productId={productId}
+          />
+
+          <button
+            onClick={() => setPayMethod("Cash")}
+            className={`w-full p-4 rounded-2xl transition ${
+              payMethod === "Cash"
+                ? "bg-green-600 text-black"
+                : "bg-zinc-800 hover:bg-zinc-700"
             }`}
+          >
+            Cash on Delivery
+          </button>
+        </div>
+
+        {/* Selected Method */}
+        <p className="text-center text-sm text-zinc-400 mt-4">
+          Selected:{" "}
+          <span className="text-green-500">
+            {payMethod}
+          </span>
+        </p>
+
+        {/* Place Order */}
+        <button
+          onClick={handleOrder}
+          disabled={ordering}
+          className="
+            mt-6
+            w-full
+            bg-green-500
+            hover:bg-green-400
+            text-black
+            font-medium
+            py-4
+            rounded-2xl
+            transition
+            disabled:opacity-50
+          "
         >
-          Cash on Delivery
+          {ordering ? "Processing..." : "Place Order"}
         </button>
       </div>
-
-      {/* SELECTED METHOD */}
-      <p className="text-sm mt-3 text-gray-600">
-        Selected: <b>{payMethod}</b>
-      </p>
-
-      {/* PLACE ORDER */}
-      <button
-        onClick={handleOrder}
-        disabled={ordering}
-        className="w-full mt-4 bg-blue-600 text-white p-3 rounded hover:bg-blue-700"
-      >
-        {ordering ? "Processing..." : "Place Order"}
-      </button>
     </div>
-  );
+  </div>
+);
 };
 
 export default Checkout;

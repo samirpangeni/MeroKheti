@@ -6,59 +6,59 @@ import { NextResponse } from "next/server";
 import { v4 as uuid } from "uuid";
 import jwt from "jsonwebtoken";
 
+export async function GET(req) {
+  try {
+    await connectDB();
+    const token = req.cookies.get("token")?.value;
+    if (!token) {
+      return NextResponse.json({ message: "authorized" }, { status: 401 })
+    }
+    const decode = jwt.verify(token, process.env.JWT_SECRET)
+    const userId = decode.id || decode._id || decode.userId;
+    const order = await Order.find({ userId }).populate("product.productId", "name image price location category description quantity").populate("userId", "firstName lastName mobile email").sort({ createdAt: -1 });
+    return NextResponse.json({ success: true, order })
+  } catch (err) {
+    console.log(err)
+    return NextResponse.json({ message: "server error" }, { status: 500 })
+  }
+}
 export async function POST(req) {
   try {
     await connectDB();
-
-    // 1. GET TOKEN
     const token = req.cookies.get("token")?.value;
-
     if (!token) {
-      return NextResponse.json(
-        { message: "Not logged in" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Not logged in" }, { status: 401 });
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
     const userId = decoded.userId || decoded.id;
     if (!userId) {
-      return NextResponse.json(
-        { message: "Invalid token" },
-        { status: 401 }
-      );
+      return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
-    
     const { productId, quantity, payMethod } = await req.json();
     if (!productId || !quantity || !payMethod) {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const qty = Number(quantity);
-    // 4. GET PRODUCT
+
     const product = await Product.findById(productId);
     if (!product) {
       return NextResponse.json(
         { success: false, message: "Product not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
-    // 5. CHECK STOCK
+
     if (product.quantity < qty) {
       return NextResponse.json(
         { success: false, message: "Not enough stock" },
-        { status: 400 }
+        { status: 400 },
       );
     }
-
-    // 6. CREATE ORDER
-    const transaction_uuid = uuid();
     const totalAmount = product.price * qty;
-
     const order = await Order.create({
-      transaction_uuid,
       userId,
       product: [
         {
@@ -71,18 +71,23 @@ export async function POST(req) {
       totalAmount,
       paymentStatus: "pending",
       orderStatus: "pending",
+      transaction_uuid: uuid(),
     });
-
+    await Activity.create({
+      message: `Purchase ${product.name} `, 
+      type: "purchase"
+    })
     return NextResponse.json({
       success: true,
-      order,
+      orderId: order._id,
+      transaction_uuid: order.transaction_uuid,
+      totalAmount,
     });
-
   } catch (err) {
     console.log(err);
     return NextResponse.json(
       { success: false, message: "server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

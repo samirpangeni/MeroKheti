@@ -10,19 +10,6 @@ import { FiMenu, FiX } from "react-icons/fi";
 const Navbar = () => {
   const router = useRouter();
 
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [open]);
-
   async function handleLogout(e) {
     e.preventDefault();
 
@@ -43,26 +30,12 @@ const Navbar = () => {
 
   return (
     <div>
-
-      {/* MOBILE MENU BUTTON */}
-      <button
-        onClick={() => setOpen(!open)}
-        className="fixed top-[-3] left-3 z-100 bg-transparent p-3  text-white md:hidden"
-      >
-        {open ? <FiX size={22} /> : <FiMenu size={22} />}
-      </button>
-
-      {/* MOBILE NAV */}
       <div
-        className={`fixed top-0 left-0 w-full h-screen bg-transparent backdrop-blur-lg overflow-hidden z-99 transition-all duration-300 ${open
-          ? "opacity-100 visible"
-          : "opacity-0 invisible"
-          }`}
+        className={`fixed bottom-0 left-0 w-full h-10 bg-transparent backdrop-blur-lg overflow-hidden z-99 transition-all duration-300 `}
       >
-        <div className="p-6">
+        <div className="pb-20 rounded-2xl block md:hidden">
           <Nav2
             handleLogout={handleLogout}
-            setOpen={setOpen}
           />
         </div>
       </div>

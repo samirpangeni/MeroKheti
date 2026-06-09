@@ -1,119 +1,159 @@
 "use client";
 
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Navbar from "@/components/Navbar";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import axios from "axios";
+import { usePathname, useRouter } from "next/navigation";
+import Navbar from "@/components/Navbar";
 
 const DashboardNav = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
+  const router = useRouter();
 
-  const handleUser = async () => {
-    try {
-      const response = await axios.get("/api/user", {
-        withCredentials: true,
-      });
-      setUser(response.data.user);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [user, setUser] = useState(null);
+  const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const menuItems = [
+    { href: "/customer", label: "Dashboard" },
+    { href: "/customer/cart", label: "Cart" },
+    { href: "/customer/order", label: "Orders" },
+    { href: "/customer/history", label: "History" },
+    { href: "/customer/myReview", label: "Reviews" },
+    { href: "/customer/setting", label: "Settings" },
+  ];
 
   useEffect(() => {
-    handleUser();
+    let isMounted = true;
+
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get("/api/user", {
+          withCredentials: true,
+        });
+
+        if (isMounted) setUser(res.data.user);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchUser();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const handleLogout = async () => {
     try {
       await axios.post("/api/logout", {}, { withCredentials: true });
-      window.location.href = "/login";
+      router.push("/login");
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
-  const menuItem = (href, label) => {
-    const isActive = pathname === href;
-
-    return (
-      <Link href={href}>
-        <li
-          className={`px-3 py-2 rounded-lg cursor-pointer transition ${isActive
-              ? "bg-green-500/20 text-green-400"
-              : "hover:bg-green-500/10 hover:text-green-400"
-            }`}
-        >
-          {label}
-        </li>
-      </Link>
-    );
-  };
-
   return (
-    <div className="flex">
+    <div className="flex fixed top-0 w-70 z-99">
       <Navbar />
 
-      {/* SIDEBAR */}
-      <div
-        className="flex flex-col items-center 
-        bg-linear-to-b from-green-900/60 to-black 
-        border-r border-green-500/20
-        h-screen w-64 p-5 justify-between 
-        text-white shadow-2xl"
+      {/* Toggle Button */}
+      <button
+        onClick={() => setShow(!show)}
+        className="fixed top-4 left-4 z-50 md:hidden
+        bg-linear-to-r from-green-500 to-emerald-700
+        text-white p-3 rounded-xl shadow-lg hover:scale-105 transition"
       >
-        {/* USER */}
-        <div className="mt-2 text-center w-full">
-          <div className="bg-white/5 border border-green-500/20 p-3 rounded-xl">
-            <p className="text-green-400 text-sm">Logged in as</p>
+        ☰
+      </button>
 
-            <p className="font-semibold text-lg">
-              {loading
-                ? "Loading..."
-                : user
-                  ? `${user.firstName} ${user.lastName}`
-                  : "No User"}
-            </p>
+      {/* Sidebar */}
+      <aside
+        className={`fixed md:static top-0 left-0 h-screen w-64 z-40
+        bg-linear-to-b from-black via-green-950/40 to-black
+        border-r border-green-500/20
+        text-white flex flex-col justify-between
+        backdrop-blur-xl 
+        shadow-[0_0_40px_rgba(0,255,100,0.08)]
+        transition-transform duration-300
+        ${show ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
+      >
+        {/* Top Section */}
+        <div className="p-6">
+          {/* Profile Card */}
+          <div className="mb-8 p-4 rounded-2xl bg-green-500/10 border border-green-500/20 backdrop-blur-md shadow-inner mt-12">
+            {loading ? (
+              <p className="text-sm text-gray-400">Loading user...</p>
+            ) : (
+              <>
+                <h1 className="text-lg font-semibold text-green-300">
+                  {user?.firstName} {user?.lastName}
+                </h1>
+                <p className="text-xs text-gray-400 mt-1">
+                  {user?.role} Dashboard
+                </p>
+              </>
+            )}
           </div>
-        </div>
 
-        {/* MENU */}
-        <div className="flex flex-col gap-2 w-full px-2">
-          <ul className="flex flex-col gap-2 font-medium">
-            {menuItem("/customer", "Home")}
-            {menuItem("/customer/cart", "Cart")}
+          {/* Menu */}
+          <ul className="space-y-2">
+            {menuItems.map((item) => {
+              const isActive = pathname === item.href;
 
-            <li className="px-3 py-2 rounded-lg hover:bg-green-500/10 hover:text-green-400 transition">
-              Orders
-            </li>
-
-            {menuItem("/customer/myReview", "My Reviews")}
-
-            <li className="px-3 py-2 rounded-lg hover:bg-green-500/10 hover:text-green-400 transition">
-              History
-            </li>
-            {menuItem("/customer/setting", "Setting")}
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300
+                      ${
+                        isActive
+                          ? "bg-green-500/20 text-green-300 shadow-[0_0_20px_rgba(34,197,94,0.2)]"
+                          : "text-gray-300 hover:bg-green-500/10 hover:text-green-300"
+                      }`}
+                  >
+                    <span
+                      className={`h-2 w-2 rounded-full transition-all
+                      ${
+                        isActive
+                          ? "bg-green-400 shadow-[0_0_10px_rgba(34,197,94,0.8)]"
+                          : "bg-gray-600 group-hover:bg-green-400"
+                      }`}
+                    />
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
-        {/* LOGOUT */}
-        <div className="w-full text-center">
-          <hr className="my-3 border-green-500/20" />
-
+        {/* Logout */}
+        <div className="p-6">
           <button
             onClick={handleLogout}
-            className="bg-red-500/20 border border-red-500/30 
-            text-red-400 px-4 py-2 rounded-xl 
-            hover:bg-red-500/30 transition w-full"
+            className="w-full py-3 rounded-xl
+            bg-linear-to-r from-red-600 to-red-800
+            hover:from-red-500 hover:to-red-700
+            shadow-lg hover:shadow-red-500/20
+            transition-all duration-300 mb-10
+            font-medium"
           >
             Logout
           </button>
         </div>
-      </div>
+      </aside>
+
+      {/* Mobile Overlay */}
+      {show && (
+        <div
+          onClick={() => setShow(false)}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm md:hidden"
+        />
+      )}
     </div>
   );
 };

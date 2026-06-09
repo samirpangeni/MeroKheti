@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
+    khalti_pidx: {
+      type: String,
+      unique: true,
+    },
     transaction_uuid: {
       type: String,
       required: true,

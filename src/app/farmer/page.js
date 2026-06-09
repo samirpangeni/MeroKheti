@@ -71,9 +71,8 @@ const Page = () => {
       <SlideBarForFarmer />
 
       <div className="flex-1 flex flex-col py-10">
-        <Navbar />
-
-        <div className="p-6 space-y-6 pl-70">
+      
+        <div className="p-6 space-y-6 md:pl-70 p-2">
 
           {/* 🔥 KPI CARDS */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">

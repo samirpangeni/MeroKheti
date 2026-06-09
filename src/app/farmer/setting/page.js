@@ -90,7 +90,7 @@ const Page = () => {
 
       <SlideBarForFarmer />
 
-      <div className="flex-1 p-8 pl-70">
+      <div className="flex-1 p-8 md:pl-70 p-2">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-green-500">Farmer Settings</h1>
