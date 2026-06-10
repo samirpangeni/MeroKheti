@@ -77,7 +77,7 @@ const Page = () => {
       <DashboardNav />
 
       {/* MAIN */}
-      <div className="flex-1 md:ml-72 p-6 md:p-10 pt-20 bg-gradient-to-b from-black via-green-950/10 to-black md:mt-20">
+      <div className="flex-1 md:ml-72 p-6 md:p-10 pt-20 bg-linear-to-b from-black via-green-950/10 to-black md:mt-20">
 
         {/* HEADER */}
         <div className="mb-8">
@@ -93,7 +93,7 @@ const Page = () => {
         <div className="grid lg:grid-cols-3 gap-6">
 
           {/* PROFILE CARD */}
-          <div className="relative overflow-hidden bg-gradient-to-br from-green-950/40 via-black to-green-950/20 border border-green-500/20 rounded-3xl p-6 shadow-lg">
+          <div className="relative overflow-hidden bg-linear-to-br from-green-950/40 via-black to-green-950/20 border border-green-500/20 rounded-3xl p-6 shadow-lg">
 
             <div className="absolute inset-0 bg-green-500/5 blur-3xl opacity-60"></div>
 
@@ -127,7 +127,7 @@ const Page = () => {
           </div>
 
           {/* FORM */}
-          <div className="lg:col-span-2 bg-gradient-to-br from-green-950/40 via-black to-green-950/10 border border-green-500/20 rounded-3xl p-6">
+          <div className="lg:col-span-2 bg-linear-to-br from-green-950/40 via-black to-green-950/10 border border-green-500/20 rounded-3xl p-6">
 
             <form onSubmit={handleSubmit} className="space-y-6">
 

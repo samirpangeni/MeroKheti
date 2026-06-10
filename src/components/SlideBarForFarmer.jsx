@@ -64,7 +64,7 @@ const SlideBarForFarmer = () => {
             {menuItem("/farmer/product", "Product")}
             {menuItem("/farmer/manage", "Manage")}
             {menuItem("/farmer/order", "Order")}
-            {menuItem("/farmer/list", "List")}
+            {menuItem("/farmer/list", "Rank")}
             {menuItem("/farmer/setting", "Setting")}
           </ul>
         </div>

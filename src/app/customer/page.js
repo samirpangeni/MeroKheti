@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import ProductFeed from "@/components/ProductFeed";
 import axios from "axios";
 import { startPPRNavigation } from "next/dist/client/components/router-reducer/ppr-navigations";
+import Loading from "@/components/Loading";
 
 const page = () => {
   const [products, setProducts] = useState([]);
@@ -13,9 +14,11 @@ const page = () => {
   const [cart, setCart] = useState([]);
   const [pending, setPending] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     const getData = async () => {
       try {
+        setLoading(true)
         const uRes = await axios.get("/api/user");
         const oRes = await axios.get("/api/order")
         const cRes = await axios.get("/api/cart")
@@ -35,10 +38,15 @@ const page = () => {
         );
       } catch (err) {
         console.log(err);
+      }finally{
+        setLoading(false)
       }
     };
     getData();
   }, []);
+  if(loading){
+    return <Loading />
+  }
   return (
     <div className="flex gap-2">
       <DashboardNav />

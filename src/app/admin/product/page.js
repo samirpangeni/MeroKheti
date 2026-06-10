@@ -1,31 +1,33 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
+import Loading from "@/components/Loading";
 
 const Page = () => {
+  const [admin, setAdmin] = useState([]);
   const [product, setProduct] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [organic, setOrganic] = useState("");
 
-  // FETCH PRODUCTS
-  const fetchData = async () => {
-    try {
-      const res = await axios.get(
-        `/api/product?status=approved&search=${search}&category=${category}&organic=${organic}`,
-      );
-
-      setProduct(res.data.product);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
   useEffect(() => {
+    const fetchData = async () => {
+
+      try {
+        setLoading(true)
+        const res = await axios.get("/api/admin/product")
+        setProduct(res.data.products);
+        console.log(res.data.products);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false)
+      }
+    };
     fetchData();
-  }, [search, category, organic]);
+  }, [])
 
   // DELETE PRODUCT
   const deleteProduct = async (id) => {
@@ -38,6 +40,7 @@ const Page = () => {
     }
   };
 
+
   return (
     <div className="flex min-h-screen bg-black text-white">
       <SlideBarForAdmin />
@@ -49,10 +52,8 @@ const Page = () => {
             <h1 className="text-3xl font-bold text-green-400">
               Approved Products
             </h1>
-
             <p className="text-gray-400">Manage marketplace products</p>
           </div>
-
           <div className="text-green-400 font-bold">
             Total: {product.length}
           </div>
@@ -88,72 +89,63 @@ const Page = () => {
         </div>
 
         {/* PRODUCTS */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-          {product.map((item) => {
-            // ⭐ AVERAGE RATING
-            const avgRating =
-              item.reviews?.length > 0
-                ? (
-                    item.reviews.reduce((acc, r) => acc + (r.rating || 0), 0) /
-                    item.reviews.length
-                  ).toFixed(1)
-                : "0.0";
+        {loading ? <Loading /> :
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            {product.map((item) => {
 
-            // 🚨 REPORT COUNT (fallback safe)
-            const reportCount = item.reports?.length || 0;
+              return (
+                <div
+                  key={item._id}
+                  className="bg-[#111] border border-gray-800 rounded-2xl overflow-hidden hover:border-green-500 transition"
+                >
+                  {/* IMAGE */}
+                  <img
+                    src={item.image?.[0]?.url}
+                    className="w-full h-52 object-cover"
+                  />
 
-            return (
-              <div
-                key={item._id}
-                className="bg-[#111] border border-gray-800 rounded-2xl overflow-hidden hover:border-green-500 transition"
-              >
-                {/* IMAGE */}
-                <img
-                  src={item.image?.[0]?.url}
-                  className="w-full h-52 object-cover"
-                />
+                  <div className="p-5">
+                    {/* NAME */}
+                    <h1 className="text-xl font-bold">{item.name}</h1>
 
-                <div className="p-5">
-                  {/* NAME */}
-                  <h1 className="text-xl font-bold">{item.name}</h1>
+                    {/* LOCATION */}
+                    <p className="text-gray-400 text-sm">{item.location}</p>
 
-                  {/* LOCATION */}
-                  <p className="text-gray-400 text-sm">{item.location}</p>
+                    {/* PRICE + CATEGORY */}
+                    <div className="flex justify-between mt-2">
+                      <span className="text-green-400 font-bold">
+                        Rs {item.price}
+                      </span>
 
-                  {/* PRICE + CATEGORY */}
-                  <div className="flex justify-between mt-2">
-                    <span className="text-green-400 font-bold">
-                      Rs {item.price}
-                    </span>
+                      <span className="text-gray-400 text-sm">
+                        {item.category}
+                      </span>
+                    </div>
 
-                    <span className="text-gray-400 text-sm">
-                      {item.category}
-                    </span>
+                    {/* ⭐ REVIEWS + 🚨 REPORTS */}
+                    <div className="mt-3 flex justify-between text-sm">
+                      <span className="text-yellow-400">⭐{item.averageRating}</span>
+
+                      <span className="text-gray-400">
+                        Reviews: {item.totalReview}
+                      </span>
+
+                      <span className="text-red-400">Reports: {item.totalReport}</span>
+                    </div>
+
+                    {/* DELETE */}
+                    <button
+                      onClick={() => deleteProduct(item._id)}
+                      className="mt-5 w-full bg-red-500 hover:bg-red-600 py-2 rounded-lg font-bold"
+                    >
+                      Delete
+                    </button>
                   </div>
-
-                  {/* ⭐ REVIEWS + 🚨 REPORTS */}
-                  <div className="mt-3 flex justify-between text-sm">
-                    <span className="text-yellow-400">⭐ {avgRating}</span>
-
-                    <span className="text-gray-400">
-                      Reviews: {item.reviews?.length || 0}
-                    </span>
-
-                    <span className="text-red-400">Reports: {reportCount}</span>
-                  </div>
-
-                  {/* DELETE */}
-                  <button
-                    onClick={() => deleteProduct(item._id)}
-                    className="mt-5 w-full bg-red-500 hover:bg-red-600 py-2 rounded-lg font-bold"
-                  >
-                    Delete
-                  </button>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        }
       </div>
     </div>
   );

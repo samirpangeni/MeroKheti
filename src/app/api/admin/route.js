@@ -9,7 +9,7 @@ export async function GET(req) {
     await connectDB();
     const { searchParams } = new URL(req.url);
     const role = searchParams.get("role");
-    
+
     let filter = {
       role: {
         $ne: "admin",
@@ -18,7 +18,7 @@ export async function GET(req) {
     if (role && role !== "All") {
       filter.role = role;
     }
-    const user = await User.find(filter).select("-password");
+    const user = await User.find(filter)
     const report = await Report.find()
       .populate("userId", "firstName lastName")
       .populate({
@@ -29,10 +29,11 @@ export async function GET(req) {
           select: "firstName lastName",
         },
       });
+    
     return NextResponse.json({
       message: "all user",
-      user,
       report,
+      user
     });
   } catch (err) {
     console.log(err);

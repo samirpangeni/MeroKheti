@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Loading from "./Loading";
 
 const ShowReview = ({ productId }) => {
     const [review, setReview] = useState([]);
@@ -36,9 +37,7 @@ const ShowReview = ({ productId }) => {
             </h2>
 
             {loading ? (
-                <p className="text-gray-400">
-                    Loading reviews...
-                </p>
+               <Loading />
             ) : review.length === 0 ? (
                 <p className="text-gray-400">
                     No reviews yet

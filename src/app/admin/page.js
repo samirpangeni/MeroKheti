@@ -4,17 +4,21 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import UserGrowthChart from "@/components/UserGrowthChart";
 import Activity from "@/components/Activity";
+import Loading from "@/components/Loading";
 const Page = () => {
   const [user, setUser] = useState([]);
   const [product, setProduct] = useState([]);
   const [pPending, setPPending] = useState([]);
   const [pApproved, setPApproved] = useState([]);
   const [pReject, setPReject] = useState([]);
+  const [loading, setLoading] = useState(false);
   const customerCount = user.filter((u) => u.role === "customer").length;
 
   const farmerCount = user.filter((u) => u.role === "farmer").length;
   useEffect(() => {
     const getData = async () => {
+      try{
+        setLoading(true)
       const uRes = await axios.get("api/admin");
       const pRes = await axios.get("api/product");
       const pending = await axios.get("api/product?status=pending");
@@ -25,10 +29,17 @@ const Page = () => {
       setPApproved(approved.data.product);
       setUser(uRes.data.user);
       setProduct(pRes.data.product);
+      }catch(err){
+        console.log(err)
+      }finally{
+        setLoading(false)
+      }
     };
     getData();
   }, []);
-
+if(loading){
+  return <Loading />
+}
   return (
     <div className="flex gap-2">
       <SlideBarForAdmin />

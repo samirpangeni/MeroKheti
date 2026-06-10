@@ -1,19 +1,23 @@
 "use client";
 
+import Loading from "@/components/Loading";
 import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
 const Page = () => {
   const [product, setProduct] = useState([]);
-
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     const getData = async () => {
       try {
+        setLoading(true)
         const res = await axios.get("/api/product?status=pending");
         setProduct(res.data.product);
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoading(false)
       }
     };
 
@@ -63,108 +67,116 @@ const Page = () => {
         </div>
 
         {/* GRID */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-          {product.map((item) => (
-            <div
-              key={item._id}
-              className="bg-[#111] border border-gray-800 rounded-3xl overflow-hidden hover:border-green-500 transition"
-            >
-              {/* MAIN IMAGE */}
-              <img
-                src={item.image?.[0]?.url}
-                className="w-full h-52 object-cover"
-              />
+        {loading ? (
+          <Loading />
+        ) : product.length === 0 ? (
+          <p className="text-gray-400 flex items-center justify-center m-50">
+            No product yet
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+            {product.map((item) => (
+              <div
+                key={item._id}
+                className="bg-[#111] border border-gray-800 rounded-3xl overflow-hidden hover:border-green-500 transition"
+              >
+                {/* MAIN IMAGE */}
+                <img
+                  src={item.image?.[0]?.url}
+                  className="w-full h-52 object-cover"
+                />
 
-              {/* THUMBNAILS */}
-              <div className="flex gap-2 p-2">
-                {item.image?.slice(0, 2).map((img, i) => (
-                  <img
-                    key={i}
-                    src={img.url}
-                    className="w-12 h-12 object-cover rounded"
-                  />
-                ))}
-              </div>
-
-              {/* CONTENT */}
-              <div className="p-5">
-                {/* PRODUCT NAME */}
-                <h1 className="text-xl font-bold">{item.name}</h1>
-
-                {/* FARMER INFO */}
-                <p className="text-gray-400 text-sm">
-                  👤 {item.userId?.firstName}
-                </p>
-
-                <p className="text-gray-500 text-xs">
-                  📧 {item.userId?.email || "No email"}
-                </p>
-
-                {/* PRICE */}
-                <div className="flex justify-between mt-2">
-                  <span className="text-green-400 font-bold">
-                    Rs {item.price}
-                  </span>
-
-                  <span className="text-gray-400 text-sm">{item.category}</span>
+                {/* THUMBNAILS */}
+                <div className="flex gap-2 p-2">
+                  {item.image?.slice(0, 2).map((img, i) => (
+                    <img
+                      key={i}
+                      src={img.url}
+                      className="w-12 h-12 object-cover rounded"
+                    />
+                  ))}
                 </div>
 
-                {/* PRODUCT INFO */}
-                <div className="text-sm text-gray-400 mt-3 space-y-1">
-                  <p>📍 {item.location}</p>
+                {/* CONTENT */}
+                <div className="p-5">
+                  {/* PRODUCT NAME */}
+                  <h1 className="text-xl font-bold">{item.name}</h1>
 
-                  <p>
-                    📦 {item.quantity} {item.unit}
+                  {/* FARMER INFO */}
+                  <p className="text-gray-400 text-sm">
+                    👤 {item.userId?.firstName}
                   </p>
 
-                  <p>
-                    🌾 Harvest:{" "}
-                    {new Date(item.harvestDate).toLocaleDateString()}
+                  <p className="text-gray-500 text-xs">
+                    📧 {item.userId?.email || "No email"}
                   </p>
 
-                  <p>
-                    ⏳ Expiry: {new Date(item.expiryDate).toLocaleDateString()}
-                  </p>
-                </div>
-
-                {/* BADGES */}
-                <div className="flex gap-2 mt-3">
-                  {item.organic && (
-                    <span className="bg-green-500 text-black px-2 py-1 text-xs rounded">
-                      Organic
+                  {/* PRICE */}
+                  <div className="flex justify-between mt-2">
+                    <span className="text-green-400 font-bold">
+                      Rs {item.price}
                     </span>
-                  )}
 
-                  <span className="bg-yellow-500 text-black px-2 py-1 text-xs rounded">
-                    Pending
-                  </span>
-                </div>
+                    <span className="text-gray-400 text-sm">{item.category}</span>
+                  </div>
 
-                {/* DESCRIPTION */}
-                <p className="text-gray-500 text-sm mt-3 line-clamp-2">
-                  {item.description}
-                </p>
+                  {/* PRODUCT INFO */}
+                  <div className="text-sm text-gray-400 mt-3 space-y-1">
+                    <p>📍 {item.location}</p>
 
-                {/* ACTIONS */}
-                <div className="flex gap-3 mt-5">
-                  <button
-                    onClick={() => updateStatus(item._id, "approved")}
-                    className="flex-1 bg-green-500 hover:bg-green-600 text-black font-bold py-2 rounded-xl"
-                  >
-                    Approve
-                  </button>
+                    <p>
+                      📦 {item.quantity} {item.unit}
+                    </p>
 
-                  <button
-                    onClick={() => deleteProduct(item._id, "rejected")}
-                    className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-2 rounded-xl"
-                  >
-                    Reject
-                  </button>
+                    <p>
+                      🌾 Harvest:{" "}
+                      {new Date(item.harvestDate).toLocaleDateString()}
+                    </p>
+
+                    <p>
+                      ⏳ Expiry: {new Date(item.expiryDate).toLocaleDateString()}
+                    </p>
+                  </div>
+
+                  {/* BADGES */}
+                  <div className="flex gap-2 mt-3">
+                    {item.organic && (
+                      <span className="bg-green-500 text-black px-2 py-1 text-xs rounded">
+                        Organic
+                      </span>
+                    )}
+
+                    <span className="bg-yellow-500 text-black px-2 py-1 text-xs rounded">
+                      Pending
+                    </span>
+                  </div>
+
+                  {/* DESCRIPTION */}
+                  <p className="text-gray-500 text-sm mt-3 line-clamp-2">
+                    {item.description}
+                  </p>
+
+                  {/* ACTIONS */}
+                  <div className="flex gap-3 mt-5">
+                    <button
+                      onClick={() => updateStatus(item._id, "approved")}
+                      className="flex-1 bg-green-500 hover:bg-green-600 text-black font-bold py-2 rounded-xl"
+                    >
+                      Approve
+                    </button>
+
+                    <button
+                      onClick={() => deleteProduct(item._id, "rejected")}
+                      className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-2 rounded-xl"
+                    >
+                      Reject
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

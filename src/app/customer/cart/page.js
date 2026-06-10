@@ -4,6 +4,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import DashboardNav from "@/components/DashboardNav";
+import Loading from "@/components/Loading";
 
 const Page = () => {
   const [data, setData] = useState([]);
@@ -49,7 +50,7 @@ const Page = () => {
 
       <DashboardNav />
 
-      <div className="flex-1 md:ml-72 p-6 md:p-10 pt-20 bg-gradient-to-b from-black via-green-950/10 to-black md:mt-20">
+      <div className="flex-1 md:ml-72 p-6 md:p-10 pt-20 bg-linear-to-b from-black via-green-950/10 to-black md:mt-20">
 
         {/* HEADER */}
         <div className="mb-8">
@@ -89,9 +90,7 @@ const Page = () => {
 
         {/* LOADING */}
         {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-          </div>
+          <Loading/>
         ) : data.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
             <p className="text-lg">Your cart is empty 🌱</p>
@@ -109,7 +108,7 @@ const Page = () => {
                 key={item._id}
                 className="
                   group flex flex-col md:flex-row gap-5
-                  bg-gradient-to-br from-green-950/40 via-black to-green-950/10
+                  bg-linear-to-br from-green-950/40 via-black to-green-950/10
                   border border-green-500/20
                   rounded-2xl p-5
                   hover:border-green-400/40

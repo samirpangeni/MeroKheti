@@ -2,20 +2,38 @@ import connectDB from "../../../../lib/mongoose";
 import Product from "../../../../models/Product";
 import Review from "../../../../models/Review";
 import User from "../../../../models/User";
+import Order from "../../../../models/Order";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
     await connectDB();
-
     const farmers = await User.find({ role: "farmer" });
-
     const ranking = await Promise.all(
       farmers.map(async (farmer) => {
         const products = await Product.find({ userId: farmer._id });
 
         const productIds = products.map((p) => p._id);
+        const orders = await Order.find({
+          "product.productId": { $in: productIds },
+          paymentStatus: "paid",
+        });
 
+        let totalSold = 0;
+
+        orders.forEach((order) => {
+          order.product.forEach((item) => {
+            if (
+              productIds.some(
+                (id) =>
+                  id.toString() ===
+                  item.productId.toString()
+              )
+            ) {
+              totalSold += item.quantity;
+            }
+          });
+        });
         const reviews = await Review.find({
           productId: { $in: productIds },
         });
@@ -34,6 +52,7 @@ export async function GET() {
           averageRating: Number(averageRating.toFixed(1)),
           totalProducts: products.length,
           totalReviews: reviews.length,
+          totalSold
         };
       })
     );

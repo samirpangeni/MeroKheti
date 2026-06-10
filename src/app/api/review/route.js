@@ -30,9 +30,7 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     await connectDB();
-
     const token = req.cookies.get("token")?.value;
-
     if (!token) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }

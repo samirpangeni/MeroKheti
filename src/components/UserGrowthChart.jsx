@@ -13,11 +13,11 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-
+  Cell,
   // PIE CHART
   PieChart,
   Pie,
-  Cell,
+
 } from "recharts";
 
 const UserGrowthChart = ({
@@ -77,7 +77,7 @@ const UserGrowthChart = ({
           </p>
         </div>
 
-        <div className="w-full h-[400px]">
+        <div className="w-full h-100">
 
           <ResponsiveContainer width="100%" height="100%">
 
@@ -160,7 +160,7 @@ const UserGrowthChart = ({
           </p>
         </div>
 
-        <div className="w-full h-[400px]">
+        <div className="w-full h-100">
 
           <ResponsiveContainer width="100%" height="100%">
 

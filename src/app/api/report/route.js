@@ -61,7 +61,7 @@ export async function POST(req) {
     });
     const product = await Product.findById(productId)
     const user = await User.findById(userId);
-    console.log("hello",user._id)
+
     await Activity.create({
       userId,
       message: `you report ${product?.name}`,

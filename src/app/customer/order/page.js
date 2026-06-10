@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DashboardNav from "@/components/DashboardNav";
+import Loading from "@/components/Loading";
 
 const Page = () => {
   const [orders, setOrders] = useState([]);
@@ -15,7 +16,6 @@ const Page = () => {
           withCredentials: true,
         });
         setOrders(res.data.order || []);
-        console.log(res.data.order || []);
       } catch (err) {
         console.error("Error fetching orders:", err);
       } finally {
@@ -55,7 +55,7 @@ const Page = () => {
       <DashboardNav />
 
       {/* Main Content */}
-      <div className="flex-1 md:ml-72 p-6 md:p-10 bg-gradient-to-b from-black via-green-950/20 to-black md:mt-20">
+      <div className="flex-1 md:ml-72 p-6 md:p-10 bg-linear-to-b from-black via-green-950/20 to-black md:mt-20">
 
         {/* Header */}
         <div className="mb-8">
@@ -69,13 +69,13 @@ const Page = () => {
 
         {/* Loading */}
         {loading ? (
-          <p className="text-gray-400">Loading orders...</p>
+          <Loading />
         ) : orders.length === 0 ? (
           <div className="p-6 rounded-xl border border-green-500/20 bg-green-500/10 text-gray-300">
             No orders found.
           </div>
         ) : (
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-1 w-80 p-2">
+          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-1  p-2">
             {orders.map((order) => {
               const item = order.product?.[0];
               const product = item?.productId;
@@ -84,7 +84,7 @@ const Page = () => {
                 <div
                   key={order._id}
                   className="overflow-hidden rounded-2xl
-                   bg-gradient-to-b from-green-950/30 to-black
+                   bg-linear-to-b from-green-950/30 to-black
                    border border-green-500/20
                    shadow-[0_0_30px_rgba(0,255,100,0.06)]
                    hover:scale-[1.02] transition duration-300"

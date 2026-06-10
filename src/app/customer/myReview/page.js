@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import DashboardNav from "@/components/DashboardNav";
 import axios from "axios";
 import Link from "next/link";
+import Loading from "@/components/Loading";
 
 const Page = () => {
   const [review, setReview] = useState([]);
@@ -45,7 +46,7 @@ const Page = () => {
     <div className="flex min-h-screen bg-black text-white">
       <DashboardNav />
 
-      <div className="flex-1 md:ml-72 p-6 md:p-10 pt-20 bg-gradient-to-b from-black via-green-950/10 to-black md:mt-20">
+      <div className="flex-1 md:ml-72 p-6 md:p-10 pt-20 bg-linear-to-b from-black via-green-950/10 to-black md:mt-20">
 
         {/* HEADER */}
         <div className="mb-10">
@@ -85,9 +86,7 @@ const Page = () => {
 
         {/* CONTENT */}
         {loading ? (
-          <div className="flex justify-center py-20">
-            <div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-          </div>
+          <Loading />
         ) : review.length === 0 ? (
           <div className="text-gray-400">No reviews found</div>
         ) : (
@@ -96,7 +95,7 @@ const Page = () => {
             {review.map((r) => (
               <div
                 key={r._id}
-                className="group relative overflow-hidden bg-gradient-to-br from-green-950/50 via-black to-green-950/20 border border-green-500/20 rounded-3xl p-6 hover:border-green-400/40 hover:-translate-y-1 hover:shadow-[0_0_35px_rgba(34,197,94,0.18)] transition-all duration-500"
+                className="group relative overflow-hidden bg-linear-to-br from-green-950/50 via-black to-green-950/20 border border-green-500/20 rounded-3xl p-6 hover:border-green-400/40 hover:-translate-y-1 hover:shadow-[0_0_35px_rgba(34,197,94,0.18)] transition-all duration-500"
               >
                 {/* glow */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-green-500/5 blur-3xl transition" />

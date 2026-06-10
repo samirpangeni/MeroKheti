@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import DashboardNav from "@/components/DashboardNav";
 import axios from "axios";
-
+import Loading from "@/components/Loading";
 const Page = () => {
     const [order, setOrder] = useState([]);
     const [review, setReview] = useState([]);
@@ -87,7 +87,7 @@ const Page = () => {
                         Recent Activity
                     </h2>
 
-                    {loading ? (<p className="text-gray-400">loading...</p>) : activite.length === 0 ? (<div className="text-gray-400"> No acitivity found </div>) : (
+                    {loading ? (<Loading />) : activite.length === 0 ? (<div className="text-gray-400"> No acitivity found </div>) : (
                         <div className="space-y-4">
                             {activite.map((item, index) => (
                                 <div

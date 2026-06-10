@@ -7,7 +7,6 @@ export async function POST(req) {
     await connectDB();
 
     const { pidx } = await req.json();
-    console.log("pidx", pidx);
     const response = await fetch(
       "https://dev.khalti.com/api/v2/epayment/lookup/",
       {
@@ -22,8 +21,6 @@ export async function POST(req) {
 
     const data = await response.json();
 
-    console.log("KHALTI LOOKUP:", data);
-
     if (data.status === "Completed") {
       const order = await Order.findOneAndUpdate(
         { khalti_pidx: pidx },
@@ -36,7 +33,6 @@ export async function POST(req) {
           returnDocument: "after",
         },
       );
-      console.log("order", order);
       return NextResponse.json({
         success: true,
         order,

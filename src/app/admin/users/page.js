@@ -2,21 +2,29 @@
 import React, { useState, useEffect } from "react";
 import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
+import Loading from "@/components/Loading";
 const page = () => {
   const [users, setUsers] = useState([]);
   const [role, setRole] = useState();
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const getData = async () => {
       try {
+        setLoading(true)
         const url = role ? `/api/admin?role=${role}` : `/api/admin?role=All`;
         const uRes = await axios.get(url);
         setUsers(uRes.data.user);
       } catch (err) {
         console.log(err);
+      }finally{
+        setLoading(false)
       }
     };
     getData();
   }, [role]);
+  if(loading){
+    return <Loading />
+  }
   const handelData = async (id) => {
     try {
       const dRes = await axios.delete(`/api/admin?id=${id}`);

@@ -1,75 +1,110 @@
 import connectDB from "../../../../lib/mongoose";
 import Product from "../../../../models/Product";
 import Review from "../../../../models/Review";
+import Order from "../../../../models/Order";
+import User from "../../../../models/User";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
-import User from "../../../../models/User";
-import Order from "../../../../models/Order";
 
 export async function GET(req) {
   try {
     await connectDB();
-    // 1. Get token
+
     const token = req.cookies.get("token")?.value;
+
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { message: "Unauthorized" },
+        { status: 401 }
+      );
     }
-    // 2. Decode user
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
+
     const farmer = await User.findById(decoded.userId);
+
     if (!farmer || farmer.role !== "farmer") {
-      return NextResponse.json({ message: "Not a farmer" }, { status: 403 });
+      return NextResponse.json(
+        { message: "Not a farmer" },
+        { status: 403 }
+      );
     }
-    // 3. Get products
-    const products = await Product.find({ userId: farmer._id });
-    const totalProducts = products.length;
-    const approvedProducts = products.filter(
-      (p) => p.status === "approved",
-    ).length;
 
-    const pendingProducts = products.filter(
-      (p) => p.status === "pending",
-    ).length;
+    // Farmer products
+    const products = await Product.find({
+      userId: farmer._id,
+    });
 
-    const rejectedProducts = products.filter(
-      (p) => p.status === "rejected",
-    ).length;
-
-    // 4. Reviews + rating
     const productIds = products.map((p) => p._id);
 
+    // Total products
+    const totalProducts = products.length;
+    const approvedProducts = products.filter((p) => p.status === "approved").length;
+    const pendingProducts = products.filter((p) => p.status === "pending").length;
+    const rejectProducts = products.filter((p) => p.status === "rejected").length;
+    const productId = { productId: { $in: productIds } }
+
+    // Reviews
     const reviews = await Review.find({
       productId: { $in: productIds },
     });
 
+    const totalReviews = reviews.length;
+
     const totalRating = reviews.reduce(
-      (sum, r) => sum + Number(r.rating || 0),
-      0,
+      (sum, review) => sum + review.rating,
+      0
     );
 
-    const averageRating = reviews.length > 0 ? totalRating / reviews.length : 0;
+    const averageRating =
+      totalReviews > 0
+        ? Number((totalRating / totalReviews).toFixed(1))
+        : 0;
 
-    const order = await Order.find()
-      .populate("userId", "firstName lastName email")
-      .populate("product.productId", "name image price")
-      .sort({ createAt: -1 });
+    // Orders
+    const orders = await Order.find({
+      "product.productId": { $in: productIds },
+      paymentStatus: "paid",
+    });
 
-    // 5. Response
+    let totalSold = 0;
+
+    orders.forEach((order) => {
+      order.product.forEach((item) => {
+        if (
+          productIds.some(
+            (id) =>
+              id.toString() ===
+              item.productId.toString()
+          )
+        ) {
+          totalSold += item.quantity;
+        }
+      });
+    });
+    const order = await Order.find().populate("userId", "firstName lastName email").populate("product.productId", "name image price").sort({ createAt: -1 });
     return NextResponse.json({
       success: true,
       dashboard: {
         totalProducts,
+        totalReviews,
         approvedProducts,
+        rejectProducts,
         pendingProducts,
-        rejectedProducts,
-        totalReviews: reviews.length,
-        averageRating: Number(averageRating.toFixed(1)),
+        averageRating,
+        totalSold,
       },
       order,
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
 
-    return NextResponse.json({ message: "server error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Server Error" },
+      { status: 500 }
+    );
   }
 }

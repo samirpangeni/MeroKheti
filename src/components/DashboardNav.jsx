@@ -5,6 +5,7 @@ import Link from "next/link";
 import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import Loading from "./Loading";
 
 const DashboardNav = () => {
   const pathname = usePathname();
@@ -24,28 +25,24 @@ const DashboardNav = () => {
   ];
 
   useEffect(() => {
-    let isMounted = true;
-
-    const fetchUser = async () => {
+      const fetchUser = async () => {
       try {
+        setLoading(true)
         const res = await axios.get("/api/user", {
           withCredentials: true,
         });
-
-        if (isMounted) setUser(res.data.user);
+        setUser(res.data.user);
       } catch (err) {
         console.error(err);
       } finally {
-        if (isMounted) setLoading(false);
+        setLoading(false);
       }
     };
-
     fetchUser();
-
-    return () => {
-      isMounted = false;
-    };
   }, []);
+  if(loading){
+    return <Loading/>
+  }
 
   const handleLogout = async () => {
     try {
@@ -85,18 +82,14 @@ const DashboardNav = () => {
         <div className="p-6">
           {/* Profile Card */}
           <div className="mb-8 p-4 rounded-2xl bg-green-500/10 border border-green-500/20 backdrop-blur-md shadow-inner mt-12">
-            {loading ? (
-              <p className="text-sm text-gray-400">Loading user...</p>
-            ) : (
-              <>
-                <h1 className="text-lg font-semibold text-green-300">
-                  {user?.firstName} {user?.lastName}
-                </h1>
-                <p className="text-xs text-gray-400 mt-1">
-                  {user?.role} Dashboard
-                </p>
-              </>
-            )}
+            <>
+              <h1 className="text-lg font-semibold text-green-300">
+                {user?.firstName} {user?.lastName}
+              </h1>
+              <p className="text-xs text-gray-400 mt-1">
+                {user?.role} Dashboard
+              </p>
+            </>
           </div>
 
           {/* Menu */}
@@ -109,19 +102,17 @@ const DashboardNav = () => {
                   <Link
                     href={item.href}
                     className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300
-                      ${
-                        isActive
-                          ? "bg-green-500/20 text-green-300 shadow-[0_0_20px_rgba(34,197,94,0.2)]"
-                          : "text-gray-300 hover:bg-green-500/10 hover:text-green-300"
+                      ${isActive
+                        ? "bg-green-500/20 text-green-300 shadow-[0_0_20px_rgba(34,197,94,0.2)]"
+                        : "text-gray-300 hover:bg-green-500/10 hover:text-green-300"
                       }`}
                   >
                     <span
                       className={`h-2 w-2 rounded-full transition-all
-                      ${
-                        isActive
+                      ${isActive
                           ? "bg-green-400 shadow-[0_0_10px_rgba(34,197,94,0.8)]"
                           : "bg-gray-600 group-hover:bg-green-400"
-                      }`}
+                        }`}
                     />
                     {item.label}
                   </Link>

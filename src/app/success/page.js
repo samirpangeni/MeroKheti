@@ -37,10 +37,8 @@ const Page = () => {
           const res = await axios.post("/api/payment/khalti/verify", {
             pidx,
           });
-          console.log("hello2", res.data.data.status);
           if (res.data.data.status === "Completed") {
-            setTransaction(res.data.order);
-            console.log("hello3", res.data.order);
+            setTransaction(res.data.order); 
           } else {
             console.log("error 3");
           }

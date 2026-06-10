@@ -12,9 +12,7 @@ export async function GET(req) {
     }
     const decode = jwt.verify(token, process.env.JWT_SECRET)
     const userId = decode.id || decode.userId || decode._id
-    console.log("userID", userId)
     const activite = await Activity.find({ userId }).populate("userId").sort({ createdAt: -1 })
-    console.log(activite)
     const activity = await Activity.find().sort({ createdAt: -1 }).limit(10);
     return NextResponse.json({ activity, activite });
   } catch (err) {

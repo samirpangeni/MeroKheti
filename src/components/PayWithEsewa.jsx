@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import Loading from "./Loading";
 
 const PayWithEsewa = ({ payMethod, price, productId }) => {
   const [product, setProduct] = useState(null);
@@ -70,6 +71,9 @@ const PayWithEsewa = ({ payMethod, price, productId }) => {
       setLoading(false);
     }
   };
+  if(loading){
+    return <Loading />;
+  }
   return (
     <div>
       <button

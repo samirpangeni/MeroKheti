@@ -4,17 +4,21 @@ import React, { useState, useEffect } from "react";
 import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
 import Link from "next/link"
+import Loading from "@/components/Loading";
 const Page = () => {
   const [reports, setReports] = useState([]);
   const [selectedType, setSelectedType] = useState("All");
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const getData = async () => {
       try {
+        setLoading(true)
         const res = await axios.get("/api/admin");
         setReports(res.data.report);
       } catch (err) {
         console.log(err);
+      }finally{
+        setLoading(false)
       }
     };
 
@@ -26,7 +30,9 @@ const Page = () => {
     selectedType === "All"
       ? reports
       : reports.filter((item) => item.reportType === selectedType);
-
+if(loading){
+  return <Loading />
+}
   return (
     <div className="flex min-h-screen bg-black text-white">
       {/* Sidebar */}

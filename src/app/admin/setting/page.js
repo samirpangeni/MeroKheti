@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
+import Loading from "@/components/Loading";
 
 const Page = () => {
   const [user, setUser] = useState({});
@@ -21,24 +22,22 @@ const Page = () => {
   useEffect(() => {
     const getData = async () => {
       try {
+        setLoading(false)
         const res = await axios.get("/api/user");
-
         setUser(res.data.user);
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoading(false)
       }
     };
-
     getData();
   }, []);
 
   // UPDATE SETTINGS
   const handelData = async (e) => {
     e.preventDefault();
-
     try {
-      setLoading(true);
-
       await axios.put(
         "/api/admin/setting",
         {
@@ -53,23 +52,20 @@ const Page = () => {
           withCredentials: true,
         },
       );
-
       alert("Settings Updated Successfully");
-
       setFirstName("");
       setLastName("");
       setEmail("");
       setMobile("");
       setOldPassword("");
       setNewPassword("");
-
-      setLoading(false);
     } catch (err) {
       console.log(err);
-
-      setLoading(false);
     }
   };
+  if (loading) {
+    return <Loading />
+  }
 
   return (
     <div className="flex min-h-screen bg-black text-white">
@@ -77,7 +73,7 @@ const Page = () => {
       <SlideBarForAdmin />
 
       {/* MAIN */}
-      <div className="flex-1 p-8 pl-70 bg-gradient-to-br from-black via-[#07130b] to-[#0d1f14] overflow-y-auto">
+      <div className="flex-1 p-8 pl-70 bg-linear-to-br from-black via-[#07130b] to-[#0d1f14] overflow-y-auto">
         {/* TOP HEADER */}
         <div className="flex items-center justify-between mb-10">
           <div>
