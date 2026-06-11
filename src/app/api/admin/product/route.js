@@ -60,7 +60,7 @@ export async function GET() {
                 totalReport: reportMap[id] || 0,
             };
         });
-
+        
         return NextResponse.json({
             success: true,
             products: finalProducts,

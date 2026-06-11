@@ -12,6 +12,7 @@ import {
     FiSettings,
     FiClock,
 } from "react-icons/fi";
+import Navbar from "./Navbar";
 
 const SlideBarForAdmin = () => {
     const pathname = usePathname();
@@ -35,7 +36,7 @@ const SlideBarForAdmin = () => {
     }
     return (
         <div className="flex flex-col items-center fixed top-0 bottom-0 bg-linear-to-b from-green-900/60 to-black border-r border-green-500/20 h-screen w-64 p-5 justify-between text-white shadow-2xl">
-
+         
             {/* Logo */}
             <div className="mb-10">
                 <h1 className="text-3xl font-bold ">

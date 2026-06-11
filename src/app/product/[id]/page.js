@@ -7,9 +7,11 @@ import use from "react";
 import Review from "@/components/Review";
 import ShowReview from "@/components/ShowReview";
 import AddToCart from "@/components/AddToCart";
+import Checkout from "@/components/Checkout"
 import Report from "@/components/Report";
 const Page = ({ params }) => {
   const [openReport, setOpenReport] = useState(false);
+  const [selectProduct, setSelectProduct] = useState(null);
 
   const resolvedParams = React.use(params);
   const { id } = resolvedParams;
@@ -92,10 +94,13 @@ const Page = ({ params }) => {
 
               {/* BUTTONS */}
               <div className="flex gap-4 mt-4">
-                <button className="flex-1 bg-green-500 hover:bg-green-600 transition py-3 rounded-xl font-medium">
-                  Buy Now
-                </button>
-
+                <button className=" p-2 bg-green-500 text-white rounded-lg border-0 w-1/2 hover:bg-green-900 focus:bg-green-900"
+                  onClick={() => setSelectProduct(item._id)}
+                > Buy Now </button>
+                {selectProduct === item._id && (
+                  <div className='fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 p-3'>
+                    <Checkout productId={selectProduct} onClose={() => setSelectProduct(null)} />
+                  </div>)}
                 <AddToCart product={item} />
               </div>
             </div>

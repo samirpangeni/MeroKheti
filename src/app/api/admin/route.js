@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 import Activity from "../../../../models/Activity.js";
 import Product from "../../../../models/Product.js";
 import Report from "../../../../models/Report.js";
+import Order from "../../../../models/Order.js";
 export async function GET(req) {
   try {
     await connectDB();
@@ -29,11 +30,18 @@ export async function GET(req) {
           select: "firstName lastName",
         },
       });
-    
+
+    const order = await Order.find().populate("userId", "firstName lastName mobile email").populate({
+      path: "product.productId",
+      populate: {
+        path: "userId",
+      },
+    });
     return NextResponse.json({
       message: "all user",
       report,
-      user
+      user,
+      order
     });
   } catch (err) {
     console.log(err);

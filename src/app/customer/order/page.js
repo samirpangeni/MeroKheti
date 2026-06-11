@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DashboardNav from "@/components/DashboardNav";
 import Loading from "@/components/Loading";
-
+import Link from "next/link"
 const Page = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -75,7 +75,7 @@ const Page = () => {
             No orders found.
           </div>
         ) : (
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-1  p-2">
+          <div className="grid gap-3 grid-cols-1 md:grid-cols-2  p-2">
             {orders.map((order) => {
               const item = order.product?.[0];
               const product = item?.productId;
@@ -83,11 +83,11 @@ const Page = () => {
               return (
                 <div
                   key={order._id}
-                  className="overflow-hidden rounded-2xl
+                  className={`not-first:overflow-hidden rounded-2xl grid md:grid-cols-2
                    bg-linear-to-b from-green-950/30 to-black
-                   border border-green-500/20
+                   border border-green-500/20 ${order.orderStatus === "pending"? 'border-red-500 text-red-400': 'bg-green-500/20'}
                    shadow-[0_0_30px_rgba(0,255,100,0.06)]
-                   hover:scale-[1.02] transition duration-300"
+                   hover:scale-[1.02] transition duration-300`}
                 >
                   {/* Product Image */}
                   <div className="h-52 w-full overflow-hidden">
@@ -154,7 +154,7 @@ const Page = () => {
 
                         <p>
                           <span className="text-gray-400">Phone:</span>{" "}
-                          {order.userId?.mobile|| "N/A"}
+                          {order.userId?.mobile || "N/A"}
                         </p>
 
                         <p>
@@ -207,14 +207,16 @@ const Page = () => {
                     </div>
 
                     {/* Action Button */}
-                    <button
-                      className="w-full mt-5 py-3 rounded-xl
-          bg-green-500/10 hover:bg-green-500/20
-          border border-green-500/20
-          text-green-300 transition"
-                    >
-                      View Full Details
-                    </button>
+                    <Link href={`/product/${order._id}`}>
+                      <button
+                        className="w-full mt-5 py-3 rounded-xl
+                       bg-green-500/10 hover:bg-green-500/20
+                         border border-green-500/20
+                        text-green-300 transition"
+                      >
+                        View Full Details
+                      </button>
+                    </Link>
                   </div>
                 </div>
               );

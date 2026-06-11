@@ -14,7 +14,7 @@ const AddToCart = ({product}) => {
     }
     return (
         <>
-            <button className="flex-1 bg-white/10 hover:bg-white/20 transition py-3 rounded-xl font-medium"
+            <button className="flex-1 bg-gray-600 hover:bg-white/20 transition py-3 rounded-xl font-medium"
                 onClick={handleCart}
                 type='submit'>
                 Add to Cart

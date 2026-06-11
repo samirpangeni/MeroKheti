@@ -151,16 +151,7 @@ export default function ProductFeed({ products, setProducts, search }) {
                 > Buy Now </button>
               </div>
               {selectProduct === item._id && (
-                <div className='fixed
-inset-0
-bg-black/70
-backdrop-blur-sm
-flex
-items-end
-md:items-center
-justify-center
-z-50
-p-3'>
+                <div className='fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 p-3'>
                   <Checkout productId={selectProduct} onClose={() => setSelectProduct(null)} />
                 </div>)}
             </div>

@@ -18,13 +18,12 @@ export async function POST(req) {
     const totalAmount = product.price * quantity;
 
     const payload = {
-      return_url: `https://quill-rope-available.ngrok-free.dev/success?method=khalti&orderId=${orderId}`,
-      website_url: "https://quill-rope-available.ngrok-free.dev",
+      return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
+      website_url: process.env.NEXT_PUBLIC_BASE_URL,
       amount: totalAmount * 100,
       purchase_order_id: order._id.toString(),
       purchase_order_name: "Farm Products",
     };
-    console.log("payload", payload);
     const response = await fetch(
       "https://a.khalti.com/api/v2/epayment/initiate/",
       {
@@ -37,7 +36,6 @@ export async function POST(req) {
       },
     );
     const data = await response.json();
-    console.log("data", data);
     if (!response.ok) {
       console.log("Khalti error:", data);
       return NextResponse.json(
