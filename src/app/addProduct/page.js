@@ -1,21 +1,18 @@
 "use client";
+
 import axios from "axios";
-import Image from "../../components/Image";
 import React, { useState } from "react";
-import Link from "next/link";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import Image from "../../components/Image";
 import DateSection from "../../components/Date";
 import Location from "../../components/Location";
 import PriceInput from "../../components/PriceInput";
 import BasicInfo from "../../components/BasicInfo";
 import Description from "../../components/Description";
-import Indicator from "../../components/Indicator";
-import Navbar from "@/components/Navbar"
-import { FiPackage, FiGrid, FiX, FiCheckCircle } from "react-icons/fi";
-
-import { FaLeaf } from "react-icons/fa";
 import Button from "@/components/Button";
+import Navbar from "@/components/Navbar";
 
 const Page = () => {
   const [files, setFiles] = useState([]);
@@ -31,72 +28,6 @@ const Page = () => {
   const [location, setLocation] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // ✅ Submit form
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-
-    try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("price", price);
-      formData.append("description", description);
-      formData.append("expiryDate", expiryDate);
-      formData.append("harvestDate", harvestDate);
-      formData.append("quantity", quantity);
-      formData.append("unit", unit);
-      formData.append("category", category);
-      formData.append("organic", organic.toString()); // Convert boolean to string
-      formData.append("location", location);
-
-      files.forEach((file) => {
-        formData.append("files", file);
-      });
-
-      const response = await axios.post("/api/product", formData);
-
-      toast.success("✅ Product added successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-      });
-
-      // reset form
-      setName("");
-      setPrice("");
-      setExpiryDate("");
-      setHarvestDate("");
-      setDescription("");
-      setQuantity("");
-      setUnit("");
-      setCategory("");
-      setOrganic(false);
-      setLocation("");
-      setFiles([]);
-    } catch (err) {
-      toast.error(err.response?.data?.message || "❌ Failed to add product", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      console.log(err.response?.data?.message || err);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // validation with friendly messages
-  const getValidationMessage = () => {
-    if (!name.trim()) return "✨ Give your product a name";
-    if (!category) return "🏷️ Select a category for your product";
-    if (!price) return "💰 Set a price for your product";
-    if (!quantity) return "📦 How many items in stock?";
-    if (!unit) return "⚖️ Choose a unit (kg, liter, etc.)";
-    if (!description.trim()) return "📝 Describe your product";
-    if (!location.trim()) return "📍 Where is this product from?";
-    if (files.length < 2)
-      return "🖼️ Add at least 2 product photos (better presentation!)";
-    return "✓ Ready to list your product!";
-  };
-
   const isValid =
     name.trim() &&
     category &&
@@ -107,37 +38,92 @@ const Page = () => {
     location.trim() &&
     files.length >= 2;
 
-  // Format price display
+  const parseDate = (str) => {
+    const [day, month, year] = str.split("/");
+    return new Date(`${year}-${month}-${day}`);
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const hDate = parseDate(harvestDate);
+    const eDate = parseDate(expiryDate);
 
-  // Calculate completion percentage
-  const completionPercentage = Object.values({
-    name: name.trim() ? 11 : 0,
-    category: category ? 11 : 0,
-    price: price ? 11 : 0,
-    quantity: quantity ? 11 : 0,
-    unit: unit ? 11 : 0,
-    description: description.trim() ? 11 : 0,
-    location: location.trim() ? 11 : 0,
-    files: files.length >= 2 ? 12 : 0,
-    expiryDate: expiryDate ? 11 : 0,
-    harvestDate: harvestDate ? 11 : 0,
-    organic: organic ? 11 : 0,
-  }).reduce((a, b) => a + b, 0);
+    if (harvestDate && expiryDate && hDate > eDate) {
+      toast.error("🚫 Harvest date cannot be after expiry date");
+      setIsSubmitting(false);
+      return;
+    }
+    if (!isValid) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const formData = new FormData();
+
+      formData.append("name", name);
+      formData.append("price", price);
+      formData.append("description", description);
+      formData.append("expiryDate", expiryDate);
+      formData.append("harvestDate", harvestDate);
+      formData.append("quantity", quantity);
+      formData.append("unit", unit);
+      formData.append("category", category);
+      formData.append("organic", organic.toString());
+      formData.append("location", location);
+
+      files.forEach((file) => {
+        formData.append("files", file);
+      });
+      await axios.post("/api/product", formData);
+      toast.success(" Product added successfully!");
+
+      // Reset
+      setName("");
+      setPrice("");
+      setDescription("");
+      setExpiryDate("");
+      setHarvestDate("");
+      setQuantity("");
+      setUnit("");
+      setCategory("");
+      setOrganic(false);
+      setLocation("");
+      setFiles([]);
+    } catch (err) {
+      toast.error(
+        err.response?.data?.message || "❌ Failed to add product"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white">
+    <div className="min-h-screen bg-linear-to-br from-black via-[#06140d] to-[#0b1f14] text-white relative overflow-hidden">
+
+      {/* Glow Background */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-40 left-1/2 -translate-x-1/2 w-125 h-125 bg-green-700/10 rounded-full blur-[140px]" />
+        <div className="absolute bottom-20 right-10 w-100 h-100 bg-emerald-700/10 rounded-full blur-[140px]" />
+      </div>
+
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-10">
+
         {/* Header */}
-        <div className="mb-8">
-          <div className="inline-flex items-center gap-2 bg-green-500/10 text-green-400 px-4 py-2 rounded-full text-sm">
+        <div className="mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-900/30 border border-green-500/20 text-green-300 text-sm backdrop-blur-sm">
             🌾 Fresh Farm Product
           </div>
 
-          <h1 className="text-4xl font-bold mt-4">Add Your Product</h1>
+          <h1 className="text-4xl md:text-5xl font-extrabold mt-5 bg-linear-to-r from-green-300 via-emerald-400 to-green-500 bg-clip-text text-transparent">
+            Add Your Product
+          </h1>
 
-          <p className="text-gray-400 mt-2 text-lg">
+          <p className="text-gray-300 mt-3 text-lg max-w-2xl">
             Sell fresh vegetables, fruits and grains directly to customers
           </p>
         </div>
@@ -145,9 +131,9 @@ const Page = () => {
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="bg-white/5 border border-white/10 rounded-3xl p-6 md:p-8 space-y-8"
+          className="bg-linear-to-b from-[#101010] to-[#0c1a12] border border-green-500/15 shadow-2xl shadow-green-950/40 rounded-3xl p-6 md:p-10 space-y-8 backdrop-blur-xl"
         >
-          {/* Product Name */}
+
           <BasicInfo
             name={name}
             setName={setName}
@@ -155,23 +141,22 @@ const Page = () => {
             setCategory={setCategory}
           />
 
-          {/* Images */}
           <Image files={files} setFiles={setFiles} />
 
-          {/* Price */}
           <PriceInput
-            unit={unit}
-            setUnit={setUnit}
             price={price}
             setPrice={setPrice}
             quantity={quantity}
             setQuantity={setQuantity}
+            unit={unit}
+            setUnit={setUnit}
           />
 
-          {/* Location */}
-          <Location location={location} setLocation={setLocation} />
+          <Location
+            location={location}
+            setLocation={setLocation}
+          />
 
-          {/* Dates */}
           <DateSection
             expiryDate={expiryDate}
             setExpiryDate={setExpiryDate}
@@ -179,7 +164,6 @@ const Page = () => {
             setHarvestDate={setHarvestDate}
           />
 
-          {/* Description */}
           <Description
             description={description}
             setDescription={setDescription}
@@ -187,31 +171,20 @@ const Page = () => {
             setOrganic={setOrganic}
           />
 
-          {/* Bottom Submit Area */}
-          <div className="border-t border-white/10 pt-6">
-            {/* Progress */}
-            <div className="mb-6">
-              <Indicator
-                isValid={isValid}
-                getValidationMessage={getValidationMessage}
-                completionPercentage={completionPercentage}
-              />
-            </div>
-
-            {/* Submit */}
+          {/* Submit */}
+          <div className="pt-6 border-t border-green-900/30">
             <Button
               isSubmitting={isSubmitting}
-              setIsSubmitting={setIsSubmitting}
               isValid={isValid}
             />
 
-            {/* Farmer Helper */}
-            <div className="mt-5 bg-green-500/10 border border-green-500/20 rounded-2xl p-4">
+            <div className="mt-5 bg-linear-to-r from-green-900/20 to-emerald-900/10 border border-green-500/20 rounded-2xl p-4">
               <p className="text-sm text-green-300">
-                💡 Products with clear photos and accurate prices sell faster.
+                💡 Tip: High-quality photos + clear pricing increase sales.
               </p>
             </div>
           </div>
+
         </form>
       </div>
     </div>

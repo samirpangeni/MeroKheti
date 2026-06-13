@@ -1,55 +1,111 @@
-import React from 'react'
-import {
-  FiAlignLeft,
-  FiFeather,
-} from "react-icons/fi";
+import React from "react";
+import { FiAlignLeft, FiFeather } from "react-icons/fi";
 
-const Description = ({ description, setDescription, organic, setOrganic }) => {
-    return (
-        <div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {/* Description - takes 2/3 of space */}
-                <div className="md:col-span-2">
-                    <label className="flex items-center gap-2 text-sm font-medium text-gray-300 mb-2">
-                        <FiAlignLeft className="w-4 h-4" />
-                        Product Description <span className="text-red-400">*</span>
-                    </label>
-                    <textarea
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                        className="w-full p-3 rounded-xl bg-white/10 border border-white/20 outline-none focus:border-green-500 transition-all text-white placeholder-gray-400 h-28 resize-none"
-                        placeholder="Describe your product... Quality, taste, size, color, benefits, how to use, storage instructions, etc."
-                    />
-                    <p className="text-xs text-gray-400 mt-1">
-                        {description.length}/500 characters • Help customers
-                        understand what they're buying
-                    </p>
-                </div>
+const Description = ({
+  description,
+  setDescription,
+  organic,
+  setOrganic,
+}) => {
+  const maxLength = 500;
 
-                {/* Organic Checkbox */}
-                <div className="flex items-start">
-                    <div className="bg-white/5 rounded-xl p-4 border border-white/10 w-full">
-                        <label className="flex items-center gap-3 cursor-pointer group">
-                            <input
-                                type="checkbox"
-                                checked={organic}
-                                onChange={(e) => setOrganic(e.target.checked)}
-                                className="w-5 h-5 rounded border-white/20 bg-white/10 text-green-600 focus:ring-green-500 focus:ring-offset-0"
-                            />
-                            <div className="flex items-center gap-2">
-                                <FiFeather className="w-5 h-5 text-green-400" />
-                                <span className="text-gray-300 font-medium">Organic</span>
-                            </div>
-                        </label>
-                        <p className="text-xs text-gray-400 mt-2">
-                            Check if this product is certified organic or grown without
-                            chemicals
-                        </p>
-                    </div>
-                </div>
-            </div>
+  return (
+    <div className="space-y-6">
+      {/* Grid Layout */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* Description */}
+        <div className="md:col-span-2 space-y-2">
+          <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
+            <FiAlignLeft className="text-green-400" />
+            Product Description
+            <span className="text-red-400">*</span>
+          </label>
+
+          <textarea
+            value={description}
+            onChange={(e) =>
+              setDescription(e.target.value.slice(0, maxLength))
+            }
+            placeholder="Describe your product... quality, taste, size, benefits, storage, etc."
+            className="
+              w-full
+              h-32
+              px-4
+              py-3
+              rounded-2xl
+              bg-black/40
+              border
+              border-green-900/40
+              text-white
+              placeholder:text-gray-500
+              outline-none
+              transition-all
+              duration-300
+              resize-none
+              focus:border-green-500
+              focus:ring-4
+              focus:ring-green-500/10
+              hover:border-green-700/50
+            "
+          />
+
+          {/* Counter */}
+          <div className="flex justify-between text-xs text-gray-500">
+            <span>
+              Help customers understand your product better
+            </span>
+            <span
+              className={
+                description.length > maxLength * 0.9
+                  ? "text-yellow-400"
+                  : "text-green-400"
+              }
+            >
+              {description.length}/{maxLength}
+            </span>
+          </div>
         </div>
-    )
-}
 
-export default Description
+        {/* Organic Card */}
+        <div className="flex">
+          <div className="w-full bg-black/40 border border-green-900/40 rounded-2xl p-5 hover:border-green-700/50 transition-all duration-300">
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={organic}
+                onChange={(e) => setOrganic(e.target.checked)}
+                className="
+                  w-5
+                  h-5
+                  accent-green-500
+                  cursor-pointer
+                "
+              />
+
+              <div className="flex items-center gap-2">
+                <FiFeather className="text-green-400 text-lg" />
+                <span className="text-white font-medium">
+                  Organic Product
+                </span>
+              </div>
+            </label>
+
+            <p className="text-xs text-gray-500 mt-3 leading-relaxed">
+              Mark this if your product is grown without
+              chemical fertilizers or pesticides.
+            </p>
+
+            {/* Badge */}
+            {organic && (
+              <div className="mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs bg-green-500/10 border border-green-500/30 text-green-400">
+                ✓ Organic Certified
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Description;

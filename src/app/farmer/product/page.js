@@ -19,7 +19,7 @@ const Page = () => {
   }, [search, category]);
 
   return (
-    <div className="flex min-h-screen bg-black">
+    <div className="flex min-h-screen bg-black mb-10">
       <SlideBarForFarmer />
 
       <div className="flex-1 p-2 md:pl-70">
@@ -40,7 +40,7 @@ const Page = () => {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+        <div className="grid grid-cols-3 gap-5 mb-8">
           <div className="bg-zinc-900 border border-green-900 rounded-2xl p-6">
             <p className="text-gray-400">Total Products</p>
             <h2 className="text-3xl font-bold text-green-500 mt-2">
@@ -64,7 +64,7 @@ const Page = () => {
         </div>
 
         {/* Filters */}
-        <div className="bg-zinc-900 border border-green-900 rounded-2xl p-5 mb-8">
+        <div className="bg-zinc-900 border border-green-900 rounded-2xl p-5 mb-8 ">
           <div className="grid md:grid-cols-2 gap-4">
             <input
               type="text"

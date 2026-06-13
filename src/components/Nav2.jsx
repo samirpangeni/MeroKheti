@@ -2,8 +2,8 @@ import React, { useEffect, useState, } from "react";
 import { usePathname } from 'next/navigation'
 import Link from "next/link";
 import axios from "axios";
-import { House,  ToolCase, LogOut, LayoutDashboard  } from 'lucide-react';
-const Nav2 = ({ handleLogout}) => {
+import { House, ToolCase, LogOut, LayoutDashboard } from 'lucide-react';
+const Nav2 = ({ handleLogout }) => {
   const pathname = usePathname();
   const [user, setUser] = useState(null);
   useEffect(() => {
@@ -13,60 +13,36 @@ const Nav2 = ({ handleLogout}) => {
     }
     data();
   }, [])
-const menuItem = (href, label) => {
-  const isActive = pathname === href;
+  const menuItem = (href, label) => {
+    const isActive = pathname === href;
 
-  return (
-    <Link
-      href={href}
-      className={`p-3 rounded-xl transition-all duration-300 ${
-        isActive
+    return (
+      <Link
+        href={href}
+        className={`p-3 rounded-xl transition-all duration-300 ${isActive
           ? "bg-green-600 text-white"
           : "text-gray-400 hover:text-white"
-      }`}
-    >
-      {label}
-    </Link>
-  );
-};
+          }`}
+      >
+        {label}
+      </Link>
+    );
+  };
   return (
-   <div className="fixed bottom-0 left-0 w-full bg-black border-t shadow-lg z-50 rounded-2xl ">
-    <ul className="flex justify-around items-center h-16 pt-6">
-      <li>
-        <Link href="/">
-          <House size={24} />
-        </Link>
-      </li>
+    <div className="fixed bottom-0 left-0 w-full bg-black shadow-lg z-50 rounded-2xl border-t-2 border-white p-2 h-20">
+      <ul className="flex justify-around items-center h-16 p-2 mt-5 border-t-2 border-white">
+        {menuItem("/", <House size={24} />)}
+        {menuItem("/product", <ToolCase size={24} />)}
+        {user?.role === "customer" && menuItem("/customer", <LayoutDashboard size={24} />)}
+        {user?.role === "farmer" && menuItem("/farmer", <LayoutDashboard size={24} />)}
 
-      <li>
-        <Link href="/product">
-          <ToolCase size={24} />
-        </Link>
-      </li>
-
-      {user?.role === "customer" && (
         <li>
-          <Link href="/customer">
-            <LayoutDashboard size={24} />
-          </Link>
+          <button onClick={handleLogout}>
+            <LogOut size={24} />
+          </button>
         </li>
-      )}
-
-      {user?.role === "farmer" && (
-        <li>
-          <Link href="/farmer">
-            <LayoutDashboard size={24} />
-          </Link>
-        </li>
-      )}
-
-      <li>
-        <button onClick={handleLogout}>
-          <LogOut size={24} />
-        </button>
-      </li>
-    </ul>
-  </div>
+      </ul>
+    </div>
   );
 };
 

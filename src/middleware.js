@@ -1,51 +1,32 @@
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 
 export function middleware(req) {
   const token = req.cookies.get("token")?.value;
   const { pathname } = req.nextUrl;
 
-  if (!token && pathname.startsWith("/dashboard")) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  const isLoginPage = pathname === "/login";
+
+  // allow product pages always (IMPORTANT)
+  const isProductRoute = pathname.startsWith("/product");
+
+  // redirect logged-in users away from login
+  if (isLoginPage && token) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  if (token) {
-    try {
-      const decoded = jwt.verify(
-        token,
-        process.env.JWT_SECRET
-      );
+  // protect ONLY these routes
+  const protectedRoutes = ["/dashboard", "/addProduct"];
 
-      // Admin only
-      if (
-        pathname.startsWith("/admin") &&
-        decoded.role !== "admin"
-      ) {
-        return NextResponse.redirect(new URL("/", req.url));
-      }
+  const isProtected = protectedRoutes.some((route) =>
+    pathname.startsWith(route),
+  );
 
-      // Farmer only
-      if (
-        pathname.startsWith("/addProduct") &&
-        decoded.role !== "farmer"
-      ) {
-        return NextResponse.redirect(new URL("/", req.url));
-      }
-    } catch {
-      return NextResponse.redirect(
-        new URL("/login", req.url)
-      );
-    }
+  if (isProtected && !token) {
+    return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();
 }
-
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/addProduct/:path*",
-    "/admin/:path*",
-    "/login",
-  ],
+  matcher: ["/dashboard/:path*", "/addProduct/:path*", "/login"],
 };

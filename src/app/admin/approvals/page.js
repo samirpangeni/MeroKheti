@@ -4,6 +4,7 @@ import Loading from "@/components/Loading";
 import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { toast, Toaster } from "react-hot-toast";
 
 const Page = () => {
   const [product, setProduct] = useState([]);
@@ -28,9 +29,8 @@ const Page = () => {
   const updateStatus = async (id, status) => {
     try {
       await axios.put("/api/admin", { id, status });
-
-      // remove from UI after action
       setProduct((prev) => prev.filter((item) => item._id !== id));
+      toast.success("you update the proudct")
     } catch (err) {
       console.log(err);
     }
@@ -39,6 +39,7 @@ const Page = () => {
     try {
       await axios.delete(`api/product?id=${id}`);
       setProduct((prev) => prev.filter((item) => item._id !== id));
+      toast.success("you delete the product")
     } catch (err) {
       console.log(err);
     }
@@ -106,7 +107,6 @@ const Page = () => {
                   <p className="text-gray-400 text-sm">
                     👤 {item.userId?.firstName}
                   </p>
-
                   <p className="text-gray-500 text-xs">
                     📧 {item.userId?.email || "No email"}
                   </p>
@@ -116,23 +116,14 @@ const Page = () => {
                     <span className="text-green-400 font-bold">
                       Rs {item.price}
                     </span>
-
                     <span className="text-gray-400 text-sm">{item.category}</span>
                   </div>
-
-                  {/* PRODUCT INFO */}
+    
                   <div className="text-sm text-gray-400 mt-3 space-y-1">
                     <p>📍 {item.location}</p>
-
+                    <p> 📦 {item.quantity} {item.unit} </p>
                     <p>
-                      📦 {item.quantity} {item.unit}
-                    </p>
-
-                    <p>
-                      🌾 Harvest:{" "}
-                      {new Date(item.harvestDate).toLocaleDateString()}
-                    </p>
-
+                      🌾 Harvest:{new Date(item.harvestDate).toLocaleDateString()}</p>
                     <p>
                       ⏳ Expiry: {new Date(item.expiryDate).toLocaleDateString()}
                     </p>

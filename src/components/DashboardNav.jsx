@@ -25,7 +25,8 @@ const DashboardNav = () => {
   ];
 
   useEffect(() => {
-      const fetchUser = async () => {
+    setShow(false)
+    const fetchUser = async () => {
       try {
         setLoading(true)
         const res = await axios.get("/api/user", {
@@ -39,9 +40,9 @@ const DashboardNav = () => {
       }
     };
     fetchUser();
-  }, []);
-  if(loading){
-    return <Loading/>
+  }, [pathname]);
+  if (loading) {
+    return <Loading />
   }
 
   const handleLogout = async () => {
@@ -56,43 +57,26 @@ const DashboardNav = () => {
   return (
     <div className="flex fixed top-0 w-70 z-99">
       <Navbar />
-
-      {/* Toggle Button */}
       <button
         onClick={() => setShow(!show)}
-        className="fixed top-4 left-4 z-50 md:hidden
-        bg-linear-to-r from-green-500 to-emerald-700
-        text-white p-3 rounded-xl shadow-lg hover:scale-105 transition"
-      >
+        className="fixed top-4 left-4 z-50 md:hidden bg-linear-to-r from-green-500 to-emerald-700 text-white p-3 rounded-xl shadow-lg hover:scale-105 transition">
         ☰
       </button>
 
-      {/* Sidebar */}
       <aside
-        className={`fixed md:static top-0 left-0 h-screen w-64 z-40
-        bg-linear-to-b from-black via-green-950/40 to-black
-        border-r border-green-500/20
-        text-white flex flex-col justify-between
-        backdrop-blur-xl 
-        shadow-[0_0_40px_rgba(0,255,100,0.08)]
-        transition-transform duration-300
-        ${show ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}
-      >
-        {/* Top Section */}
+        className={`fixed md:static top-0 left-0 h-screen w-64 z-40 bg-linear-to-b from-black via-green-950/40 to-black border-r border-green-500/20 text-white flex flex-col justify-between backdrop-blur-xl  shadow-[0_0_40px_rgba(0,255,100,0.08)] transition-transform duration-300
+        ${show ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
         <div className="p-6">
           {/* Profile Card */}
           <div className="mb-8 p-4 rounded-2xl bg-green-500/10 border border-green-500/20 backdrop-blur-md shadow-inner mt-12">
-            <>
               <h1 className="text-lg font-semibold text-green-300">
                 {user?.firstName} {user?.lastName}
               </h1>
               <p className="text-xs text-gray-400 mt-1">
                 {user?.role} Dashboard
               </p>
-            </>
           </div>
 
-          {/* Menu */}
           <ul className="space-y-2">
             {menuItems.map((item) => {
               const isActive = pathname === item.href;
@@ -122,23 +106,15 @@ const DashboardNav = () => {
           </ul>
         </div>
 
-        {/* Logout */}
         <div className="p-6">
           <button
             onClick={handleLogout}
-            className="w-full py-3 rounded-xl
-            bg-linear-to-r from-red-600 to-red-800
-            hover:from-red-500 hover:to-red-700
-            shadow-lg hover:shadow-red-500/20
-            transition-all duration-300 mb-10
-            font-medium"
-          >
+            className="w-full py-3 rounded-xl bg-linear-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 shadow-lg hover:shadow-red-500/20 transition-all duration-300 mb-10 font-medium">
             Logout
           </button>
         </div>
       </aside>
 
-      {/* Mobile Overlay */}
       {show && (
         <div
           onClick={() => setShow(false)}

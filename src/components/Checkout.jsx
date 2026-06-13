@@ -10,7 +10,7 @@ const Checkout = ({ productId, onClose }) => {
   const [quantity, setQuantity] = useState(1);
   const [payMethod, setPayMethod] = useState("Cash");
   const [ordering, setOrdering] = useState(false);
-
+  const [message, setMessage] = useState("");
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -38,6 +38,7 @@ const Checkout = ({ productId, onClose }) => {
         productId,
         quantity,
         payMethod,
+        message,
       });
 
       alert("Order placed successfully!");
@@ -197,7 +198,7 @@ const Checkout = ({ productId, onClose }) => {
           <div className=" flex flex-col gap-2">
             <label className="text-zinc-400  mt-3">Specific Message</label>
             <textarea placeholder="Enter your specific message" className="p-2 rounded-2xl outline-none border-2 resize-none
-          placeholder:text-zinc-500 border-green-600 w-full"
+          placeholder:text-zinc-500 border-green-600 w-full" value={message} onChange={(e) => { setMessage(e.target.value) }}
             >
             </textarea>
           </div>

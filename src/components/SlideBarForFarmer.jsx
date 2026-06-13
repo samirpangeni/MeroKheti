@@ -18,6 +18,7 @@ const SlideBarForFarmer = () => {
     }
   };
   useEffect(() => {
+    setOpen(false)
     const getData = async () => {
       try {
         const req = await axios.get("/api/user");
@@ -27,7 +28,7 @@ const SlideBarForFarmer = () => {
       }
     };
     getData();
-  }, []);
+  }, [pathname]);
   const menuItem = (href, label) => {
     const isActive = pathname === href;
     return (
@@ -41,15 +42,15 @@ const SlideBarForFarmer = () => {
     );
   };
   return (
-    <div>
+    <div className="fixed top-0 left-0 z-9999">
       <Navbar />
       <button
         onClick={() => setOpen(!open)}
-        className="md:hidden fixed top-4 left-10 z-50 bg-green-600 text-white p-2 rounded-lg z-999"
+        className="md:hidden fixed top-4 left-10 z-50 bg-green-600 text-white p-2 rounded-lg "
       >
         ☰
       </button>
-      <div className={`flex flex-col fixed top-0 bottom-0 items-center bg-linear-to-b from-green-900/60 to-black border-r border-green-500/20 h-screen w-64 p-5  justify-between text-white shadow-2xl mb:z-99  mb-10 ${open ? "hidden" : "block"} md:translate-x-0`}>
+      <div className={`w-full flex flex-col fixed top-0 bottom-0 items-center  bg-green-900 border-r border-green-500/20 h-screen  p-5  justify-between text-white shadow-2xl mb:z-99  mb-10 ${ open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
         <div className="mb-10 ">
           <h1 className="text-3xl font-bold">
             <span className="text-green-400">Mero</span>kheti
@@ -68,6 +69,7 @@ const SlideBarForFarmer = () => {
             {menuItem("/farmer/setting", "Setting")}
           </ul>
         </div>
+        
         <div className="w-full text-center h-screen justify-end flex flex-col pb-10">
           <button
             className="p-2 bg-red-500/20 border-red-500/30 text-red-400  w-full transition rounded-lg"

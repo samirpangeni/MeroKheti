@@ -56,30 +56,27 @@ const Page = () => {
 
       <div className="md:pl-70 p-6">
         {/* HEADER */}
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+        <div className="flex flex-col justify-between items-start lg:items-center gap-4">
           <div>
             <h1 className="text-4xl font-bold text-green-400">
               Product Dashboard
             </h1>
-
             <p className="text-zinc-400 mt-2">
               Manage all your farm products from one place.
             </p>
           </div>
 
           <Link
-            href="/farmer/add"
-            className="px-6 py-3 rounded-xl bg-green-600 hover:bg-green-500 transition font-semibold"
-          >
+            href="/addProduct"
+            className="px-6 py-3 rounded-xl bg-green-600 hover:bg-green-500 transition font-semibold">
             + Add Product
           </Link>
         </div>
 
         {/* STATS */}
-        <div className="grid md:grid-cols-3 gap-5 mt-8">
+        <div className="grid grid-cols-3 gap-5 mt-8">
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
             <p className="text-zinc-500 text-sm">Total Products</p>
-
             <h2 className="text-3xl font-bold text-green-400 mt-2">
               {totalProducts}
             </h2>
@@ -87,7 +84,6 @@ const Page = () => {
 
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
             <p className="text-zinc-500 text-sm">Approved Products</p>
-
             <h2 className="text-3xl font-bold text-green-400 mt-2">
               {approvedProducts}
             </h2>
@@ -95,7 +91,6 @@ const Page = () => {
 
           <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
             <p className="text-zinc-500 text-sm">Total Stock</p>
-
             <h2 className="text-3xl font-bold text-green-400 mt-2">
               {totalStock}
             </h2>
@@ -109,19 +104,7 @@ const Page = () => {
             placeholder="Search products..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="
-              w-full
-              md:w-[450px]
-              bg-zinc-900
-              border
-              border-zinc-800
-              rounded-xl
-              px-4
-              py-3
-              outline-none
-              focus:border-green-500
-            "
-          />
+            className=" w-full md:w-112.5 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 outline-none focus:border-green-500"/>
         </div>
 
         {/* LOADING */}
@@ -138,17 +121,7 @@ const Page = () => {
             {filtered.map((p) => (
               <div
                 key={p._id}
-                className="
-                  bg-zinc-900
-                  border
-                  border-zinc-800
-                  rounded-3xl
-                  overflow-hidden
-                  hover:border-green-500
-                  transition-all
-                  duration-300
-                "
-              >
+                className=" bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden hover:border-green-500 transition-all duration-300">
                 {/* IMAGE */}
                 <div className="relative">
                   <img
@@ -255,30 +228,13 @@ const Page = () => {
                   <div className="flex gap-3 mt-6">
                     <Link
                       href={`/farmer/manage/${p._id}`}
-                      className="
-                        flex-1
-                        text-center
-                        py-3
-                        rounded-xl
-                        bg-green-600
-                        hover:bg-green-500
-                        font-medium
-                      "
-                    >
+                      className="flex-1 text-center py-3 rounded-xl bg-green-600 hover:bg-green-500 font-medium">
                       Edit
                     </Link>
 
                     <button
                       onClick={() => deleteProduct(p._id)}
-                      className="
-                        flex-1
-                        py-3
-                        rounded-xl
-                        bg-red-600
-                        hover:bg-red-500
-                        font-medium
-                      "
-                    >
+                      className="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 font-medium">
                       Delete
                     </button>
                   </div>
