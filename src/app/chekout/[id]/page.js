@@ -1,6 +1,6 @@
 import React from "react";
 import axios from "axios";
-
+import { useRouter } from "next/navigation";
 const Page = ({ params }) => {
   const orderId = params.id;
   const payWithKhalti = async () => {
