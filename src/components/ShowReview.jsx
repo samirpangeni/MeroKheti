@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import Loading from "./Loading";
 
 const ShowReview = ({ productId }) => {
