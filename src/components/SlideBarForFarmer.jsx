@@ -50,8 +50,8 @@ const SlideBarForFarmer = () => {
       >
         ☰
       </button>
-      <div className={`w-full flex flex-col fixed top-0 bottom-0 items-center  bg-green-900 border-r border-green-500/20 h-screen  p-5  justify-between text-white shadow-2xl mb:z-99  mb-10 ${ open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
-        <div className="mb-10 ">
+      <div className={`md:w-60 w-full flex flex-col fixed top-0 bottom-0 items-center  bg-green-900 border-r border-green-500/20 h-screen  p-5  justify-between text-white shadow-2xl mb:z-99  mb-10 ${ open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
+        <div className="mb-10">
           <h1 className="text-3xl font-bold">
             <span className="text-green-400">Mero</span>kheti
           </h1>
@@ -69,7 +69,6 @@ const SlideBarForFarmer = () => {
             {menuItem("/farmer/setting", "Setting")}
           </ul>
         </div>
-        
         <div className="w-full text-center h-screen justify-end flex flex-col pb-10">
           <button
             className="p-2 bg-red-500/20 border-red-500/30 text-red-400  w-full transition rounded-lg"
