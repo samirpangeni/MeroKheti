@@ -1,10 +1,12 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-const  Page=()=> {
+export default function Page() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -15,86 +17,43 @@ const  Page=()=> {
   const [transaction, setTransaction] = useState(null);
 
   useEffect(() => {
-    const verifyPayment = async () => {
+    const run = async () => {
       try {
-        setLoading(true);
-
-        // ❗ SAFE CHECK FIRST
         if (!dataQuery && !pidx) {
           router.replace("/failed");
           return;
         }
 
-        // ESEWA
         if (dataQuery) {
-          let data;
+          const data = JSON.parse(atob(dataQuery));
 
-          try {
-            data = JSON.parse(atob(dataQuery));
-          } catch (err) {
-            router.replace("/failed");
-            return;
-          }
+          const res = await axios.post("/api/payment/esewa/verify", data);
 
-          const res = await axios.post("/api/payment/esewa/verify", {
-            total_amount: data.total_amount,
-            transaction_uuid: data.transaction_uuid,
-            product_code: data.product_code,
-          });
-
-          if (res.data.success) {
-            setTransaction(res.data.order);
-          } else {
-            router.replace("/failed");
-          }
+          if (res.data.success) setTransaction(res.data.order);
+          else router.replace("/failed");
         }
 
-        // KHALTI
-        else if (pidx) {
+        if (pidx) {
           const res = await axios.post("/api/payment/khalti/verify", {
             pidx,
           });
 
-          const data = res.data?.data;
-
-          if (data?.status === "Completed") {
+          if (res.data?.data?.status === "Completed") {
             setTransaction(res.data.order);
-          } else {
-            router.replace("/failed");
-          }
+          } else router.replace("/failed");
         }
-      } catch (err) {
-        console.log(err);
+      } catch (e) {
         router.replace("/failed");
       } finally {
         setLoading(false);
       }
     };
 
-    verifyPayment();
-  }, [dataQuery, pidx, router]);
+    run();
+  }, [dataQuery, pidx]);
 
-  if (loading) {
-    return (
-      <div className="w-full h-screen flex flex-col items-center justify-center">
-        <div className="w-16 h-16 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4">Verifying payment...</p>
-      </div>
-    );
-  }
-
+  if (loading) return <p>Loading...</p>;
   if (!transaction) return null;
 
-  return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold text-green-600">
-          Payment Successful 🎉
-        </h1>
-
-        <p className="mt-4">Transaction ID: {transaction.transaction_uuid}</p>
-      </div>
-    </div>
-  );
+  return <h1>Payment Success 🎉</h1>;
 }
-export default Page
