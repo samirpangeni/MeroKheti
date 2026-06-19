@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
       </Head>
       <body className="min-h-screen bg-white text-black antialiased">
         {children}
-        <ToastContainer position="top-right" />
+          <ToastContainer position="top-right" />
       </body>
     </html>
   );
