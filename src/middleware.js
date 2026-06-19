@@ -4,35 +4,29 @@ export function middleware(req) {
   const token = req.cookies.get("token")?.value;
   const { pathname } = req.nextUrl;
 
-  // Public routes
-  const publicRoutes = ["/login", "/register"];
+  const isLoginPage = pathname === "/login";
 
-  // Allow public routes
-  if (publicRoutes.includes(pathname)) {
-    if (token) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-    return NextResponse.next();
+  // allow product pages always (IMPORTANT)
+  const isProductRoute = pathname.startsWith("/product");
+
+  // redirect logged-in users away from login
+  if (isLoginPage && token) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 
-  // Allow Next.js internals and static files
-  if (
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/api") ||
-    pathname === "/favicon.ico" ||
-    pathname.includes(".")
-  ) {
-    return NextResponse.next();
-  }
+  // protect ONLY these routes
+  const protectedRoutes = ["/dashboard", "/addProduct"];
 
-  // Protect everything else
-  if (!token) {
+  const isProtected = protectedRoutes.some((route) =>
+    pathname.startsWith(route),
+  );
+
+  if (isProtected && !token) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
   return NextResponse.next();
 }
-
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
-};
+  matcher: ["/dashboard/:path*", "/addProduct/:path*", "/login"],
+}; 

@@ -42,6 +42,7 @@ export async function POST(req) {
       await existingCart.save();
       return NextResponse.json({
         message: "Quantity updated",
+        success: true
       });
     }
     await Cart.create({
@@ -50,7 +51,7 @@ export async function POST(req) {
       quantity: 1,
     });
 
-    return NextResponse.json({ message: "added to cart" }, { existingCart });
+    return NextResponse.json({ message: "added to cart", success:true, existingCart });
   } catch (err) {
     console.log(err);
     return NextResponse.json({ message: "error" }, { status: 500 });

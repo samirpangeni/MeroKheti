@@ -110,7 +110,7 @@ const Page = ({ params }) => {
             <div>
               <ShowReview productId={id} />
             </div>
-            <button onClick={() => setOpenReport(true)} className="absolute top-10 right-10 bg-red-900 p-2 rounded-lg">Report</button>
+            <button onClick={() => setOpenReport(true)} className="fixed md:top-10 top-50 right-[-3] bg-red-900 p-2 rounded-lg">Report</button>
 
             {openReport && (
               <Report productId={id} setOpenReport={setOpenReport} />

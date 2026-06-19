@@ -29,8 +29,8 @@ const Nav2 = ({ handleLogout }) => {
     );
   };
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-black shadow-lg z-50 rounded-2xl border-t-2 border-white p-2 h-20">
-      <ul className="flex justify-around items-center h-16 p-2 mt-5 border-t-2 border-white">
+    <div className="fixed bottom-0 left-0 w-full shadow-lg z-50 rounded-2xl  p-2 h-20 ">
+      <ul className="flex justify-around items-center h-16 p-2 mt-5 border-t-2 border-white bg-black w-full rounded-2xl">
         {menuItem("/", <House size={24} />)}
         {menuItem("/product", <ToolCase size={24} />)}
         {user?.role === "customer" && menuItem("/customer", <LayoutDashboard size={24} />)}

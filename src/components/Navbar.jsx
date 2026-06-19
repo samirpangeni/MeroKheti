@@ -31,9 +31,9 @@ const Navbar = () => {
   return (
     <div>
       <div
-        className={`fixed bottom-0 left-0 w-full h-10 bg-transparent backdrop-blur-lg overflow-hidden z-99 transition-all duration-300 `}
+        className={`fixed bottom-0 left-0 w-full overflow-hidden z-99 transition-all duration-300 `}
       >
-        <div className="pb-20 rounded-2xl block md:hidden">
+        <div className="pb-20 rounded-2xl block md:hidden w-full">
           <Nav2
             handleLogout={handleLogout}
           />

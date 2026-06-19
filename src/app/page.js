@@ -47,8 +47,8 @@ const Page = () => {
       </section>
 
       {/* PRODUCT FEED */}
-      <section className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="flex items-center justify-between mb-6">
+      <section className="mr-10 pr-5 px-2 pb-30 mt-3 ml-2 w-full">
+        <div className="flex items-center justify-between mb-6 mt-10">
           <h2 className="text-xl font-semibold">Recommended for you</h2>
           <p className="text-xs text-gray-500">
             Based on freshness & availability
@@ -64,8 +64,8 @@ const Page = () => {
       </section>
 
       {/* FLOATING BUTTON */}
-      <div className="fixed right-6 bottom-3">
-        <div className="p-4 rounded-2xl shadow-lg transition">
+      <div className="fixed md:right-0 bottom-5 right-[-6]">
+        <div className="p-4 md:rounded-2xl shadow-lg transition pb-10">
          {user?.role =="farmer"&&(
           <Product />
          )}
