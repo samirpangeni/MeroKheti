@@ -4,7 +4,7 @@ import SlideBarForFarmer from "@/components/SlideBarForFarmer";
 import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
-
+import { toast } from "react-toastify";
 const Page = () => {
   const { id } = useParams();
   const router = useRouter();
@@ -38,12 +38,12 @@ const Page = () => {
         price,
       });
 
-      alert("Product Updated Successfully");
+      toast.success("Product Updated Successfully");
 
       router.push("/farmer/manage");
     } catch (err) {
       console.log(err);
-      alert("Update Failed");
+      toast.error("Update Failed try again");
     }
   };
 

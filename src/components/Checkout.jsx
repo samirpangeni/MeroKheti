@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PayWithEsewa from "@/components/PayWithEsewa";
 import PayWithKhalti from "@/components/PayWithKhalti"
+import { toast } from "react-toastify";
 const Checkout = ({ productId, onClose }) => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,6 +17,7 @@ const Checkout = ({ productId, onClose }) => {
       try {
         const res = await axios.get(`/api/product/${productId}`);
         setProduct(res.data.product);
+        console.log(res.data.product)
       } catch (err) {
         console.log(err);
       } finally {
@@ -40,12 +42,11 @@ const Checkout = ({ productId, onClose }) => {
         payMethod,
         message,
       });
-
-      alert("Order placed successfully!");
+      toast.success("Order placed successfully!");
       onClose?.();
     } catch (err) {
       console.log(err);
-      alert("Order failed");
+      toast.err("Order failed try again");
     } finally {
       setOrdering(false);
     }

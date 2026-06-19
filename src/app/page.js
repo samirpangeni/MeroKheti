@@ -42,15 +42,15 @@ const Page = () => {
       </section>
 
       {/* FEATURE STRIP (clean Airbnb-like minimal cards) */}
-      <section>
+      <section className="m-5">
         <Feature />
       </section>
 
       {/* PRODUCT FEED */}
-      <section className="mr-10 pr-5 px-2 pb-30 mt-3 ml-2 w-full">
-        <div className="flex items-center justify-between mb-6 mt-10">
+      <section className="mr-10 pr-5 px-2 pb-15 mt-3 ml-2 w-full">
+        <div className="flex items-center justify-between mb-6 mt-15 ml-15">
           <h2 className="text-xl font-semibold">Recommended for you</h2>
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-gray-500 mr-15">
             Based on freshness & availability
           </p>
         </div>

@@ -5,7 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import PasswordUI from "@/components/PasswordUI";
 import ConfirmPassword from "@/components/ConfirmPassword";
-
+import { toast } from "react-toastify";
 const Page = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -24,7 +24,7 @@ const Page = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -45,7 +45,7 @@ const Page = () => {
       setConfirmPassword("");
       setMobile("");
 
-      alert("Account created successfully");
+      toast.success("Account created successfully");
     } catch (err) {
       console.log(err.response?.data?.message);
     }
@@ -147,11 +147,10 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => setRole("customer")}
-                className={`border rounded-xl p-3 transition-all duration-200 ${
-                  role === "customer"
+                className={`border rounded-xl p-3 transition-all duration-200 ${role === "customer"
                     ? "bg-green-600 text-white border-green-600"
                     : "bg-white text-black border-gray-300 hover:border-black"
-                }`}
+                  }`}
               >
                 <div className="flex flex-col items-center">
                   <span className="text-lg">🛒</span>
@@ -162,11 +161,10 @@ const Page = () => {
               <button
                 type="button"
                 onClick={() => setRole("farmer")}
-                className={`border rounded-xl p-3 transition-all duration-200 ${
-                  role === "farmer"
+                className={`border rounded-xl p-3 transition-all duration-200 ${role === "farmer"
                     ? "bg-green-600 text-white border-green-600"
                     : "bg-white text-black border-gray-300 hover:border-green-600"
-                }`}
+                  }`}
               >
                 <div className="flex flex-col items-center">
                   <span className="text-lg">🌾</span>

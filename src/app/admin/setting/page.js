@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
 import Loading from "@/components/Loading";
-
+import { toast } from "react-toastify";
 const Page = () => {
   const [user, setUser] = useState({});
 
@@ -52,7 +52,7 @@ const Page = () => {
           withCredentials: true,
         },
       );
-      alert("Settings Updated Successfully");
+      toast.success("Settings Updated Successfully");
       setFirstName("");
       setLastName("");
       setEmail("");

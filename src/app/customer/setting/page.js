@@ -5,6 +5,7 @@ import { User, Mail, Lock } from "lucide-react";
 import DashboardNav from "@/components/DashboardNav";
 import axios from "axios";
 import PasswordUI from "@/components/PasswordUI";
+import { toast } from "react-toastify";
 import ConfirmPassword from "@/components/ConfirmPassword";
 
 const Page = () => {
@@ -42,7 +43,7 @@ const Page = () => {
     e.preventDefault();
 
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -59,7 +60,7 @@ const Page = () => {
         { withCredentials: true }
       );
 
-      alert("Updated successfully");
+      toast.success("Updated successfully");
 
       setPassword("");
       setConfirmPassword("");

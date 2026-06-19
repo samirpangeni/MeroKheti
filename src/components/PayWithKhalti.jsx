@@ -1,6 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 const PayWithKhalti = ({ payMethod, price, productId, quantity }) => {
     const [product, setProduct] = useState([])
     const [loading, setLoading] = useState(false);
@@ -34,12 +35,10 @@ const PayWithKhalti = ({ payMethod, price, productId, quantity }) => {
                 quantity,
                 amount: product.price * quantity,
             });
-
             window.location.href = res.data.payment_url;
-            
         } catch (err) {
             console.log(err);
-            alert("Khalti payment failed");
+            toast.success("failed to khalti")
         }
     };
     return (

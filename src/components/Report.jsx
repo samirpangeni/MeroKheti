@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-
+import { toast } from "react-toastify";
 const Report = ({ productId, setOpenReport }) => {
 
   const [reportText, setReportText] = useState("");
@@ -42,10 +42,11 @@ const Report = ({ productId, setOpenReport }) => {
         reportType
       });
       setReportText("");
-      alert("Report Submitted");
+      toast.success("report submit successfully")
       setOpenReport(false);
     } catch (err) {
       console.log(err);
+      toast.error("failed to submit report")
     }
   }
 

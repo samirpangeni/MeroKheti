@@ -5,10 +5,12 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import DashboardNav from "@/components/DashboardNav";
 import Loading from "@/components/Loading";
+import Checkout from "@/components/Checkout";
 
 const Page = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectProduct, setSelectProduct] = useState(null);
 
   useEffect(() => {
     const handleData = async () => {
@@ -90,7 +92,7 @@ const Page = () => {
 
         {/* LOADING */}
         {loading ? (
-          <Loading/>
+          <Loading />
         ) : data.length === 0 ? (
           <div className="text-center py-20 text-gray-400">
             <p className="text-lg">Your cart is empty 🌱</p>
@@ -101,13 +103,13 @@ const Page = () => {
             </Link>
           </div>
         ) : (
-          <div className="grid gap-6 max-w-5xl mx-auto">
+          <div className="grid gap-6  mx-auto">
 
             {data.map((item) => (
               <div
                 key={item._id}
                 className="
-                  group flex flex-col md:flex-row gap-5
+                  group flex flex-col w-fit md:flex-row gap-5
                   bg-linear-to-br from-green-950/40 via-black to-green-950/10
                   border border-green-500/20
                   rounded-2xl p-5
@@ -178,16 +180,30 @@ const Page = () => {
                     >
                       Remove
                     </button>
-
+                    <button
+                      onClick={() => setSelectProduct(item._id)}
+                      className="flex-1 text-xs py-2 rounded-lg bg-green-600 hover:bg-green-500 text-black font-semibold"
+                    >
+                      Buy
+                    </button>
                   </div>
-
                 </div>
+                {/* CHECKOUT MODAL */}
+                {selectProduct === item._id && (
+                  <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+                    <Checkout
+                      productId={selectProduct?.productId}
+                      quantity={selectProduct?.quantity}
+                      cartId={selectProduct?.cartId}
+                      onClose={() => setSelectProduct(null)}
+                     
+                    />
+                  </div>
+                )}
               </div>
             ))}
-
           </div>
         )}
-
       </div>
     </div>
   );
