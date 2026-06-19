@@ -1,8 +1,3 @@
-export const metadata = {
-  verification: {
-    google: "wF5KH93xlnahWurLhdeI3ztZD0C5Am0fO-cRq-jhZRE",
-  },
-};
 import "./globals.css";
 import "../../lib/cron"
 import { ToastContainer } from "react-toastify";
