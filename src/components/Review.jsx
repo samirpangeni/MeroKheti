@@ -55,7 +55,6 @@ const Review = ({ productId }) => {
         {/* RATING */}
         <Box
           sx={{
-           
             width: "100%",
             display: "flex",
             alignItems: "center",
@@ -64,9 +63,9 @@ const Review = ({ productId }) => {
         >
           <Rating
             name="product-rating"
-            
             value={rating}
             precision={0.5}
+          
             onChange={(event, newValue) => {
               setRating(newValue);
             }}
@@ -75,7 +74,7 @@ const Review = ({ productId }) => {
             }}
             emptyIcon={
               <StarIcon
-                style={{ opacity: 0.4, background: "green" }}
+                style={{ opacity: 2, color: "gray" }}
                 fontSize="inherit"
               />
             }

@@ -61,6 +61,7 @@ export async function POST(req) {
     const totalAmount = product.price * qty;
     const order = await Order.create({
       userId,
+      message,
       product: [
         {
           productId,

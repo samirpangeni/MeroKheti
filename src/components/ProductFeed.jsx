@@ -92,7 +92,7 @@ export default function ProductFeed({ products, setProducts, search }) {
           Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="h-90 rounded-xl bg-[#0b0f0c] animate-pulse border border-green-900/20"
+              className="h-90 rounded-xl bg-[#0b0f0c] animate-pulse border border-green-900/20 w-full"
             />
           ))}
 
@@ -227,7 +227,7 @@ function ProductCard({ item, selectProduct, setSelectProduct }) {
         {/* ACTIONS */}
         <div className="flex gap-2 pt-2">
           <Link href={`/product/${item._id}`} className="flex-1">
-            <button className="w-full text-xs py-2 rounded-lg border border-green-800/40 hover:bg-green-900/20">
+            <button className="w-full  py-2 rounded-lg border border-green-800/40 hover:bg-green-900/20">
               View
             </button>
           </Link>

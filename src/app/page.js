@@ -27,7 +27,7 @@ const Page = () => {
     fetchUser();
   }, []);
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-black text-white">
+    <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-black text-white w-full">
       {/* NAVBAR */}
       <Navbar />
 
@@ -48,9 +48,9 @@ const Page = () => {
 
       {/* PRODUCT FEED */}
       <section className="mr-10 pr-5 px-2 pb-15 mt-3 ml-2 w-full">
-        <div className="flex items-center justify-between mb-6 mt-15 ml-15">
+        <div className="flex items-center justify-between mb-6 mt-15 ml-5 gap-4 w-full ">
           <h2 className="text-xl font-semibold">Recommended for you</h2>
-          <p className="text-xs text-gray-500 mr-15">
+          <p className="text-xs text-gray-500 mr-5">
             Based on freshness & availability
           </p>
         </div>
@@ -64,7 +64,7 @@ const Page = () => {
       </section>
 
       {/* FLOATING BUTTON */}
-      <div className="fixed md:right-0 bottom-5 right-[-6]">
+      <div className="fixed md:right-0 bottom-5 right-[-17]">
         <div className="p-4 md:rounded-2xl shadow-lg transition pb-10">
          {user?.role =="farmer"&&(
           <Product />

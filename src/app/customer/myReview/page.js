@@ -43,7 +43,7 @@ const Page = () => {
       : 0;
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-black text-white mb-10">
       <DashboardNav />
 
       <div className="flex-1 md:ml-72 p-6 md:p-10 pt-20 bg-linear-to-b from-black via-green-950/10 to-black md:mt-20">
@@ -59,7 +59,7 @@ const Page = () => {
         </div>
 
         {/* STATS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-10">
 
           <div className="bg-green-950/40 border border-green-500/20 rounded-2xl p-5">
             <p className="text-gray-400 text-sm">Total Reviews</p>

@@ -50,7 +50,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-black text-white mb-10">
       {/* Sidebar */}
       <DashboardNav />
 

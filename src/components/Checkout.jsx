@@ -76,19 +76,7 @@ const Checkout = ({ productId, onClose }) => {
   return (
     <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-3 z-50">
       <div
-        className="
-        w-full
-        max-w-lg
-        max-h-[90vh]
-        overflow-y-auto
-        scrollbar-hide
-        rounded-3xl
-        bg-zinc-900
-        border border-zinc-800
-        shadow-2xl
-        text-zinc-200
-      "
-      >
+        className="w-full max-w-lg max-h-[90vh] overflow-y-auto scrollbar-hide rounded-3xl bg-zinc-900 border border-zinc-800 shadow-2xl text-zinc-200">
         {/* Header */}
         <div className="sticky top-0 bg-zinc-900/95 backdrop-blur p-5 border-b border-zinc-800 flex justify-between items-center">
           <div>
@@ -196,12 +184,17 @@ const Checkout = ({ productId, onClose }) => {
               NPR {product.price * quantity}
             </h2>
           </div>
-          <div className=" flex flex-col gap-2">
-            <label className="text-zinc-400  mt-3">Specific Message</label>
-            <textarea placeholder="Enter your specific message" className="p-2 rounded-2xl outline-none border-2 resize-none
-          placeholder:text-zinc-500 border-green-600 w-full" value={message} onChange={(e) => { setMessage(e.target.value) }}
-            >
-            </textarea>
+          <div className="flex flex-col gap-2 bg-zinc-950 border  mt-5 border-green-900/30 rounded-2xl">
+            <label className="text-sm font-medium text-zinc-400">
+              Specific Message
+            </label>
+
+            <textarea
+              placeholder="Enter your specific message..."
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={5}
+              className="w-full rounded-xl bg-black/60 border border-green-700/40 px-4 py-3 text-white placeholder:text-zinc-500 outline-none resize-none transition-all duration-300 focus:border-green-500 focus:ring-2 focus:ring-green-500/20 hover:border-green-600/60 hover:bg-black/80 shadow-lg shadow-green-950/20" />
           </div>
 
           {/* Payment Methods */}
@@ -243,19 +236,7 @@ const Checkout = ({ productId, onClose }) => {
           <button
             onClick={handleOrder}
             disabled={ordering}
-            className="
-            mt-6
-            w-full
-            bg-green-500
-            hover:bg-green-400
-            text-black
-            font-medium
-            py-4
-            rounded-2xl
-            transition
-            disabled:opacity-50
-          "
-          >
+            className="mt-6 w-full bg-green-500 hover:bg-green-400 text-black font-medium py-4 rounded-2xl transition disabled:opacity-50">
             {ordering ? "Processing..." : "Place Order"}
           </button>
         </div>

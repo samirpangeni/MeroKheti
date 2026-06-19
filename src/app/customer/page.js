@@ -48,7 +48,7 @@ const page = () => {
     return <Loading />
   }
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 w-full h-screen">
       <DashboardNav />
       <div className="w-full p-2 md:px-20 md:pl-70 pt-20">
         {/* Welcome */}

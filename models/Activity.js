@@ -6,6 +6,10 @@ const activitySchema = new mongoose.Schema(
       ref: "User",
       require: true,
     },
+    productId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product",
+    },
     message: {
       type: String,
       required: true,

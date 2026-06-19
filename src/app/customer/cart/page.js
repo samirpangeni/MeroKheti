@@ -48,7 +48,7 @@ const Page = () => {
   );
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-black text-white mb-10">
 
       <DashboardNav />
 
@@ -65,7 +65,7 @@ const Page = () => {
         </div>
 
         {/* SUMMARY */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-10">
 
           <div className="bg-green-950/40 border border-green-500/20 rounded-2xl p-5">
             <p className="text-gray-400 text-sm">Total Items</p>

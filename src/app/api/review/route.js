@@ -4,6 +4,7 @@ import Review from "../../../../models/Review";
 import User from "../../../../models/User";
 import "../../../../models/User";
 import { NextResponse } from "next/server";
+import Activity from "../../../../models/Activity";
 
 export async function GET(req) {
   try {
@@ -48,7 +49,11 @@ export async function POST(req) {
       rating,
       review,
     });
-
+    await Activity.create({
+      userId,
+      message: `you give me review`,
+      type: "Review"
+    })
     return NextResponse.json(newReview);
   } catch (err) {
     console.log(err);

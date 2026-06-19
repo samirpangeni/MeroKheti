@@ -14,13 +14,13 @@ const Page = () => {
             try {
                 const oRes = await axios.get("/api/order")
                 const pRes = await axios.get("/api/review")
-                const hRes = await axios.get("/api/activity")
+                const hRes = await axios.get("/api/customer")
                 const rRes = await axios.get("/api/report")
-                setActivite(hRes.data.activite)
+                setActivite(hRes.data.activity)
                 setReport(rRes.data.reports)
                 setOrder(oRes.data.order)
                 setReview(pRes.data.review)
-                console.log(hRes.data.activite)
+                console.log("hello",hRes.data.activity)
             } catch (err) {
                 console.log(err)
             }
