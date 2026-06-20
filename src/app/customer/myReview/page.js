@@ -5,6 +5,7 @@ import DashboardNav from "@/components/DashboardNav";
 import axios from "axios";
 import Link from "next/link";
 import Loading from "@/components/Loading";
+import { toast } from "react-toastify";
 
 const Page = () => {
   const [review, setReview] = useState([]);
@@ -13,7 +14,7 @@ const Page = () => {
   useEffect(() => {
     const handleData = async () => {
       try {
-        const response = await axios.get("/api/review/my", {
+        const response = await axios.get("/api/customer", {
           withCredentials: true,
         });
 
@@ -24,6 +25,7 @@ const Page = () => {
               ? [response.data.review]
               : []
         );
+        console.log(response.data)
       } catch (err) {
         console.log(err);
       } finally {
@@ -33,7 +35,15 @@ const Page = () => {
 
     handleData();
   }, []);
-
+  const deleteReview = async (id) => {
+    try {
+      const res = await axios.delete(`/api/review?id=${id}`);
+      toast.success("Review delete successfully")
+    } catch (err) {
+      console.log(err)
+      toast.error("failed to delete review try later")
+    }
+  }
   const avgRating =
     review.length > 0
       ? (
@@ -146,19 +156,24 @@ const Page = () => {
                         {new Date(r.createdAt).toLocaleDateString()}
                       </p>
                     </div>
-
+                    <button
+                      onClick={() => deleteReview(r._id)}
+                      className="px-3 py-1.5 text-sm font-medium text-red-400 
+             bg-red-500/10 border border-red-500/20 
+             rounded-lg hover:bg-red-500/20 
+             hover:text-red-300 transition-all duration-200"
+                    >
+                      Delete
+                    </button>
                     <Link href={`/product/${r.productId?._id}`}>
                       <button className="px-4 py-2 rounded-xl bg-green-500 text-black font-semibold hover:bg-green-400 transition">
                         View Product
                       </button>
                     </Link>
-
                   </div>
-
                 </div>
               </div>
             ))}
-
           </div>
         )}
       </div>

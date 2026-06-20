@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PayWithEsewa from "@/components/PayWithEsewa";
 import PayWithKhalti from "@/components/PayWithKhalti"
+import Cash from "@/components/Cash"
 import { toast } from "react-toastify";
 const Checkout = ({ productId, onClose }) => {
   const [product, setProduct] = useState(null);
@@ -35,7 +36,6 @@ const Checkout = ({ productId, onClose }) => {
     if (payMethod !== "Cash") return;
     try {
       setOrdering(true);
-
       await axios.post("/api/order", {
         productId,
         quantity,
@@ -54,7 +54,7 @@ const Checkout = ({ productId, onClose }) => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-black">
+      <div className="flex justify-center items-center h-screen bg-black w-full">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
           <p className="mt-4 text-green-400">Loading Product...</p>
@@ -215,15 +215,11 @@ const Checkout = ({ productId, onClose }) => {
               message={message}
             />
 
-            <button
-              onClick={() => setPayMethod("Cash")}
-              className={`w-full p-4 rounded-2xl transition ${payMethod === "Cash"
-                ? "bg-green-600 text-black"
-                : "bg-zinc-800 hover:bg-zinc-700"
-                }`}
-            >
-              Cash on Delivery
-            </button>
+            <Cash
+              payMethod={payMethod}
+              price={product.price * quantity}
+              productId={productId}
+              message={message} />
           </div>
 
           {/* Selected Method */}

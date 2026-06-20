@@ -12,15 +12,17 @@ const Page = () => {
     useEffect(() => {
         const getData = async () => {
             try {
-                const oRes = await axios.get("/api/order")
-                const pRes = await axios.get("/api/review")
-                const hRes = await axios.get("/api/customer")
-                const rRes = await axios.get("/api/report")
+                const [oRes, pRes, hRes, rRes] = await Promise.all([
+                    axios.get("/api/order"),
+                    axios.get("/api/review"),
+                    axios.get("/api/customer"),
+                    axios.get("/api/report"),
+                ]);
                 setActivite(hRes.data.activity)
                 setReport(rRes.data.reports)
                 setOrder(oRes.data.order)
                 setReview(pRes.data.review)
-                console.log("hello",hRes.data.activity)
+                console.log("hello", hRes.data.activity)
             } catch (err) {
                 console.log(err)
             }
@@ -92,17 +94,25 @@ const Page = () => {
                             {activite.map((item, index) => (
                                 <div
                                     key={item._id}
-                                    className="flex items-center justify-between border-b border-green-500/10 pb-4">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-3 h-3 rounded-full bg-green-400"></div>
-                                        <p>{item.message}</p>
+                                    className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 p-4 border-b border-gray-200"
+                                >
+                                    <div className="flex items-start gap-3 flex-1 min-w-0">
+                                        <div className="w-3 h-3 rounded-full bg-green-400 mt-1 shrink-0"></div>
+
+                                        <p className="text-sm md:text-base break-words">
+                                            {item.message}
+                                        </p>
                                     </div>
-                                    <span className="text-gray-500 text-sm">
-                                        {item.type}
-                                    </span>
-                                    <span className="text-gray-500 text-sm">
-                                        {new Date(item.createdAt).toLocaleString()}
-                                    </span>
+
+                                    <div className="flex flex-wrap items-center gap-2 md:gap-4 text-xs md:text-sm text-gray-500">
+                                        <span className="px-2 py-1 bg-gray-100 rounded-full">
+                                            {item.type}
+                                        </span>
+
+                                        <span>
+                                            {new Date(item.createdAt).toLocaleString()}
+                                        </span>
+                                    </div>
                                 </div>
                             ))}
                         </div>

@@ -44,15 +44,13 @@ export async function POST(req) {
     }
     const qty = Number(quantity);
 
-    const product = await Product.findById(productId);
+    const product = await Product.findById(productId).populate("productId", "name price");
     if (!product) {
       return NextResponse.json(
         { success: false, message: "Product not found" },
         { status: 404 },
       );
     }
-
-    console.log(message)
     if (product.quantity < qty) {
       return NextResponse.json(
         { success: false, message: "Not enough stock" },
@@ -78,6 +76,8 @@ export async function POST(req) {
       message
     });
     await Activity.create({
+      userId, 
+      productId : product,
       message: `Purchase ${product.name} `,
       type: "purchase"
     })

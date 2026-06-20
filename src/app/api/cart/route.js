@@ -34,8 +34,8 @@ export async function POST(req) {
     const decode = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decode.userId || decode.id || decode._id;
     const existingCart = await Cart.findOne({
-      user: userId,
-      product: productId,
+      userId: userId,
+      productId: productId,
     });
     if (existingCart) {
       existingCart.quantity += 1;
@@ -46,8 +46,8 @@ export async function POST(req) {
       });
     }
     await Cart.create({
-      user: userId,
-      product: productId,
+      userId: userId,
+      productId: productId,
       quantity: 1,
     });
 

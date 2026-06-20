@@ -59,12 +59,12 @@ export async function POST(req) {
       report,
       reportType,
     });
-    const product = await Product.findById(productId)
+    const product = await Product.findById(productId).populate("userId", "firstName lastName")
     const user = await User.findById(userId);
 
     await Activity.create({
       userId,
-      message: `you report ${product?.name}`,
+      message: `you report the product ${product?.userId.firstName} ${product?.userId.lastName}`,
       type: "Report"
     })
     return NextResponse.json({ message: "report successfully", newReports });

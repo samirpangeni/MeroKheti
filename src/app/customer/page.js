@@ -3,30 +3,34 @@ import DashboardNav from "@/components/DashboardNav";
 import React, { useEffect, useState } from "react";
 import ProductFeed from "@/components/ProductFeed";
 import axios from "axios";
-import { startPPRNavigation } from "next/dist/client/components/router-reducer/ppr-navigations";
 import Loading from "@/components/Loading";
-
+import Link from "next/link"
 const page = () => {
   const [products, setProducts] = useState([]);
+  const [activity, setActivity] = useState([]);
   const [review, setReview] = useState([]);
   const [user, setUser] = useState([]);
   const [order, setOrder] = useState([]);
   const [cart, setCart] = useState([]);
-  const [pending, setPending] = useState([]);
+  const [pendingCount, setPendingCount] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false)
   useEffect(() => {
     const getData = async () => {
       try {
         setLoading(true)
-        const uRes = await axios.get("/api/user");
-        const oRes = await axios.get("/api/order")
-        const cRes = await axios.get("/api/cart")
-        const pRes = await axios.get("/api/order?paymentStatus=pending")
-        setOrder(oRes.data.order)
-        setPending(pRes.data.order)
-        setCart(cRes.data.carts)
-        setUser(uRes.data);
+        const res = await axios.get("/api/customer")
+
+        const pendingCount = res.data?.order?.filter(
+          (o) => o.paymentStatus === "pending"
+        ).length;
+
+        setPendingCount(pendingCount)
+        setActivity(res.data.activity)
+        console.log(res.data)
+        setOrder(res.data.order)
+        setCart(res.data.cart)
+        setUser(res.data);
 
         const review = await axios.get("api/review/my");
         setReview(
@@ -38,20 +42,19 @@ const page = () => {
         );
       } catch (err) {
         console.log(err);
-      }finally{
+      } finally {
         setLoading(false)
       }
     };
     getData();
   }, []);
-  if(loading){
+  if (loading) {
     return <Loading />
   }
   return (
     <div className="flex gap-2 w-full h-screen">
       <DashboardNav />
       <div className="w-full p-2 md:px-20 md:pl-70 pt-20">
-        {/* Welcome */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Welcome Back 👋</h1>
           <p className="mt-2 text-green-600 text-2xl">
@@ -71,7 +74,7 @@ const page = () => {
 
           <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
             <p className="text-gray-400 text-sm">Pending</p>
-            <h2 className="text-3xl font-bold mt-2">{pending.length}</h2>
+            <h2 className="text-3xl font-bold mt-2">{pendingCount}</h2>
           </div>
 
           <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
@@ -86,25 +89,55 @@ const page = () => {
         </div>
 
         {/* Recent Orders */}
-        <div className="bg-white/5 rounded-3xl border border-white/10 p-6 mb-8">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Recent Orders</h2>
+        <div className="bg-white/5 rounded-3xl border border-white/10 p-4 sm:p-6 mb-8">
 
-            <button className="text-green-400 text-sm">View All</button>
+          {/* Header */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg sm:text-xl font-semibold text-white">
+              Recent Orders
+            </h2>
+
+            <Link href="/customer/order">
+              <button className="text-green-400 text-sm hover:underline">
+                View All
+              </button>
+            </Link>
           </div>
 
-          <div className="space-y-4">
-            <div className="bg-black/20 rounded-2xl p-4 flex justify-between items-center">
-              <div>
-                <h3 className="font-medium">Fresh Tomato</h3>
-
-                <p className="text-sm text-gray-400">Delivered on May 20</p>
-              </div>
-
-              <span className="text-green-400 text-sm">Delivered</span>
+          {/* Content */}
+          {activity?.length === 0 ? (
+            <div className="text-gray-400 text-sm text-center py-6">
+              No Activity Yet
             </div>
-          </div>
+          ) : (
+            <div className="space-y-3">
+              {activity?.map((item) => (
+                <div
+                  key={item._id}
+                  className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 
+                     p-4 rounded-xl bg-white/5 hover:bg-white/10 transition"
+                >
+                  {/* Left side */}
+                  <div>
+                    <h1 className="text-white font-medium">
+                      {item.productId.name}
+                    </h1>
+                    <p className="text-gray-400 text-sm">
+                      {item.productId.userId.firstName}{" "}
+                      {item.productId.userId.lastName}
+                    </p>
+                  </div>
+
+                  {/* Optional right side info (you can add status/price/date later) */}
+                  <div className="text-xs text-gray-500 sm:text-right">
+                    Order #{item._id.slice(-6)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
+
 
         {/* Recommendations */}
         <div>
@@ -114,7 +147,7 @@ const page = () => {
           <ProductFeed products={products} setProducts={setProducts} search={search} setSearch={setSearch} />
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 

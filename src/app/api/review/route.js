@@ -5,28 +5,9 @@ import User from "../../../../models/User";
 import "../../../../models/User";
 import { NextResponse } from "next/server";
 import Activity from "../../../../models/Activity";
+import Product from "../../../../models/Product"
+import axios from "axios";
 
-export async function GET(req) {
-  try {
-    await connectDB();
-    const token = req.cookies.get("token")?.value;
-    if (!token) {
-      return NextResponse({ message: "unauthorized" }, { status: 401 })
-    }
-    const decode = jwt.verify(token, process.env.JWT_SECRET)
-    const userId = decode.id || decode.userId || decode._id
-    
-    const review = await Review.find({ userId }).populate(
-      "userId",
-      "firstName lastName",
-    );
-
-    return NextResponse.json({ review });
-  } catch (err) {
-    console.log(err);
-    return NextResponse.json({ message: "error" }, { status: 500 });
-  }
-}
 
 export async function POST(req) {
   try {
@@ -49,9 +30,11 @@ export async function POST(req) {
       rating,
       review,
     });
+    const product = await Product.findById(productId).populate("userId", "firstName lastName")
     await Activity.create({
       userId,
-      message: `you give me review`,
+      productId,
+      message: `Review to farmer ${product.userId.firstName} ${product.userId.lastName}`,
       type: "Review"
     })
     return NextResponse.json(newReview);
@@ -59,5 +42,25 @@ export async function POST(req) {
     console.log(err);
 
     return NextResponse.json({ message: "you have an error" }, { status: 500 });
+  }
+}
+
+export async function DELETE(req) {
+  try {
+    await connectDB();
+    const { searchParams } = new URL(req.url)
+    const id = searchParams.get("id")
+    if (!id) {
+      return NextResponse.json(
+        { message: "Review ID is required" },
+        { status: 400 }
+      );
+    }
+    await Review.findByIdAndDelete(id)
+    return NextResponse.json({ message: "review delete successfully" });
+
+  } catch (err) {
+    console.log(err)
+    return NextResponse.json({ message: "server error" }, { status: 500 })
   }
 }
