@@ -205,12 +205,14 @@ const Checkout = ({ productId, onClose }) => {
               quantity={quantity}
               price={product.price * quantity}
               productId={productId}
+              message={message}
             />
 
             <PayWithEsewa
               payMethod={payMethod}
               price={product.price * quantity}
               productId={productId}
+              message={message}
             />
 
             <button

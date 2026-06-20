@@ -1,7 +1,7 @@
 import connectDB from "../../../../lib/mongoose";
 import Order from "../../../../models/Order";
 import Product from "../../../../models/Product";
-import Activity  from "../../../../models/Activity";
+import Activity from "../../../../models/Activity";
 import User from "../../../../models/User";
 import { NextResponse } from "next/server";
 import { v4 as uuid } from "uuid";
@@ -35,7 +35,7 @@ export async function POST(req) {
     if (!userId) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
-    const { productId, quantity, payMethod } = await req.json();
+    const { productId, quantity, payMethod, message } = await req.json();
     if (!productId || !quantity || !payMethod) {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
@@ -52,16 +52,17 @@ export async function POST(req) {
       );
     }
 
+    console.log(message)
     if (product.quantity < qty) {
       return NextResponse.json(
         { success: false, message: "Not enough stock" },
         { status: 400 },
       );
     }
+
     const totalAmount = product.price * qty;
     const order = await Order.create({
       userId,
-      message,
       product: [
         {
           productId,
@@ -74,9 +75,10 @@ export async function POST(req) {
       paymentStatus: "pending",
       orderStatus: "pending",
       transaction_uuid: uuid(),
+      message
     });
     await Activity.create({
-      message: `Purchase ${product.name} `, 
+      message: `Purchase ${product.name} `,
       type: "purchase"
     })
     return NextResponse.json({
