@@ -5,8 +5,10 @@ import axios from "axios";
 import Link from "next/link";
 import PasswordUI from "@/components/PasswordUI";
 import ConfirmPassword from "@/components/ConfirmPassword";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 const Page = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
@@ -46,6 +48,9 @@ const Page = () => {
       setMobile("");
 
       toast.success("Account created successfully");
+      if(res.data.success){
+        route.push("/")
+      }
     } catch (err) {
       console.log(err.response?.data?.message);
     }
@@ -148,8 +153,8 @@ const Page = () => {
                 type="button"
                 onClick={() => setRole("customer")}
                 className={`border rounded-xl p-3 transition-all duration-200 ${role === "customer"
-                    ? "bg-green-600 text-white border-green-600"
-                    : "bg-white text-black border-gray-300 hover:border-black"
+                  ? "bg-green-600 text-white border-green-600"
+                  : "bg-white text-black border-gray-300 hover:border-black"
                   }`}
               >
                 <div className="flex flex-col items-center">
@@ -162,8 +167,8 @@ const Page = () => {
                 type="button"
                 onClick={() => setRole("farmer")}
                 className={`border rounded-xl p-3 transition-all duration-200 ${role === "farmer"
-                    ? "bg-green-600 text-white border-green-600"
-                    : "bg-white text-black border-gray-300 hover:border-green-600"
+                  ? "bg-green-600 text-white border-green-600"
+                  : "bg-white text-black border-gray-300 hover:border-green-600"
                   }`}
               >
                 <div className="flex flex-col items-center">

@@ -26,8 +26,8 @@ export async function GET(req) {
 
     return NextResponse.json({
       message: "login successful",
-
       user: user,
+      success: true,
     });
   } catch (error) {
     console.log(error);

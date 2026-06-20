@@ -22,6 +22,7 @@ export function middleware(req) {
 
   // Routes that require login
   const protectedRoutes = [
+    "/",
     "/dashboard",
     "/addProduct",
     "/cart",
@@ -32,10 +33,10 @@ export function middleware(req) {
   ];
 
   const isProtected = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
+    pathname === route || pathname.startsWith(route + "/")
   );
 
-  if (isProtected) {
+  if (isProtected && !token) {
     if (!token) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
@@ -58,6 +59,7 @@ export function middleware(req) {
 
 export const config = {
   matcher: [
+    "/",
     "/dashboard/:path*",
     "/addProduct/:path*",
     "/cart/:path*",
