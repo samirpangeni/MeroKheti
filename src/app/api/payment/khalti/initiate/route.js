@@ -37,7 +37,6 @@ export async function POST(req) {
     );
     const data = await response.json();
     if (!response.ok) {
-      console.log("Khalti error:", data);
       return NextResponse.json(
         { message: "Khalti initiation failed" },
         { status: 500 },

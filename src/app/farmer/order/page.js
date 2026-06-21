@@ -237,6 +237,9 @@ const Page = () => {
                         "N/A"}
                     </p>
                   </div>
+                  <div className="mt-5">
+                    <p className="text-text-400"> Message: <span className="text-sm text-green-300">{order.message}</span> </p>
+                  </div>
 
                   {/* Status Update */}
                   <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">

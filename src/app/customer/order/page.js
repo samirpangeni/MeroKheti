@@ -16,6 +16,7 @@ const Page = () => {
           withCredentials: true,
         });
         setOrders(res.data.order || []);
+        console.log(res.data.order || []);
       } catch (err) {
         console.error("Error fetching orders:", err);
       } finally {
@@ -85,7 +86,7 @@ const Page = () => {
                   key={order._id}
                   className={`not-first:overflow-hidden rounded-2xl grid md:grid-cols-2
                    bg-linear-to-b from-green-950/30 to-black
-                   border border-green-500/20 ${order.orderStatus === "pending"? 'border-red-500 text-red-400': 'bg-green-500/20'}
+                   border border-green-500/20 ${order.orderStatus === "pending" ? 'border-red-500 text-red-400' : 'bg-green-500/20'}
                    shadow-[0_0_30px_rgba(0,255,100,0.06)]
                    hover:scale-[1.02] transition duration-300`}
                 >
@@ -188,7 +189,9 @@ const Page = () => {
                         TXN ID: {order.transaction_uuid}
                       </p>
                     </div>
-
+                    <div className="mt-5">
+                      <p className="text-green-300"> Message: <span className="text-sm text-gray-500">{order.message}</span> </p>
+                    </div>
                     {/* Order Dates */}
                     <div className="mt-5 pt-4 border-t border-green-500/10">
                       <div className="space-y-1 text-xs text-gray-400">

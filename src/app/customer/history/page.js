@@ -22,7 +22,6 @@ const Page = () => {
                 setReport(rRes.data.reports)
                 setOrder(oRes.data.order)
                 setReview(pRes.data.review)
-                console.log("hello", hRes.data.activity)
             } catch (err) {
                 console.log(err)
             }

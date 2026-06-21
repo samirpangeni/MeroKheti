@@ -13,6 +13,7 @@ const page = () => {
   const [order, setOrder] = useState([]);
   const [cart, setCart] = useState([]);
   const [pendingCount, setPendingCount] = useState([]);
+  const [failedCount, setFailedCount] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false)
   useEffect(() => {
@@ -24,22 +25,15 @@ const page = () => {
         const pendingCount = res.data?.order?.filter(
           (o) => o.paymentStatus === "pending"
         ).length;
-
+        const failedCount = res.data?.order?.filter(
+          (o) => o.paymentStatus === "failed"
+        ).length;
+        setFailedCount(failedCount)
         setPendingCount(pendingCount)
         setActivity(res.data.activity)
-        console.log(res.data)
         setOrder(res.data.order)
         setCart(res.data.cart)
         setUser(res.data);
-
-        const review = await axios.get("api/review/my");
-        setReview(
-          Array.isArray(review.data.review)
-            ? review.data.review
-            : review.data.review
-              ? [review.data.review]
-              : [],
-        );
       } catch (err) {
         console.log(err);
       } finally {
@@ -75,6 +69,10 @@ const page = () => {
           <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
             <p className="text-gray-400 text-sm">Pending</p>
             <h2 className="text-3xl font-bold mt-2">{pendingCount}</h2>
+          </div>
+          <div className="bg-white/5 p-5 rounded-3xl border border-white/10">
+            <p className="text-gray-400 text-sm">failed</p>
+            <h2 className="text-3xl font-bold mt-2">{failedCount}</h2>
           </div>
 
           <div className="bg-white/5 p-5 rounded-3xl border border-white/10">

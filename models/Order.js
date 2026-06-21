@@ -4,12 +4,11 @@ const orderSchema = new mongoose.Schema(
   {
     khalti_pidx: {
       type: String,
-      unique: true,
+      required: true,
     },
     transaction_uuid: {
       type: String,
       required: true,
-      unique: true,
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,

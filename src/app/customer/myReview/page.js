@@ -25,7 +25,6 @@ const Page = () => {
               ? [response.data.review]
               : []
         );
-        console.log(response.data)
       } catch (err) {
         console.log(err);
       } finally {
