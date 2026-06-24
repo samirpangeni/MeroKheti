@@ -5,11 +5,14 @@ import axios from "axios";
 import Link from "next/link";
 import { toast, Toaster } from "react-hot-toast";
 import SlideBarForFarmer from "@/components/SlideBarForFarmer";
+import DeleteModal from "@/components/DeleteModels";
 
 const Page = () => {
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [selectionId, setSelectionId] = useState(null);
+  const [open, setOpen] = useState(false)
 
   const fetchProducts = async () => {
     try {
@@ -26,13 +29,16 @@ const Page = () => {
     fetchProducts();
   }, []);
 
-  const deleteProduct = async (id) => {
-    if (!window.confirm("Delete this product?")) return;
-
+  const deleteProduct = (id) => {
+    setSelectionId(id);
+    setOpen(true)
+  }
+  const confirmDelect = async () => {
     try {
-      await axios.delete(`/api/product?id=${id}`);
+      await axios.delete(`/api/product?id=${selectionId}`);
       toast.success("Product deleted");
       fetchProducts();
+      setOpen(false)
     } catch (err) {
       toast.error("Delete failed");
     }
@@ -104,7 +110,7 @@ const Page = () => {
             placeholder="Search products..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className=" w-full md:w-112.5 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 outline-none focus:border-green-500"/>
+            className=" w-full md:w-112.5 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 outline-none focus:border-green-500" />
         </div>
 
         {/* LOADING */}
@@ -135,12 +141,11 @@ const Page = () => {
                     <span
                       className={`
                         px-3 py-1 rounded-full text-xs font-semibold
-                        ${
-                          p.status === "approved"
-                            ? "bg-green-900 text-green-400"
-                            : p.status === "pending"
-                              ? "bg-yellow-900 text-yellow-400"
-                              : "bg-red-900 text-red-400"
+                        ${p.status === "approved"
+                          ? "bg-green-900 text-green-400"
+                          : p.status === "pending"
+                            ? "bg-yellow-900 text-yellow-400"
+                            : "bg-red-900 text-red-400"
                         }
                       `}
                     >
@@ -244,6 +249,12 @@ const Page = () => {
           </div>
         )}
       </div>
+      <DeleteModal
+        isOpen={open}
+        onClose={() => { setOpen(false) }}
+        onConfirm={confirmDelect}
+        type="Delete"
+        message='This action cannot be undone. Are you sure you want to delete product' />
     </div>
   );
 };

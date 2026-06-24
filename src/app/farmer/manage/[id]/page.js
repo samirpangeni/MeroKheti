@@ -1,5 +1,6 @@
 "use client";
 
+import DeleteModal from "@/components/DeleteModels";
 import SlideBarForFarmer from "@/components/SlideBarForFarmer";
 import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
@@ -8,13 +9,12 @@ import { toast } from "react-toastify";
 const Page = () => {
   const { id } = useParams();
   const router = useRouter();
-
   const [product, setProduct] = useState(null);
-
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
+  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     const getData = async () => {
@@ -32,14 +32,12 @@ const Page = () => {
   const handleData = async () => {
     try {
       await axios.put(`/api/product/${id}`, {
-        name,
-        quantity,
-        description,
-        price,
+        name: name || product.name,
+        quantity: quantity || product.quantity,
+        description: description || product.description,
+        price: price || product.price,
       });
-
       toast.success("Product Updated Successfully");
-
       router.push("/farmer/manage");
     } catch (err) {
       console.log(err);
@@ -59,7 +57,7 @@ const Page = () => {
     <div className="flex min-h-screen bg-black">
       <SlideBarForFarmer />
 
-      <div className="flex-1 p-10">
+      <div className="flex-1 md:pl-70 mt-10 p-10">
         <div className="max-w-4xl mx-auto bg-zinc-900 border border-green-900 rounded-3xl overflow-hidden shadow-xl">
           {/* Product Image */}
           <div className="h-72 overflow-hidden">
@@ -115,7 +113,6 @@ const Page = () => {
                 </div>
                 <div className="flex flex-col">
                   <label className="text-gray-300 block mb-2">
-                    {" "}
                     Change Price (Rs):
                   </label>
                   <input
@@ -176,7 +173,7 @@ const Page = () => {
 
             <div className="flex gap-4 mt-8">
               <button
-                onClick={handleData}
+                onClick={() => { setOpen(true) }}
                 className="flex-1 bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-lg transition"
               >
                 Save Changes
@@ -192,6 +189,13 @@ const Page = () => {
           </div>
         </div>
       </div>
+      <DeleteModal
+        isOpen={open}
+        onClose={() => { setOpen(false) }}
+        onConfirm={handleData}
+        type='Update Product'
+        message='Are you sure you want to save these changes?'
+        confirmText="Update" />
     </div>
   );
 };

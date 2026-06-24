@@ -5,10 +5,13 @@ import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
-
+import DeleteModels from "@/components/DeleteModels"
 const Page = () => {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(false)
+  const [selectionId, setSelection] = useState(null)
+  const [open, setOpen] = useState(false)
+  const [actionType, setActionType] = useState("");
   useEffect(() => {
     const getData = async () => {
       try {
@@ -24,25 +27,43 @@ const Page = () => {
 
     getData();
   }, []);
-
-  // APPROVE / REJECT FUNCTION
-  const updateStatus = async (id, status) => {
+  const handleConfirm = async () => {
     try {
-      await axios.put("/api/admin", { id, status });
-      setProduct((prev) => prev.filter((item) => item._id !== id));
-      toast.success("you update the proudct")
+      if (actionType === "approve") {
+        await axios.put("/api/admin", {
+          selectionId,
+          status: "approved",
+        });
+
+        setProduct((prev) =>
+          prev.filter((item) => item._id !== selectionId)
+        );
+
+        toast.success("Product approved successfully");
+      }
+
+      if (actionType === "delete") {
+        await axios.delete(`/api/product?id=${selectionId}`);
+
+        setProduct((prev) =>
+          prev.filter((item) => item._id !== selectionId)
+        );
+
+        toast.success("Product deleted successfully");
+      }
+
+      setOpen(false);
+      setSelection(null);
+      setActionType("");
     } catch (err) {
       console.log(err);
+      toast.error("Something went wrong");
     }
   };
-  const deleteProduct = async (id, status) => {
-    try {
-      await axios.delete(`api/product?id=${id}`);
-      setProduct((prev) => prev.filter((item) => item._id !== id));
-      toast.success("you delete the product")
-    } catch (err) {
-      console.log(err);
-    }
+  const openModal = (id, action) => {
+    setSelection(id);
+    setActionType(action);
+    setOpen(true);
   };
   return (
     <div className="flex min-h-screen bg-black text-white">
@@ -118,7 +139,7 @@ const Page = () => {
                     </span>
                     <span className="text-gray-400 text-sm">{item.category}</span>
                   </div>
-    
+
                   <div className="text-sm text-gray-400 mt-3 space-y-1">
                     <p>📍 {item.location}</p>
                     <p> 📦 {item.quantity} {item.unit} </p>
@@ -150,14 +171,14 @@ const Page = () => {
                   {/* ACTIONS */}
                   <div className="flex gap-3 mt-5">
                     <button
-                      onClick={() => updateStatus(item._id, "approved")}
+                      onClick={() => openModal(item._id, "approve")}
                       className="flex-1 bg-green-500 hover:bg-green-600 text-black font-bold py-2 rounded-xl"
                     >
                       Approve
                     </button>
 
                     <button
-                      onClick={() => deleteProduct(item._id, "rejected")}
+                      onClick={() => openModal(item._id, "delete")}
                       className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-2 rounded-xl"
                     >
                       Reject
@@ -168,6 +189,25 @@ const Page = () => {
             ))}
           </div>
         )}
+      </div>
+      <div>
+        <DeleteModels
+          isOpen={open}
+          onClose={() => { setOpen(false) }}
+          onConfirm={handleConfirm}
+          type={
+            actionType === "approve"
+              ? "Approve Product"
+              : "Delete Product"
+          }
+          message={
+            actionType === "approve"
+              ? "Are you sure you want to approve this product?"
+              : "Are you sure you want to permanently delete this product?"
+          }
+          confirmText={actionType === "approve" ?
+            "Approved" : "Reject"
+          } />
       </div>
     </div>
   );

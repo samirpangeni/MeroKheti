@@ -87,7 +87,7 @@ const Page = () => {
     <div className="flex min-h-screen bg-black text-white">
       <SlideBarForAdmin />
 
-      <div className="flex-1 p-6 md:pl-70 bg-gradient-to-br from-black via-gray-950 to-green-950">
+      <div className="flex-1 p-6 md:pl-70 bg-linear-to-br from-black via-gray-950 to-green-950 ">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-green-400">

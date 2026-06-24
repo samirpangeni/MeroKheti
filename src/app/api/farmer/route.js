@@ -3,6 +3,7 @@ import Product from "../../../../models/Product";
 import Review from "../../../../models/Review";
 import Order from "../../../../models/Order";
 import User from "../../../../models/User";
+import Activity from "../../../../models/Activity";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 
@@ -106,5 +107,25 @@ export async function GET(req) {
       { message: "Server Error" },
       { status: 500 }
     );
+  }
+}
+export async function DELETE(req) {
+  try {
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    if (!id) {
+      return NextResponse.json({ message: "product not id" }, { status: 401 })
+    }
+    const product = await Product.findByIdAndDelete(id);
+    await Activity.create({
+      message: `User ${product.name} was delete`,
+      type: "delete",
+    });
+    return NextResponse.json({ success: true })
+
+  } catch (err) {
+    console.log(err)
+    return NextResponse.json({ message: "server error" }, { status: 500 })
   }
 }

@@ -3,11 +3,15 @@ import SlideBarForFarmer from "@/components/SlideBarForFarmer";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import DeleteModels from "@/components/DeleteModels"
 const Page = () => {
   const router = useRouter();
   const [product, setProduct] = useState([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
+  const [openDelete, setOpenDelete] = useState(false)
+  const [selectionId, setSelectionId] = useState(null)
   useEffect(() => {
     const getData = async () => {
       const res = await axios.get(
@@ -17,6 +21,16 @@ const Page = () => {
     };
     getData();
   }, [search, category]);
+  const deleteProduct = async (id) => {
+    setSelectionId(id);
+    setOpenDelete(true)
+  };
+  const confirmDelete = async () => {
+    const res = await axios.delete(`/api/farmer?id=${selectionId}`);
+    setProduct((prev) => prev.filter((item) => item._id !== selectionId));
+    toast.success("you delete the product")
+    setOpenDelete(false)
+  }
 
   return (
     <div className="flex min-h-screen bg-black mb-10">
@@ -148,7 +162,8 @@ const Page = () => {
                       Edit
                     </button>
 
-                    <button className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl font-medium transition">
+                    <button className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl font-medium transition"
+                      onClick={() => { deleteProduct(item._id) }}>
                       Delete
                     </button>
                   </div>
@@ -157,6 +172,14 @@ const Page = () => {
             ))}
           </div>
         )}
+      </div>
+      <div>
+        <DeleteModels 
+        isOpen={openDelete}
+        onClose={()=>{setOpenDelete(false)}}
+        onConfirm={confirmDelete}
+        type="Delete"
+        message="This action cannot be undone. Are you sure you want to delete product"/>
       </div>
     </div>
   );

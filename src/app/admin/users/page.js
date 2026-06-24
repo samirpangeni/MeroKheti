@@ -3,10 +3,13 @@ import React, { useState, useEffect } from "react";
 import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
 import Loading from "@/components/Loading";
+import DeleteModal from "@/components/DeleteModels";
 const page = () => {
   const [users, setUsers] = useState([]);
   const [role, setRole] = useState();
   const [loading, setLoading] = useState(false);
+  const [selectionId, setSelectionId] = useState(null)
+  const [open, setOpen] = useState(false)
   useEffect(() => {
     const getData = async () => {
       try {
@@ -16,19 +19,24 @@ const page = () => {
         setUsers(uRes.data.user);
       } catch (err) {
         console.log(err);
-      }finally{
+      } finally {
         setLoading(false)
       }
     };
     getData();
   }, [role]);
-  if(loading){
+  if (loading) {
     return <Loading />
   }
-  const handelData = async (id) => {
+  const deleteUser = async (id) => {
+    setSelectionId(id)
+    setOpen(true)
+  }
+  const confrimDelete = async () => {
     try {
-      const dRes = await axios.delete(`/api/admin?id=${id}`);
-      setUsers((prev) => prev.filter((u) => u._id !== id));
+      const dRes = await axios.delete(`/api/admin?id=${selectionId}`);
+      setUsers((prev) => prev.filter((u) => u._id !== selectionId));
+      setOpen(false)
     } catch (err) {
       console.log(err);
     }
@@ -93,13 +101,12 @@ const page = () => {
 
                     <td>
                       <span
-                        className={`px-3 py-1 rounded-full text-xs ${
-                          u.role === "admin"
-                            ? "bg-red-500"
-                            : u.role === "farmer"
-                              ? "bg-green-600"
-                              : "bg-blue-600"
-                        }`}
+                        className={`px-3 py-1 rounded-full text-xs ${u.role === "admin"
+                          ? "bg-red-500"
+                          : u.role === "farmer"
+                            ? "bg-green-600"
+                            : "bg-blue-600"
+                          }`}
                       >
                         {u.role}
                       </span>
@@ -115,7 +122,7 @@ const page = () => {
                       <button
                         className="bg-red-600 px-3 py-1 rounded-lg text-sm"
                         onClick={() => {
-                          handelData(u._id);
+                          deleteUser(u._id);
                         }}
                       >
                         Delete
@@ -128,6 +135,14 @@ const page = () => {
           </div>
         </div>
       </div>
+      <DeleteModal
+      isOpen={open}
+      onClose={()=>{setOpen(false)}}
+      onConfirm={confrimDelete}
+      type='Delete'
+      message='This action cannot be undone. Are you sure you want to delete User'
+      confirmText='Delete'/>
+
     </div>
   );
 };

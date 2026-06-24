@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
 import Loading from "@/components/Loading";
+import DeleteModal from "@/components/DeleteModels";
 
 const Page = () => {
   const [product, setProduct] = useState([]);
@@ -11,7 +12,8 @@ const Page = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
   const [organic, setOrganic] = useState("");
-
+  const [selectionId, setSelectionId] = useState(null)
+  const [open, setOpen] = useState(false)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,10 +32,14 @@ const Page = () => {
   }, []);
 
   const deleteProduct = async (id) => {
+    setSelectionId(id)
+    setOpen(true)
+  };
+  const confirmDelete = async () => {
     try {
-      await axios.delete(`/api/admin?id=${id}`);
-
-      setProduct((prev) => prev.filter((item) => item._id !== id));
+      await axios.delete(`/api/admin?id=${selectionId}`);
+      setProduct((prev) => prev.filter((item) => item._id !== selectionId));
+      setOpen(false)
     } catch (err) {
       console.log(err);
     }
@@ -60,7 +66,7 @@ const Page = () => {
     <div className="flex min-h-screen bg-black text-white">
       <SlideBarForAdmin />
 
-      <div className="flex-1 p-8 pl-70 bg-gradient-to-br from-black via-gray-950 to-green-950">
+      <div className="flex-1 p-8 pl-70 bg-linear-to-br from-black via-gray-950 to-green-950">
         {/* HEADER */}
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -130,11 +136,10 @@ const Page = () => {
                   />
 
                   <span
-                    className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold ${
-                      item.organic
-                        ? "bg-green-600"
-                        : "bg-orange-600"
-                    }`}
+                    className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold ${item.organic
+                      ? "bg-green-600"
+                      : "bg-orange-600"
+                      }`}
                   >
                     {item.organic ? "Organic" : "Non Organic"}
                   </span>
@@ -291,6 +296,13 @@ const Page = () => {
           </div>
         )}
       </div>
+      <DeleteModal
+        isOpen={open}
+        onClose={() => { setOpen(false) }}
+        onConfirm={confirmDelete}
+        type='Delete'
+        message='This action cannot be undone. Are you sure you want to delete product'
+        confirmText='Delete' />
     </div>
   );
 };

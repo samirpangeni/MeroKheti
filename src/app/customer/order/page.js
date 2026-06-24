@@ -16,7 +16,6 @@ const Page = () => {
           withCredentials: true,
         });
         setOrders(res.data.order || []);
-        console.log(res.data.order || []);
       } catch (err) {
         console.error("Error fetching orders:", err);
       } finally {

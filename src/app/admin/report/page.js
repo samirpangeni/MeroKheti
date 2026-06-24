@@ -5,10 +5,13 @@ import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
 import Link from "next/link"
 import Loading from "@/components/Loading";
+import DeleteModal from "@/components/DeleteModels";
 const Page = () => {
   const [reports, setReports] = useState([]);
   const [selectedType, setSelectedType] = useState("All");
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [selectionId, setSelectionId] = useState(null)
   useEffect(() => {
     const getData = async () => {
       try {
@@ -17,29 +20,41 @@ const Page = () => {
         setReports(res.data.report);
       } catch (err) {
         console.log(err);
-      }finally{
+      } finally {
         setLoading(false)
       }
     };
 
     getData();
   }, []);
-
+  const deleteReport = async (id) => {
+    setSelectionId(id)
+    setOpen(true)
+  }
+  const confirmDelete = async () => {
+    try {
+      const res = await axios.delete(`/api/admin?id=${selectionId}`)
+      setReports((prev) => prev.filter((item) => item._id !== selectionId))
+      setOpen(false)
+    } catch (err) {
+      console.log(err)
+    }
+  }
   // Filter Reports
   const filteredReports =
     selectedType === "All"
       ? reports
       : reports.filter((item) => item.reportType === selectedType);
-if(loading){
-  return <Loading />
-}
+  if (loading) {
+    return <Loading />
+  }
   return (
     <div className="flex min-h-screen bg-black text-white">
       {/* Sidebar */}
       <SlideBarForAdmin />
 
       {/* Main Content */}
-      <div className="flex-1 p-8 pl-70 bg-gradient-to-br from-black via-[#07130b] to-[#0d1f14]">
+      <div className="flex-1 p-8 pl-70 bg-linear-to-br from-black via-[#07130b] to-[#0d1f14]">
         {/* Header */}
         <div className="mb-10">
           <h1 className="text-4xl font-bold text-green-400">
@@ -94,55 +109,50 @@ if(loading){
         <div className="flex flex-wrap gap-4 mb-10">
           <button
             onClick={() => setSelectedType("All")}
-            className={`px-5 py-2 rounded-2xl border duration-300 ${
-              selectedType === "All"
-                ? "bg-green-600 border-green-500"
-                : "bg-[#101010] border-[#1d3b28]"
-            }`}
+            className={`px-5 py-2 rounded-2xl border duration-300 ${selectedType === "All"
+              ? "bg-green-600 border-green-500"
+              : "bg-[#101010] border-[#1d3b28]"
+              }`}
           >
             All
           </button>
 
           <button
             onClick={() => setSelectedType("Fraud")}
-            className={`px-5 py-2 rounded-2xl border duration-300 ${
-              selectedType === "Fraud"
-                ? "bg-red-600 border-red-500"
-                : "bg-[#101010] border-[#3b1d1d]"
-            }`}
+            className={`px-5 py-2 rounded-2xl border duration-300 ${selectedType === "Fraud"
+              ? "bg-red-600 border-red-500"
+              : "bg-[#101010] border-[#3b1d1d]"
+              }`}
           >
             Fraud
           </button>
 
           <button
             onClick={() => setSelectedType("Spam")}
-            className={`px-5 py-2 rounded-2xl border duration-300 ${
-              selectedType === "Spam"
-                ? "bg-yellow-600 border-yellow-500"
-                : "bg-[#101010] border-[#3b381d]"
-            }`}
+            className={`px-5 py-2 rounded-2xl border duration-300 ${selectedType === "Spam"
+              ? "bg-yellow-600 border-yellow-500"
+              : "bg-[#101010] border-[#3b381d]"
+              }`}
           >
             Spam
           </button>
 
           <button
             onClick={() => setSelectedType("Fake Product")}
-            className={`px-5 py-2 rounded-2xl border duration-300 ${
-              selectedType === "Fake Product"
-                ? "bg-purple-600 border-purple-500"
-                : "bg-[#101010] border-[#2d1d3b]"
-            }`}
+            className={`px-5 py-2 rounded-2xl border duration-300 ${selectedType === "Fake Product"
+              ? "bg-purple-600 border-purple-500"
+              : "bg-[#101010] border-[#2d1d3b]"
+              }`}
           >
             Fake Product
           </button>
 
           <button
             onClick={() => setSelectedType("Wrong Information")}
-            className={`px-5 py-2 rounded-2xl border duration-300 ${
-              selectedType === "Wrong Information"
-                ? "bg-blue-600 border-blue-500"
-                : "bg-[#101010] border-[#1d2a3b]"
-            }`}
+            className={`px-5 py-2 rounded-2xl border duration-300 ${selectedType === "Wrong Information"
+              ? "bg-blue-600 border-blue-500"
+              : "bg-[#101010] border-[#1d2a3b]"
+              }`}
           >
             Wrong Information
           </button>
@@ -209,11 +219,11 @@ if(loading){
 
               {/* Buttons */}
               <div className="flex flex-wrap gap-4 mt-6">
-               <Link href={`/product/${item.productId?._id}`}>
+                <Link href={`/product/${item.productId?._id}`}>
                   <button className=" p-2 bg-green-400 rounded-lg border-0"> View Details </button>
                 </Link>
 
-                <button className="p-2 rounded-2xl bg-red-600 hover:bg-red-700 duration-300 font-semibold">
+                <button onClick={()=>{deleteReport(item._id)}} className="p-2 rounded-2xl bg-red-600 hover:bg-red-700 duration-300 font-semibold">
                   Delete Product
                 </button>
 
@@ -225,6 +235,13 @@ if(loading){
           ))}
         </div>
       </div>
+      <DeleteModal
+        isOpen={open}
+        onClose={() => { setOpen(false) }}
+        onConfirm={confirmDelete}
+        type='Delete'
+        message='This action cannot be undone. Are you sure you want to delete report'
+        confirmText='Delete' />
     </div>
   );
 };

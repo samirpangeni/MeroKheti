@@ -53,8 +53,10 @@ export async function DELETE(req) {
   try {
     await connectDB();
     const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
-    if (!id) {
+    const userId = searchParams.get("id");
+    const reportId = searchParams.get("id");
+    const productId = searchParams.get("id");
+    if (!userId) {
       return NextResponse.json(
         {
           message: "User ID required",
@@ -62,20 +64,25 @@ export async function DELETE(req) {
         { status: 400 },
       );
     }
-    const user = await User.findByIdAndDelete(id);
-    if (!user) {
-      return NextResponse.json(
-        {
-          message: "User Not found",
-        },
-        { status: 404 },
-      );
+    const product = await Product.findByIdAndDelete(productId);
+    if (reportId) {
+      await Report.findByIdAndDelete(reportId);
     }
 
-    await Activity.create({
-      message: `User ${user.email} was delete`,
-      type: "delete",
-    });
+    else {
+      const user = await User.findByIdAndDelete(userId);
+      if (!user) {
+        return NextResponse.json(
+          { message: "User Not found" },
+          { status: 404 },
+        );
+      }
+      await Activity.create({
+        message: `User ${user.email} was delete`,
+        type: "delete",
+      });
+    }
+
     return NextResponse.json({ message: "user deleted successfully" });
   } catch (err) {
     console.log(err);
@@ -87,13 +94,15 @@ export async function PUT(req) {
   try {
     await connectDB();
     const body = await req.json();
-    const { status, id } = body;
+    const { status, selectionId } = body;
+    console.log(body)
+    console.log("hello",selectionId)
     const updateProduct = await Product.findByIdAndUpdate(
-      id,
+      selectionId,
       { status },
       { new: true },
     );
-    if (!id || !status) {
+    if (!selectionId || !status) {
       return NextResponse.json({ message: "Missing fields" }, { status: 400 });
     }
     await Activity.create({

@@ -6,11 +6,13 @@ import axios from "axios";
 import Link from "next/link";
 import Loading from "@/components/Loading";
 import { toast } from "react-toastify";
+import DeleteModal from "@/components/DeleteModels";
 
 const Page = () => {
   const [review, setReview] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [open, setOpen] = useState(false)
+  const [selectionId, setSelectionId] = useState(null)
   useEffect(() => {
     const handleData = async () => {
       try {
@@ -34,10 +36,16 @@ const Page = () => {
 
     handleData();
   }, []);
-  const deleteReview = async (id) => {
+  const deleteReview = (id) => {
+    setSelectionId(id);
+    setOpen(true)
+  }
+  const confrimDelete = async (id) => {
     try {
-      const res = await axios.delete(`/api/review?id=${id}`);
+      const res = await axios.delete(`/api/review?id=${selectionId}`);
+       setReview((prev) => prev.filter((u) => u._id !== selectionId));
       toast.success("Review delete successfully")
+      setOpen(false)
     } catch (err) {
       console.log(err)
       toast.error("failed to delete review try later")
@@ -176,6 +184,13 @@ const Page = () => {
           </div>
         )}
       </div>
+      <DeleteModal
+        isOpen={open}
+        onClose={() => { setOpen(false) }}
+        onConfirm={confrimDelete}
+        type="Delete"
+        message='This action cannot be undone. Are you sure you want to delete review'
+        confirmText='Delete' />
     </div>
   );
 };
