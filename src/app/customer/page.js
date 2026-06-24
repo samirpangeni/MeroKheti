@@ -21,7 +21,7 @@ const page = () => {
       try {
         setLoading(true)
         const res = await axios.get("/api/customer")
-
+        const ures = await axios.get("/api/user")
         const pendingCount = res.data?.order?.filter(
           (o) => o.paymentStatus === "pending"
         ).length;
@@ -31,6 +31,7 @@ const page = () => {
         setFailedCount(failedCount)
         setPendingCount(pendingCount)
         setActivity(res.data.activity)
+        console.log(res.data)
         setOrder(res.data.order)
         setCart(res.data.cart)
         setUser(res.data);
@@ -118,11 +119,11 @@ const page = () => {
                   {/* Left side */}
                   <div>
                     <h1 className="text-white font-medium">
-                      {item.productId.name}
+                      {item.productId?.name}
                     </h1>
                     <p className="text-gray-400 text-sm">
-                      {item.productId.userId.firstName}{" "}
-                      {item.productId.userId.lastName}
+                      {item.productId?.userId.firstName}{" "}
+                      {item.productId?.userId.lastName}
                     </p>
                   </div>
 

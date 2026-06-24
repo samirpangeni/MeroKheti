@@ -9,6 +9,7 @@ const activitySchema = new mongoose.Schema(
     productId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
+      require: true,
     },
     message: {
       type: String,

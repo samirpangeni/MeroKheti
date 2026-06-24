@@ -31,6 +31,7 @@ export async function GET(req) {
                 select: "firstName lastName"
             }
         })
+        
         return NextResponse.json({ success: true, activity, cart, order, review})
     } catch (err) {
         console.log(err)

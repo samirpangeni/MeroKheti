@@ -64,6 +64,7 @@ export async function POST(req) {
 
     await Activity.create({
       userId,
+      productId: product,
       message: `you report the product ${product?.userId.firstName} ${product?.userId.lastName}`,
       type: "Report"
     })

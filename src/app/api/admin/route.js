@@ -64,7 +64,19 @@ export async function DELETE(req) {
         { status: 400 },
       );
     }
-    const product = await Product.findByIdAndDelete(productId);
+    if (!productId) {
+      return NextResponse.json(
+        { message: "Product ID is required" },
+        { status: 400 }
+      );
+    }
+
+    if (!productId) {
+      const product = await Product.findByIdAndDelete(productId);
+      await Order.deleteMany({
+        "product.productId": productId
+      });
+    }
     if (reportId) {
       await Report.findByIdAndDelete(reportId);
     }
@@ -96,7 +108,6 @@ export async function PUT(req) {
     const body = await req.json();
     const { status, selectionId } = body;
     console.log(body)
-    console.log("hello",selectionId)
     const updateProduct = await Product.findByIdAndUpdate(
       selectionId,
       { status },
@@ -107,6 +118,7 @@ export async function PUT(req) {
     }
     await Activity.create({
       message: `Admin ${status} ${updateProduct.name}`,
+      productId: updateProduct,
       type: "approved",
     });
     return NextResponse.json({

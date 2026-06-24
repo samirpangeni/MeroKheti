@@ -51,7 +51,6 @@ const Page = () => {
 
         toast.success("Product deleted successfully");
       }
-
       setOpen(false);
       setSelection(null);
       setActionType("");

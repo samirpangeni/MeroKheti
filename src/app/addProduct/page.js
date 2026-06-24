@@ -38,20 +38,10 @@ const Page = () => {
     location.trim() &&
     files.length >= 2;
 
-  const parseDate = (str) => {
-    const [day, month, year] = str.split("/");
-    return new Date(`${year}-${month}-${day}`);
-  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const hDate = parseDate(harvestDate);
-    const eDate = parseDate(expiryDate);
-
-    if (harvestDate && expiryDate && hDate > eDate) {
-      toast.error("🚫 Harvest date cannot be after expiry date");
-      setIsSubmitting(false);
-      return;
-    }
+    
     if (!isValid) {
       toast.error("Please fill all required fields");
       return;
@@ -92,6 +82,7 @@ const Page = () => {
       setLocation("");
       setFiles([]);
     } catch (err) {
+      console.log(err)
       toast.error(
         err.response?.data?.message || "❌ Failed to add product"
       );

@@ -119,6 +119,7 @@ export async function DELETE(req) {
     }
     const product = await Product.findByIdAndDelete(id);
     await Activity.create({
+      productId: product,
       message: `User ${product.name} was delete`,
       type: "delete",
     });

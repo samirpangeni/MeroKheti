@@ -4,7 +4,6 @@ const orderSchema = new mongoose.Schema(
   {
     khalti_pidx: {
       type: String,
-      required: true,
     },
     transaction_uuid: {
       type: String,

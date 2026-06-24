@@ -35,7 +35,7 @@ export async function POST(req) {
     if (!userId) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
-    const { productId, quantity, payMethod, message } = await req.json();
+    const { productId, quantity, payMethod, message, khalti_pidx } = await req.json();
     if (!productId || !quantity || !payMethod) {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
@@ -73,7 +73,8 @@ export async function POST(req) {
       paymentStatus: "pending",
       orderStatus: "pending",
       transaction_uuid: uuid(),
-      message
+      message,
+      khalti_pidx
     });
     await Activity.create({
       userId, 
@@ -86,6 +87,7 @@ export async function POST(req) {
       orderId: order._id,
       transaction_uuid: order.transaction_uuid,
       totalAmount,
+      khalti_pidx
     });
   } catch (err) {
     console.log(err);

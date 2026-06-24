@@ -8,6 +8,7 @@ import Activity from "../../../../models/Activity";
 import Review from "../../../../models/Review";
 import Report from "../../../../models/Report";
 import User from "../../../../models/User";
+import Order from "../../../../models/Order";
 export async function GET(req) {
   try {
     await connectDB();
@@ -123,6 +124,7 @@ export async function POST(req) {
     });
     await Activity.create({
       message: `${userId.firstName} added a new product`,
+      productId: product._id,
       type: "product",
     });
 
@@ -151,6 +153,7 @@ export async function DELETE(req) {
     await Product.findByIdAndDelete(id);
     await Review.deleteMany({ productId: id });
     await Report.deleteMany({ productId: id });
+    await Order.deleteMany({productId: id})
     return NextResponse.json({ message: "product delete successfully" });
   } catch (err) {
     console.log(err);

@@ -18,7 +18,6 @@ const Checkout = ({ productId, onClose }) => {
       try {
         const res = await axios.get(`/api/product/${productId}`);
         setProduct(res.data.product);
-        console.log(res.data.product)
       } catch (err) {
         console.log(err);
       } finally {
@@ -41,6 +40,7 @@ const Checkout = ({ productId, onClose }) => {
         quantity,
         payMethod,
         message,
+        khalti_pidx
       });
       toast.success("Order placed successfully!");
       onClose?.();

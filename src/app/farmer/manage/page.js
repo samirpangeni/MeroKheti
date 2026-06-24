@@ -254,6 +254,7 @@ const Page = () => {
         onClose={() => { setOpen(false) }}
         onConfirm={confirmDelect}
         type="Delete"
+        confirmText='Delete'
         message='This action cannot be undone. Are you sure you want to delete product' />
     </div>
   );
