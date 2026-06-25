@@ -1,7 +1,7 @@
 "use client";
 
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -26,6 +26,7 @@ const Page = () => {
   const [category, setCategory] = useState("");
   const [organic, setOrganic] = useState(false);
   const [location, setLocation] = useState("");
+  const [farmerLocation, setFarmerLocation] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isValid =
@@ -41,7 +42,7 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!isValid) {
       toast.error("Please fill all required fields");
       return;
@@ -62,14 +63,14 @@ const Page = () => {
       formData.append("category", category);
       formData.append("organic", organic.toString());
       formData.append("location", location);
+      formData.append("latitude", farmerLocation.lat)
+      formData.append("longitude", farmerLocation.lng)
 
       files.forEach((file) => {
         formData.append("files", file);
       });
       await axios.post("/api/product", formData);
       toast.success(" Product added successfully!");
-
-      // Reset
       setName("");
       setPrice("");
       setDescription("");
@@ -90,6 +91,26 @@ const Page = () => {
       setIsSubmitting(false);
     }
   };
+  useEffect(() => {
+    const getLocation = () => {
+      if (!navigation.getLocation) {
+        alert("Geolocation is not support")
+        return;
+      }
+      navigation.getLocation.getCurrentPosition(
+        (postion) => {
+          setFarmerLocation({
+            lat: postion.coords.latitude,
+            lng: postion.coords.longitude,
+          });
+        },
+        (error) => {
+          console.log(error)
+        }
+      )
+    }
+    getLocation();
+  }, [])
 
   return (
     <div className="min-h-screen bg-linear-to-br from-black via-[#06140d] to-[#0b1f14] text-white relative overflow-hidden">

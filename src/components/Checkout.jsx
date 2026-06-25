@@ -13,6 +13,7 @@ const Checkout = ({ productId, onClose }) => {
   const [payMethod, setPayMethod] = useState("Cash");
   const [ordering, setOrdering] = useState(false);
   const [message, setMessage] = useState("");
+  const [location, setLocation] = useState("");
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -28,7 +29,8 @@ const Checkout = ({ productId, onClose }) => {
     if (productId) fetchProduct();
   }, [productId]);
 
-
+  const longitude = location.lng;
+  const latitude = location.lat;
   const handleOrder = async (e) => {
     e.preventDefault();
 
@@ -40,7 +42,9 @@ const Checkout = ({ productId, onClose }) => {
         quantity,
         payMethod,
         message,
-        khalti_pidx
+        khalti_pidx,
+        longitude,
+        latitude
       });
       toast.success("Order placed successfully!");
       onClose?.();
@@ -51,7 +55,26 @@ const Checkout = ({ productId, onClose }) => {
       setOrdering(false);
     }
   };
-
+  useEffect(() => {
+    const getLocation = () => {
+      if (!navigation.getLocation) {
+        alert("Geolocation is not support")
+        return;
+      }
+      navigation.getLocation.getCurrentPosition(
+        (postion) => {
+          setLocation({
+            lat: postion.coords.latitude,
+            lng: postion.coords.longitude,
+          });
+        },
+        (error) => {
+          console.log(error)
+        }
+      )
+    }
+    getLocation();
+  }, [])
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen bg-black w-full">

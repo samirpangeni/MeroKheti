@@ -32,6 +32,10 @@ const orderSchema = new mongoose.Schema(
     message: {
       type: String,
     },
+    locaiton:{
+      lat: Number,
+      lng: Number,
+    },
     paymentMethod: {
       type: String,
       enum: ["khalti", "esewa", "Cash"],

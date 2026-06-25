@@ -22,27 +22,7 @@ const Image = ({ files, setFiles }) => {
       {/* Upload Box */}
       <div
         onClick={() => fileInputRef.current.click()}
-        className="
-          relative
-          w-full
-          border-2
-          border-dashed
-          border-green-900/40
-          bg-black/40
-          hover:bg-black/60
-          hover:border-green-500/50
-          transition-all
-          duration-300
-          rounded-3xl
-          p-6
-          flex
-          flex-col
-          items-center
-          justify-center
-          gap-2
-          cursor-pointer
-        "
-      >
+        className="relative w-full border-2 border-dashed border-green-900/40 bg-black/40 hover:bg-black/60 hover:border-green-500/50 transition-all duration-300 rounded-3xl p-6 flex flex-col items-center justify-center gap-2 cursor-pointer">
         <FiUploadCloud className="text-green-500 text-3xl" />
 
         <p className="text-gray-300 font-medium">
@@ -58,6 +38,7 @@ const Image = ({ files, setFiles }) => {
           ref={fileInputRef}
           className="hidden"
           accept="image/*"
+          capture="environment"
           multiple
           onChange={(e) => {
             const selectedFiles = Array.from(e.target.files);

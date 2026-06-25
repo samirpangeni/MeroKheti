@@ -75,6 +75,8 @@ export async function POST(req) {
     const quantity = formData.get("quantity");
     const location = formData.get("location");
     const category = formData.get("category");
+    const longitude = formData.get("longitude");
+    const latitude = formData.get("latitude");
     const harvestDate = formData.get("harvestDate");
     const organic = formData.get("organic") === "true"; // Convert to boolean
 
@@ -121,6 +123,10 @@ export async function POST(req) {
       harvestDate,
       organic,
       image: uploadedImages,
+      famerLocation: {
+        lat: latitude,
+        lng: longitude,
+      }
     });
     await Activity.create({
       message: `${userId.firstName} added a new product`,
@@ -153,7 +159,7 @@ export async function DELETE(req) {
     await Product.findByIdAndDelete(id);
     await Review.deleteMany({ productId: id });
     await Report.deleteMany({ productId: id });
-    await Order.deleteMany({productId: id})
+    await Order.deleteMany({ productId: id })
     return NextResponse.json({ message: "product delete successfully" });
   } catch (err) {
     console.log(err);
