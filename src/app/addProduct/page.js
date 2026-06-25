@@ -93,24 +93,26 @@ const Page = () => {
   };
   useEffect(() => {
     const getLocation = () => {
-      if (!navigation.getLocation) {
-        alert("Geolocation is not support")
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported");
         return;
       }
-      navigation.getLocation.getCurrentPosition(
-        (postion) => {
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
           setFarmerLocation({
-            lat: postion.coords.latitude,
-            lng: postion.coords.longitude,
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
           });
         },
         (error) => {
-          console.log(error)
+          console.log(error);
         }
-      )
-    }
+      );
+    };
+
     getLocation();
-  }, [])
+  }, []);
 
   return (
     <div className="min-h-screen bg-linear-to-br from-black via-[#06140d] to-[#0b1f14] text-white relative overflow-hidden">

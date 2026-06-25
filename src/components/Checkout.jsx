@@ -57,24 +57,25 @@ const Checkout = ({ productId, onClose }) => {
   };
   useEffect(() => {
     const getLocation = () => {
-      if (!navigation.getLocation) {
-        alert("Geolocation is not support")
+      if (!navigator.geolocation) {
+        alert("Geolocation is not supported");
         return;
       }
-      navigation.getLocation.getCurrentPosition(
-        (postion) => {
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
           setLocation({
-            lat: postion.coords.latitude,
-            lng: postion.coords.longitude,
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
           });
         },
         (error) => {
-          console.log(error)
+          console.log(error);
         }
-      )
-    }
+      );
+    };
     getLocation();
-  }, [])
+  }, []);
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen bg-black w-full">

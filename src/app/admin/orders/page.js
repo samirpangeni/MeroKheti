@@ -284,7 +284,7 @@ const Page = () => {
                     </p>
                   </div>
 
-                  <div className="mt-4 bg-gradient-to-r from-blue-900/20 to-green-900/20 p-4 rounded-xl border border-gray-800">
+                  <div className="mt-4 bg-linear-to-r from-blue-900/20 to-green-900/20 p-4 rounded-xl border border-gray-800">
                     <p className="text-center">
                       👤{" "}
                       {buyer?.firstName} →
