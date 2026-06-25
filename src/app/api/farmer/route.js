@@ -10,23 +10,18 @@ import jwt from "jsonwebtoken";
 export async function GET(req) {
   try {
     await connectDB();
-
     const token = req.cookies.get("token")?.value;
-
     if (!token) {
       return NextResponse.json(
         { message: "Unauthorized" },
         { status: 401 }
       );
     }
-
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET
     );
-
     const farmer = await User.findById(decoded.userId);
-
     if (!farmer || farmer.role !== "farmer") {
       return NextResponse.json(
         { message: "Not a farmer" },
@@ -86,7 +81,7 @@ export async function GET(req) {
         }
       });
     });
-    const order = await Order.find().populate("userId", "firstName lastName email").populate("product.productId", "name image price").sort({ createAt: -1 });
+    const order = await Order.find().populate("userId", "firstName lastName email").populate("product.productId", "name image price farmerLocation").sort({ createAt: -1 });
     return NextResponse.json({
       success: true,
       dashboard: {

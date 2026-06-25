@@ -5,6 +5,14 @@ import { useEffect, useState } from "react";
 import SlideBarForFarmer from "@/components/SlideBarForFarmer";
 import { toast } from "react-toastify";
 import DeleteModal from "@/components/DeleteModels";
+import dynamic from "next/dynamic";
+
+const DeliveryMap = dynamic(
+  () => import("@/components/DeliveryMap"),
+  {
+    ssr: false,
+  }
+);
 const Page = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -115,36 +123,51 @@ const Page = () => {
                 className="bg-zinc-950 border border-green-900 rounded-3xl overflow-hidden shadow-lg"
               >
                 {/* Header */}
-                <div className="bg-green-950 border-b border-green-900 p-5">
-                  <div className="flex flex-col md:flex-row justify-between gap-4">
-                    <div>
-                      <h2 className="text-xl font-bold text-green-400">
-                        {order.userId?.name || "Customer"}
-                      </h2>
+                <div className="bg-linear-to-r from-green-950 via-green-900 to-emerald-950 border-b border-green-800 p-6">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
-                      <p className="text-gray-400">
-                        {order.userId?.email}
-                      </p>
+                    {/* Customer Info */}
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center text-2xl">
+                        👤
+                      </div>
+
+                      <div>
+                        <h2 className="text-xl font-bold text-white">
+                          {order.userId?.name || "Customer"}
+                        </h2>
+
+                        <p className="text-green-300 text-sm">
+                          {order.userId?.email}
+                        </p>
+                      </div>
                     </div>
 
-                    <div className="text-right">
-                      <p className="text-sm text-gray-500">
+                    {/* Order Details */}
+                    <div className="flex flex-col items-start md:items-end">
+                      <span className="px-3 py-1 rounded-full bg-green-500/20 text-green-300 text-xs font-medium border border-green-500/30">
+                        {order.orderStatus}
+                      </span>
+
+                      <p className="text-xs text-gray-400 mt-2">
                         Order ID
                       </p>
 
-                      <p className="text-green-300 text-xs break-all">
+                      <p className="text-green-300 text-xs break-all max-w-55">
                         {order._id}
                       </p>
                     </div>
+
                   </div>
                 </div>
-
                 {/* Body */}
-                <div className="p-5">
+                <div className="p-6 space-y-5">
+
+                  {/* Product */}
                   {order.product?.map((item) => (
                     <div
                       key={item._id}
-                      className="bg-zinc-900 rounded-2xl p-4 mb-4"
+                      className="bg-zinc-900 rounded-2xl p-4 border border-zinc-800"
                     >
                       <div className="flex gap-4">
                         <img
@@ -153,156 +176,180 @@ const Page = () => {
                             "/placeholder.png"
                           }
                           alt={item.productId?.name}
-                          className="w-24 h-24 object-cover rounded-xl"
+                          className="w-28 h-28 object-cover rounded-xl"
                         />
 
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-green-300">
+                          <h3 className="text-xl font-semibold text-green-400">
                             {item.productId?.name}
                           </h3>
 
-                          <p className="text-gray-400 mt-2">
-                            Quantity: {item.quantity}
-                          </p>
+                          <div className="mt-3 flex flex-wrap gap-3 text-sm">
+                            <span className="bg-zinc-800 px-3 py-1 rounded-full">
+                              Qty: {item.quantity}
+                            </span>
 
-                          <p className="text-gray-400">
-                            Price: NPR {item.price}
-                          </p>
+                            <span className="bg-zinc-800 px-3 py-1 rounded-full">
+                              NPR {item.price}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
                   ))}
 
-                  {/* Info Cards */}
-                  <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
+                  {/* Summary Cards */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
                     <div className="bg-zinc-900 rounded-2xl p-4">
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-xs text-gray-500">
                         Total Amount
                       </p>
 
-                      <h3 className="text-2xl font-bold text-green-400">
+                      <h3 className="text-2xl font-bold text-green-400 mt-2">
                         NPR {order.totalAmount}
                       </h3>
                     </div>
 
                     <div className="bg-zinc-900 rounded-2xl p-4">
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-xs text-gray-500">
                         Payment Method
                       </p>
 
-                      <h3 className="capitalize">
+                      <h3 className="capitalize mt-2">
                         {order.paymentMethod}
                       </h3>
                     </div>
 
                     <div className="bg-zinc-900 rounded-2xl p-4">
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-xs text-gray-500">
                         Payment Status
                       </p>
 
                       <h3
-                        className={
-                          order.paymentStatus === "paid"
-                            ? "text-green-400"
-                            : "text-yellow-400"
-                        }
+                        className={`mt-2 font-semibold ${order.paymentStatus === "paid"
+                          ? "text-green-400"
+                          : "text-yellow-400"
+                          }`}
                       >
                         {order.paymentStatus}
                       </h3>
                     </div>
 
                     <div className="bg-zinc-900 rounded-2xl p-4">
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-xs text-gray-500">
                         Ordered On
                       </p>
 
-                      <h3>
+                      <h3 className="mt-2">
                         {new Date(
                           order.createdAt
                         ).toLocaleDateString()}
                       </h3>
                     </div>
+
                   </div>
 
+                  {/* Message */}
+                  {order.message && (
+                    <div className="bg-zinc-900 rounded-2xl p-4">
+                      <p className="text-sm text-gray-400 mb-2">
+                        Customer Message
+                      </p>
+
+                      <p className="text-green-300">
+                        {order.message}
+                      </p>
+                    </div>
+                  )}
+
                   {/* Transaction */}
-                  <div className="mt-4 bg-zinc-900 rounded-2xl p-4">
-                    <p className="text-gray-400 text-sm">
+                  <div className="bg-zinc-900 rounded-2xl p-4">
+                    <p className="text-sm text-gray-400">
                       Transaction ID
                     </p>
 
-                    <p className="text-green-300 break-all">
+                    <p className="text-green-300 break-all mt-1">
                       {order.transactionId ||
                         order.transaction_uuid ||
                         "N/A"}
                     </p>
                   </div>
+
+                  {/* Cash Payment Confirmation */}
                   {order.paymentMethod === "Cash" &&
                     order.paymentStatus === "pending" && (
                       <button
-                        className="px-3 py-2 bg-green-500 rounded-lg text-white mt-5"
+                        className="w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 font-medium transition"
                         onClick={() => updataStatus(order._id)}
                       >
-                        Confirm Payment
+                        ✓ Confirm Customer Payment
                       </button>
                     )}
-                  <div className="mt-5">
-                    <p className="text-text-400"> Message: <span className="text-sm text-green-300">{order.message}</span> </p>
-                  </div>
+                  {/* Delivery Route */}
+                  {order.location &&
+                    order.product?.[0]?.productId?.farmerLocation && (
+                      <div className="bg-zinc-900 rounded-2xl p-4 border border-green-900">
 
-                  {/* Status Update */}
-                  <div className="mt-4 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <div>
-                      <p className="text-gray-400 text-sm">
-                        Order Status
-                      </p>
+                        <div className="flex justify-between items-center mb-4">
+                          <div>
+                            <h3 className="font-semibold text-green-400">
+                              🚚 Delivery Route
+                            </h3>
 
-                      <p className="text-green-400 font-semibold capitalize">
-                        {order.orderStatus}
-                      </p>
-                    </div>
+                            <p className="text-sm text-gray-400">
+                              Farmer → Customer
+                            </p>
+                          </div>
 
-                    <select
-                      value={order.orderStatus}
-                      onChange={(e) =>
-                        updateStatus(
-                          order._id,
-                          e.target.value
-                        )
-                      }
-                      className="bg-green-900 border border-green-700 rounded-xl px-4 py-2 outline-none"
-                    >
-                      <option value="pending">
-                        Pending
-                      </option>
+                          <button
+                            onClick={() => {
+                              const farmer =
+                                order.product[0].productId
+                                  .farmerLocation;
 
-                      <option value="processing">
-                        Processing
-                      </option>
+                              const customer =
+                                order.location;
 
-                      <option value="shipped">
-                        Shipped
-                      </option>
+                              window.open(
+                                `https://www.google.com/maps/dir/${farmer.lat},${farmer.lng}/${customer.lat},${customer.lng}`,
+                                "_blank"
+                              );
+                            }}
+                            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 transition"
+                          >
+                            Open Maps
+                          </button>
+                        </div>
 
-                      <option value="delivered">
-                        Delivered
-                      </option>
-                    </select>
-                  </div>
+                        <div className="overflow-hidden rounded-xl">
+                          <DeliveryMap
+                            farmerLocation={
+                              order.product[0].productId
+                                .farmerLocation
+                            }
+                            customerLocation={
+                              order.location
+                            }
+                          />
+                        </div>
+                      </div>
+                    )}
                 </div>
               </div>
             ))
           )}
         </div>
-      </div>
+      </div >
       <DeleteModal
         isOpen={open}
         onClose={() => { setOpen(false) }}
         onConfirm={confirmUpdate}
         type='Update'
         message="Confirm that you have received payment from the customer. Once confirmed, the payment status will be updated to Paid."
-        confirmText='Update'
+        confirmText='Confirm Payment'
       />
-    </div>
+    </div >
   );
 };
 

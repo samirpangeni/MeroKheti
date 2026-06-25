@@ -12,7 +12,7 @@ export async function POST(req) {
     if (!user) {
       return Response.json({ message: "user not found" }, { status: 404 });
     }
-  
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return Response.json({ message: "Invalid password" }, { status: 401 });
@@ -22,6 +22,7 @@ export async function POST(req) {
       process.env.JWT_SECRET,
       { expiresIn: "7d" },
     );
+    console.log(user.role)
     await Activity.create({
       message: `${user.firstName} logged in`,
       type: "login"
@@ -38,6 +39,10 @@ export async function POST(req) {
     response.cookies.set("token", token, {
       path: "/",
       httpOnly: true,
+      maxAge: 60 * 60 * 24 * 30,
+    });
+    response.cookies.set("role", user.role, {
+      path: "/",
       maxAge: 60 * 60 * 24 * 30,
     });
     return response;

@@ -1,57 +1,64 @@
 import { NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 
 export function middleware(req) {
   const token = req.cookies.get("token")?.value;
-  const { pathname } = req.nextUrl;
+  const role = req.cookies.get("role")?.value;
+  const pathname = req.nextUrl.pathname;
 
+  // Public routes
   const publicRoutes = ["/login", "/register"];
 
-  // Allow public routes
+  // If logged in, don't allow login/register
   if (publicRoutes.includes(pathname)) {
     if (token) {
-      try {
-        jwt.verify(token, process.env.JWT_SECRET);
-        return NextResponse.redirect(new URL("/", req.url));
-      } catch (err) {
-        // expired or invalid token
+      if (role === "admin") {
+        return NextResponse.redirect(
+          new URL("/admin", req.url)
+        );
       }
+
+      if (role === "farmer") {
+        return NextResponse.redirect(
+          new URL("/farmer", req.url)
+        );
+      }
+
+      return NextResponse.redirect(
+        new URL("/customer", req.url)
+      );
     }
+
     return NextResponse.next();
   }
 
-  // Routes that require login
-  const protectedRoutes = [
-    "/",
-    "/dashboard",
-    "/addProduct",
-    "/cart",
-    "/checkout",
-    "/buy",
-    "/review",
-    "/report",
-  ];
+  // Not logged in
+  if (!token) {
+    return NextResponse.redirect(
+      new URL("/login", req.url)
+    );
+  }
 
-  const isProtected = protectedRoutes.some((route) =>
-    pathname === route || pathname.startsWith(route + "/")
-  );
+  // Customer restrictions
+  if (
+    role === "customer" &&
+    (
+      pathname.startsWith("/admin") ||
+      pathname.startsWith("/farmer")
+    )
+  ) {
+    return NextResponse.redirect(
+      new URL("/customer", req.url)
+    );
+  }
 
-  if (isProtected && !token) {
-    if (!token) {
-      return NextResponse.redirect(new URL("/login", req.url));
-    }
-
-    try {
-      jwt.verify(token, process.env.JWT_SECRET);
-      return NextResponse.next();
-    } catch (err) {
-      const response = NextResponse.redirect(
-        new URL("/login", req.url)
-      );
-
-      response.cookies.delete("token");
-      return response;
-    }
+  // Farmer restrictions
+  if (
+    role === "farmer" &&
+    pathname.startsWith("/admin")
+  ) {
+    return NextResponse.redirect(
+      new URL("/farmer", req.url)
+    );
   }
 
   return NextResponse.next();
@@ -59,15 +66,18 @@ export function middleware(req) {
 
 export const config = {
   matcher: [
-    "/",
-    "/dashboard/:path*",
+    "/login",
+    "/register",
+
+    "/customer/:path*",
+    "/farmer/:path*",
+    "/admin/:path*",
+
     "/addProduct/:path*",
     "/cart/:path*",
     "/checkout/:path*",
     "/buy/:path*",
     "/review/:path*",
     "/report/:path*",
-    "/login",
-    "/register",
   ],
 };

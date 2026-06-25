@@ -205,6 +205,54 @@ const Page = () => {
                             {new Date(order.updatedAt).toLocaleString()}
                           </p>
                         )}
+                        {order.location &&
+                          order.product?.[0]?.productId?.farmerLocation && (
+                            <div className="bg-zinc-900 rounded-2xl p-4 border border-green-900">
+
+                              <div className="flex justify-between items-center mb-4">
+                                <div>
+                                  <h3 className="font-semibold text-green-400">
+                                    🚚 Delivery Route
+                                  </h3>
+
+                                  <p className="text-sm text-gray-400">
+                                    Farmer → Customer
+                                  </p>
+                                </div>
+
+                                <button
+                                  onClick={() => {
+                                    const farmer =
+                                      order.product[0].productId
+                                        .farmerLocation;
+
+                                    const customer =
+                                      order.location;
+
+                                    window.open(
+                                      `https://www.google.com/maps/dir/${farmer.lat},${farmer.lng}/${customer.lat},${customer.lng}`,
+                                      "_blank"
+                                    );
+                                  }}
+                                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 transition"
+                                >
+                                  Open Maps
+                                </button>
+                              </div>
+
+                              <div className="overflow-hidden rounded-xl">
+                                <DeliveryMap
+                                  farmerLocation={
+                                    order.product[0].productId
+                                      .farmerLocation
+                                  }
+                                  customerLocation={
+                                    order.location
+                                  }
+                                />
+                              </div>
+                            </div>
+                          )}
                       </div>
                     </div>
 
