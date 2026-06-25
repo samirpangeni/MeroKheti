@@ -32,9 +32,13 @@ const orderSchema = new mongoose.Schema(
     message: {
       type: String,
     },
-    locaiton:{
-      lat: Number,
-      lng: Number,
+    location: {
+      lat: {
+        type: Number,
+      },
+      lng: {
+        type: Number,
+      },
     },
     paymentMethod: {
       type: String,

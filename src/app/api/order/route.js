@@ -35,8 +35,9 @@ export async function POST(req) {
     if (!userId) {
       return NextResponse.json({ message: "Invalid token" }, { status: 401 });
     }
-    const { productId, quantity, payMethod, message, khalti_pidx, longitude,
-      latitude } = await req.json();
+    const body = await req.json();
+
+    const { productId, quantity, payMethod, message, khalti_pidx, latitude, longitude } = body;
     if (!productId || !quantity || !payMethod) {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
@@ -60,6 +61,7 @@ export async function POST(req) {
     }
 
     const totalAmount = product.price * qty;
+
     const order = await Order.create({
       userId,
       product: [
@@ -77,13 +79,13 @@ export async function POST(req) {
       message,
       khalti_pidx,
       location: {
-        lat: longitude,
-        lng: latitude
-      }
+        lat: Number(latitude),
+        lng: Number(longitude),
+      },
     });
     await Activity.create({
       userId,
-      productId: product,
+      productId: product._id,
       message: `Purchase ${product.name} `,
       type: "purchase"
     })
@@ -99,6 +101,39 @@ export async function POST(req) {
     return NextResponse.json(
       { success: false, message: "server error" },
       { status: 500 },
+    );
+  }
+}
+
+export async function PUT(req) {
+  try {
+    await connectDB();
+    const { id } = await req.json();
+    const order = await Order.findById(id);
+
+    if (!order) {
+      return NextResponse.json(
+        { message: "Order not found" },
+        { status: 404 }
+      );
+    }
+    if (order.paymentMethod !== "Cash") {
+      return NextResponse.json(
+        { message: "Only cash orders can be confirmed manually" },
+        { status: 400 }
+      );
+    }
+    order.paymentStatus = "paid";
+    order.orderStatus = "confirmed";
+    await order.save();
+    return NextResponse.json({
+      message: "Payment confirmed successfully",
+    });
+  } catch (err) {
+    console.log(err);
+    return NextResponse.json(
+      { message: "Server error" },
+      { status: 500 }
     );
   }
 }

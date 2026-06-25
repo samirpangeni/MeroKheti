@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-const PayWithKhalti = ({ payMethod, price, productId, quantity }) => {
+const PayWithKhalti = ({ payMethod, price, productId, quantity, message, location }) => {
     const [product, setProduct] = useState([])
     const [loading, setLoading] = useState(false);
     useEffect(() => {
@@ -20,13 +20,16 @@ const PayWithKhalti = ({ payMethod, price, productId, quantity }) => {
         if (productId)
             fetchProduct();
     }, [productId]);
-
+    console.log(location)
     const handleKhaltiPayment = async () => {
         try {
             const orderRes = await axios.post("/api/order", {
                 productId,
                 quantity,
-                payMethod: "khalti"
+                payMethod: "khalti",
+                message,
+                longitude: location.lat,
+                latitude: location.lng,
             })
             const orderId = orderRes.data.orderId;
             const res = await axios.post("/api/payment/khalti/initiate", {

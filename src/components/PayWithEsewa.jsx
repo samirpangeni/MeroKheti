@@ -4,7 +4,7 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import Loading from "./Loading";
 
-const PayWithEsewa = ({ payMethod, price, productId }) => {
+const PayWithEsewa = ({ payMethod, price, productId, location }) => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -30,6 +30,8 @@ const PayWithEsewa = ({ payMethod, price, productId }) => {
         productId,
         quantity,
         payMethod: "esewa",
+        lat: location.lat,
+        lng: location.lng
       });
       const orderId = orderRes.data.orderId;
 
@@ -71,7 +73,7 @@ const PayWithEsewa = ({ payMethod, price, productId }) => {
       setLoading(false);
     }
   };
-  if(loading){
+  if (loading) {
     return <Loading />;
   }
   return (
@@ -79,9 +81,8 @@ const PayWithEsewa = ({ payMethod, price, productId }) => {
       <button
         type="button"
         onClick={handelEsewa}
-        className={`w-full p-4 rounded-2xl transition ${
-          payMethod === "eSewa" ? "bg-green-700" : "bg-green-500"
-        }`}
+        className={`w-full p-4 rounded-2xl transition ${payMethod === "eSewa" ? "bg-green-700" : "bg-green-500"
+          }`}
       >
         Pay with eSewa
       </button>

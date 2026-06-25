@@ -107,7 +107,6 @@ export async function PUT(req) {
     await connectDB();
     const body = await req.json();
     const { status, selectionId } = body;
-    console.log(body)
     const updateProduct = await Product.findByIdAndUpdate(
       selectionId,
       { status },

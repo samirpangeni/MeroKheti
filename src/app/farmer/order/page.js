@@ -3,11 +3,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import SlideBarForFarmer from "@/components/SlideBarForFarmer";
-
+import { toast } from "react-toastify";
+import DeleteModal from "@/components/DeleteModels";
 const Page = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const [selectionId, setSelectionId] = useState(null);
+  const [open, setOpen] = useState(false)
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -23,25 +25,22 @@ const Page = () => {
     }
   };
 
-  const updateStatus = async (id, status) => {
+  const updataStatus = async (id) => {
+    setSelectionId(id);
+    setOpen(true)
+  }
+  const confirmUpdate = async () => {
     try {
-      await axios.put("/api/farmer/orders/status", {
-        orderId: id,
-        status,
+      await axios.put(`/api/order`, {
+        selectionId
       });
 
-      setOrders((prev) =>
-        prev.map((order) =>
-          order._id === id
-            ? { ...order, orderStatus: status }
-            : order
-        )
-      );
+      toast.success("Payment confirmed");
     } catch (err) {
       console.log(err);
+      toast.error("Failed to confirm payment");
     }
   };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center text-green-400 text-xl">
@@ -237,6 +236,15 @@ const Page = () => {
                         "N/A"}
                     </p>
                   </div>
+                  {order.paymentMethod === "Cash" &&
+                    order.paymentStatus === "pending" && (
+                      <button
+                        className="px-3 py-2 bg-green-500 rounded-lg text-white mt-5"
+                        onClick={() => updataStatus(order._id)}
+                      >
+                        Confirm Payment
+                      </button>
+                    )}
                   <div className="mt-5">
                     <p className="text-text-400"> Message: <span className="text-sm text-green-300">{order.message}</span> </p>
                   </div>
@@ -286,6 +294,14 @@ const Page = () => {
           )}
         </div>
       </div>
+      <DeleteModal
+        isOpen={open}
+        onClose={() => { setOpen(false) }}
+        onConfirm={confirmUpdate}
+        type='Update'
+        message="Confirm that you have received payment from the customer. Once confirmed, the payment status will be updated to Paid."
+        confirmText='Update'
+      />
     </div>
   );
 };

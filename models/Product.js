@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
   {
-    userId:{
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -42,9 +42,15 @@ const productSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    farmerLocaiont:{
-      lat: Number,
-      lng: Number,
+    farmerLocation: {
+      lat: {
+        type: Number,
+        required: true,
+      },
+      lng: {
+        type: Number,
+        required: true,
+      },
     },
     category: {
       type: String,
@@ -66,9 +72,9 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    status:{
+    status: {
       type: String,
-      enum :["pending", "approved", "rejected"],
+      enum: ["pending", "approved", "rejected"],
       default: "pending"
     },
     image: {

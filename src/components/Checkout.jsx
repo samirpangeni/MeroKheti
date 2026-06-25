@@ -13,7 +13,11 @@ const Checkout = ({ productId, onClose }) => {
   const [payMethod, setPayMethod] = useState("Cash");
   const [ordering, setOrdering] = useState(false);
   const [message, setMessage] = useState("");
-  const [location, setLocation] = useState("");
+  const [location, setLocation] = useState({
+    lat: null,
+    lng: null,
+  });
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -28,29 +32,35 @@ const Checkout = ({ productId, onClose }) => {
 
     if (productId) fetchProduct();
   }, [productId]);
-
-  const longitude = location.lng;
-  const latitude = location.lat;
+  console.log(location)
+  console.log("hello", location.lng)
+  console.log("hello1", location.lat)
   const handleOrder = async (e) => {
     e.preventDefault();
 
-    if (payMethod !== "Cash") return;
+    if (!location.lat || !location.lng) {
+      toast.error("Location not available");
+      return;
+    }
+    console.log("hello", location.lng)
+    console.log("hello1", location.lat)
+
     try {
       setOrdering(true);
-      await axios.post("/api/order", {
+
+      const res = await axios.post("/api/order", {
         productId,
         quantity,
         payMethod,
-        message,
-        khalti_pidx,
-        longitude,
-        latitude
+        latitude: location.lat,
+        longitude: location.lng,
       });
+      console.log("hello", res)
       toast.success("Order placed successfully!");
       onClose?.();
     } catch (err) {
       console.log(err);
-      toast.err("Order failed try again");
+      toast.error("Order failed, try again");
     } finally {
       setOrdering(false);
     }
@@ -230,6 +240,8 @@ const Checkout = ({ productId, onClose }) => {
               price={product.price * quantity}
               productId={productId}
               message={message}
+              location={location}
+
             />
 
             <PayWithEsewa
@@ -237,6 +249,7 @@ const Checkout = ({ productId, onClose }) => {
               price={product.price * quantity}
               productId={productId}
               message={message}
+              location={location}
             />
 
             <Cash

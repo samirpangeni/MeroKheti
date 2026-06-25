@@ -123,7 +123,7 @@ export async function POST(req) {
       harvestDate,
       organic,
       image: uploadedImages,
-      famerLocation: {
+      farmerLocation: {
         lat: latitude,
         lng: longitude,
       }
