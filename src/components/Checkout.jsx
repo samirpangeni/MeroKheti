@@ -32,9 +32,7 @@ const Checkout = ({ productId, onClose }) => {
 
     if (productId) fetchProduct();
   }, [productId]);
-  console.log(location)
-  console.log("hello", location.lng)
-  console.log("hello1", location.lat)
+
   const handleOrder = async (e) => {
     e.preventDefault();
 
@@ -42,8 +40,7 @@ const Checkout = ({ productId, onClose }) => {
       toast.error("Location not available");
       return;
     }
-    console.log("hello", location.lng)
-    console.log("hello1", location.lat)
+   
 
     try {
       setOrdering(true);
@@ -55,7 +52,7 @@ const Checkout = ({ productId, onClose }) => {
         latitude: location.lat,
         longitude: location.lng,
       });
-      console.log("hello", res)
+
       toast.success("Order placed successfully!");
       onClose?.();
     } catch (err) {

@@ -18,7 +18,6 @@ export async function GET(req) {
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
     const userId = decoded._id
     const review = await Review.find({ productId }).populate("userId", "firstName lastName")
-    console.log(review)
     return NextResponse.json({ success: true, review })
   }
   catch (err) {

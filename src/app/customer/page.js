@@ -31,7 +31,6 @@ const page = () => {
         setFailedCount(failedCount)
         setPendingCount(pendingCount)
         setActivity(res.data.activity)
-        console.log(res.data)
         setOrder(res.data.order)
         setCart(res.data.cart)
         setUser(res.data);
