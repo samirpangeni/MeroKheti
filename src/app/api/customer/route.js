@@ -1,4 +1,4 @@
-import ConnectDb from '../../../../lib/mongoose'
+import ConnectDB from '../../../../lib/mongoose'
 import { NextResponse } from 'next/server'
 import User from "../../../../models/User"
 import Activity from "../../../../models/Activity"
@@ -10,31 +10,52 @@ import jwt from 'jsonwebtoken'
 
 export async function GET(req) {
     try {
-        const token = req.cookies.get("token")?.value
+        await ConnectDB();
+        const token = req.cookies.get("token")?.value;
         if (!token) {
-            return NextResponse.json({ messaege: "unathorized" }, { status: 401 })
+            return NextResponse.json(
+                { message: "Unauthorized" },
+                { status: 401 }
+            );
         }
-        const decoded = jwt.verify(
-            token,
-            process.env.JWT_SECRET
-        );
-        const userId = decoded.id || decoded._id || decoded.userId
-
-        const cart = await Cart.find({ userId })
-        const order = await Order.find({ userId })
-        const review = await Review.find({userId})
-        const activity = await Activity.find({ userId }).populate({
-            path: "productId",
-            select: "name userId quantity price",
-            populate: {
-                path: "userId",
-                select: "firstName lastName"
-            }
-        })
-        
-        return NextResponse.json({ success: true, activity, cart, order, review})
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.JWT_SECRET);
+        } catch {
+            return NextResponse.json(
+                { message: "Invalid or expired token" },
+                { status: 401 }
+            );
+        }
+        const userId = decoded.id || decoded._id || decoded.userId;
+        const [cart, order, review, activity] = await Promise.all([
+            Cart.find({ userId }).lean(),
+            Order.find({ userId }).lean(),
+            Review.find({ userId }).lean(),
+            Activity.find({ userId })
+                .populate({
+                    path: "productId",
+                    select: "name userId quantity price",
+                    populate: {
+                        path: "userId",
+                        select: "firstName lastName",
+                    },
+                })
+                .lean(),
+        ]);
+        return NextResponse.json({
+            success: true,
+            activity,
+            cart,
+            order,
+            review,
+        });
     } catch (err) {
-        console.log(err)
-        NextResponse.json({ message: "error" }, { status: 500 })
+        console.error(err);
+
+        return NextResponse.json(
+            { message: "Internal Server Error" },
+            { status: 500 }
+        );
     }
 }

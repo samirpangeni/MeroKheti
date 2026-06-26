@@ -64,19 +64,32 @@ export async function DELETE(req) {
         { status: 400 },
       );
     }
-    if (!productId) {
-      return NextResponse.json(
-        { message: "Product ID is required" },
-        { status: 400 }
-      );
-    }
-
-    if (!productId) {
+    if (productId) {
       const product = await Product.findByIdAndDelete(productId);
-      await Order.deleteMany({
-        "product.productId": productId
+      if (!product) {
+        return NextResponse.json(
+          { message: "Product not found" }, { status: 404 }
+        )
+      }
+      await Promise.all([
+        Order.deleteMany({ "product.productId": productId, }),
+        Review.deleteMany({ productId }),
+        Report.deleteMany({ productId }),
+        Activity.deleteMany({ productId, }),
+        Cart.updateMany({},
+          {
+            $pull: {
+              products: { productId },
+            },
+          }
+        ),
+      ]);
+
+      return NextResponse.json({
+        message: "Product deleted successfully",
       });
     }
+
     if (reportId) {
       await Report.findByIdAndDelete(reportId);
     }
@@ -85,17 +98,29 @@ export async function DELETE(req) {
       const user = await User.findByIdAndDelete(userId);
       if (!user) {
         return NextResponse.json(
-          { message: "User Not found" },
-          { status: 404 },
+          { message: "User not found" },
+          { status: 404 }
         );
       }
+      await Promise.all([
+        Product.deleteMany({ userId }),
+        Order.deleteMany({ userId }),
+        Review.deleteMany({ userId }),
+        Report.deleteMany({ userId }),
+        Cart.deleteMany({ userId }),
+        Activity.deleteMany({ userId }),
+      ]);
+
       await Activity.create({
-        message: `User ${user.email} was delete`,
+        message: `User ${user.email} was deleted`,
         type: "delete",
       });
-    }
 
-    return NextResponse.json({ message: "user deleted successfully" });
+      return NextResponse.json({
+        success: true,
+        message: "User deleted successfully",
+      });
+    }
   } catch (err) {
     console.log(err);
     return NextResponse.json({ message: "error" }, { status: 500 });

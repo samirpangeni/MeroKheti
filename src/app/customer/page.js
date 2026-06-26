@@ -31,6 +31,7 @@ const page = () => {
         setFailedCount(failedCount)
         setPendingCount(pendingCount)
         setActivity(res.data.activity)
+        console.log(res.data.activity)
         setOrder(res.data.order)
         setCart(res.data.cart)
         setUser(res.data);
@@ -113,20 +114,17 @@ const page = () => {
                 <div
                   key={item._id}
                   className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 
-                     p-4 rounded-xl bg-white/5 hover:bg-white/10 transition"
-                >
-                  {/* Left side */}
+                     p-4 rounded-xl bg-white/5 hover:bg-white/10 transition">
+                  
                   <div>
                     <h1 className="text-white font-medium">
                       {item.productId?.name}
                     </h1>
                     <p className="text-gray-400 text-sm">
-                      {item.productId?.userId.firstName}{" "}
-                      {item.productId?.userId.lastName}
+                      {item.productId?.userId?.firstName}{" "}
+                      {item.productId?.userId?.lastName}
                     </p>
                   </div>
-
-                  {/* Optional right side info (you can add status/price/date later) */}
                   <div className="text-xs text-gray-500 sm:text-right">
                     Order #{item._id.slice(-6)}
                   </div>

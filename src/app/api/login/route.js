@@ -22,7 +22,6 @@ export async function POST(req) {
       process.env.JWT_SECRET,
       { expiresIn: "7d" },
     );
-    console.log(user.role)
     await Activity.create({
       message: `${user.firstName} logged in`,
       type: "login"

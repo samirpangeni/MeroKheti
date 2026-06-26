@@ -147,25 +147,46 @@ export async function POST(req) {
 export async function DELETE(req) {
   try {
     await connectDB();
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
+
     if (!id) {
       return NextResponse.json(
-        { message: "no product found" },
-        { status: 400 },
+        { message: "Product ID is required" },
+        { status: 400 }
       );
     }
 
-    await Product.findByIdAndDelete(id);
-    await Review.deleteMany({ productId: id });
-    await Report.deleteMany({ productId: id });
-    await Order.deleteMany({ productId: id })
-    return NextResponse.json({ message: "product delete successfully" });
+    const product = await Product.findByIdAndDelete(id);
+
+    if (!product) {
+      return NextResponse.json(
+        { message: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    await Promise.all([
+      Review.deleteMany({ productId: id }),
+      Report.deleteMany({ productId: id }),
+      Order.deleteMany({ productId: id }), // Change this if productId is nested
+      Activity.deleteMany({ productId: id }), // Optional
+    ]);
+
+    return NextResponse.json({
+      success: true,
+      message: "Product deleted successfully",
+    });
   } catch (err) {
-    console.log(err);
-    return NextResponse.json({ message: "error" }, { status: 500 });
+    console.error(err);
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
+
 cron.schedule("0 0 * * *", async () => {
   try {
     await connectDB();

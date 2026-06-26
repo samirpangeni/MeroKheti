@@ -107,21 +107,69 @@ export async function GET(req) {
 export async function DELETE(req) {
   try {
     await connectDB();
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
+
     if (!id) {
-      return NextResponse.json({ message: "product not id" }, { status: 401 })
+      return NextResponse.json(
+        { message: "Product ID is required" },
+        { status: 400 }
+      );
     }
+
     const product = await Product.findByIdAndDelete(id);
+
+    if (!product) {
+      return NextResponse.json(
+        { message: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    await Promise.all([
+      Order.deleteMany({
+        "product.productId": id,
+      }),
+
+      Review.deleteMany({
+        productId: id,
+      }),
+
+      Report.deleteMany({
+        productId: id,
+      }),
+
+      Activity.deleteMany({
+        productId: id,
+      }),
+
+      Cart.updateMany(
+        {},
+        {
+          $pull: {
+            products: { productId: id },
+          },
+        }
+      ),
+    ]);
+
     await Activity.create({
-      productId: product,
-      message: `User ${product.name} was delete`,
+      userId: product.userId,
+      message: `Product "${product.name}" was deleted`,
       type: "delete",
     });
-    return NextResponse.json({ success: true })
 
+    return NextResponse.json({
+      success: true,
+      message: "Product deleted successfully",
+    });
   } catch (err) {
-    console.log(err)
-    return NextResponse.json({ message: "server error" }, { status: 500 })
+    console.error(err);
+
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
