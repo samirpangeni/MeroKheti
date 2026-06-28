@@ -46,13 +46,13 @@ const Page = () => {
       setPassword("");
       setConfirmPassword("");
       setMobile("");
-
       toast.success("Account created successfully");
-      if(res.data.success){
-        route.push("/")
+
+      if (res.data.success) {
+        router.push("/")
       }
     } catch (err) {
-      console.log(err.response?.data?.message);
+      console.log(err);
     }
   };
 

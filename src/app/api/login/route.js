@@ -28,22 +28,19 @@ export async function POST(req) {
     })
     const response = NextResponse.json({
       message: "login successful",
-
       user: {
         role: user.role,
         firstName: user.firstName,
         email: user.email,
       },
     });
+    console.log(response)
     response.cookies.set("token", token, {
       path: "/",
       httpOnly: true,
       maxAge: 60 * 60 * 24 * 30,
     });
-    response.cookies.set("role", user.role, {
-      path: "/",
-      maxAge: 60 * 60 * 24 * 30,
-    });
+   
     return response;
   } catch (err) {
     console.log(err);

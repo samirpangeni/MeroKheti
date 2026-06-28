@@ -20,8 +20,7 @@ const Navbar = () => {
         { withCredentials: true }
       );
 
-      router.push("/login");
-      router.refresh();
+      window.location.href = "/login"
     } catch (err) {
       console.log(err.response?.data?.message);
     }

@@ -14,7 +14,7 @@ export async function GET(req) {
     if (!token) {
       return NextResponse.json({ message: "Not logged in" }, { status: 401 });
     }
-
+   
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(
       decoded.userId || decoded.id || decoded._id,
