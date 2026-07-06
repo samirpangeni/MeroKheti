@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { FiSearch } from "react-icons/fi";
 import axios from 'axios';
 
-const Search = ({ search, setSearch, setProducts }) => {
+const Search = ({ search, setSearch, setProducts, setSearchInput, searchInput }) => {
     const handelSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -26,12 +26,13 @@ const Search = ({ search, setSearch, setProducts }) => {
         <div>
             <form onSubmit={handelSubmit}>
                 <input
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
                     placeholder="Search tomatoes, rice, fruits..."
                     className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-green-500 outline-none text-white"
                 />
                 <button type="submit"
+                onClick={()=>{setSearch(searchInput)}}
                      className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 onFocus:bg-red-400">
                     <FiSearch />
                 </button>

@@ -24,8 +24,9 @@ const Page = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("/api/farmer");
+      const res = await axios.get("/api/farmer/product");
       setOrders(res.data.order || []);
+      console.log(res.data.order)
     } catch (err) {
       console.log(err);
     } finally {

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import DeleteModels from "@/components/DeleteModels"
+import Link from "next/link";
 const Page = () => {
   const router = useRouter();
   const [product, setProduct] = useState([]);
@@ -15,9 +16,9 @@ const Page = () => {
   useEffect(() => {
     const getData = async () => {
       const res = await axios.get(
-        `/api/product?status=approved&search=${search}&category=${category}`,
+        `/api/farmer/product?status=approved&search=${search}&category=${category}` || [],
       );
-      setProduct(res.data.product);
+      setProduct(res.data.products);
     };
     getData();
   }, [search, category]);
@@ -36,7 +37,7 @@ const Page = () => {
     <div className="flex min-h-screen bg-black mb-10">
       <SlideBarForFarmer />
 
-      <div className="flex-1 p-2 md:pl-70">
+      <div className="flex-1 p-2 md:pl-70 md: pt-20">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>
@@ -48,9 +49,11 @@ const Page = () => {
             </p>
           </div>
 
-          <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold transition">
-            + Add Product
-          </button>
+          <Link href="/addProduct">
+            <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold transition">
+              + Add Product
+            </button>
+          </Link>
         </div>
 
         {/* Stats */}
@@ -58,21 +61,21 @@ const Page = () => {
           <div className="bg-zinc-900 border border-green-900 rounded-2xl p-6">
             <p className="text-gray-400">Total Products</p>
             <h2 className="text-3xl font-bold text-green-500 mt-2">
-              {product.length}
+              {product?.length}
             </h2>
           </div>
 
           <div className="bg-zinc-900 border border-green-900 rounded-2xl p-6">
             <p className="text-gray-400">Categories</p>
             <h2 className="text-3xl font-bold text-green-500 mt-2">
-              {new Set(product.map((p) => p.category)).size}
+              {new Set(product?.map((p) => p.category)).size}
             </h2>
           </div>
 
           <div className="bg-zinc-900 border border-green-900 rounded-2xl p-6">
             <p className="text-gray-400">Approved Products</p>
             <h2 className="text-3xl font-bold text-green-500 mt-2">
-              {product.length}
+              {product?.length}
             </h2>
           </div>
         </div>
@@ -93,27 +96,22 @@ const Page = () => {
               onChange={(e) => setCategory(e.target.value)}
               className="bg-black border border-green-800 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
             >
-              {["All Categories", "vegetable", "grain", "dairy", "fruits"].map(
-                (item, idx) => (
-                  <option key={idx} value={item}>
-                    {item}
-                  </option>
-                ),
-              )}
+              {["All categories", "vegetables", "fruits", "grains & cereals", "pulses & legumes", "seeds & nuts", "dairy & eggs", "meat & poultry", "herbs & spices", "organic products", "other"].map(
+                  (item, idx) => (
+                    <option key={idx} value={item}>
+                      {item}
+                    </option>
+                  ),
+                )}
             </select>
           </div>
         </div>
 
         {/* Product Grid */}
-        {product.length === 0 ? (
-          <div className="bg-zinc-900 border border-green-900 rounded-2xl p-10 text-center">
-            <h2 className="text-xl text-gray-400">No products found</h2>
-          </div>
-        ) : (
+        {Array.isArray(product) && product.length > 0 ? (
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {product.map((item) => (
-              <div
-                key={item._id}
+              <div key={item._id}
                 className="bg-zinc-900 border border-green-900 rounded-3xl overflow-hidden hover:border-green-500 transition duration-300 hover:shadow-lg hover:shadow-green-900/30"
               >
                 <img
@@ -171,18 +169,22 @@ const Page = () => {
               </div>
             ))}
           </div>
+        ) : (
+          <div className="bg-zinc-900 border border-green-900 rounded-2xl p-10 text-center">
+            <h2 className="text-xl text-gray-400">No products found</h2>
+          </div>
         )}
-      </div>
+      </div >
       <div>
-        <DeleteModels 
-        isOpen={openDelete}
-        onClose={()=>{setOpenDelete(false)}}
-        onConfirm={confirmDelete}
-        type="Delete"
-        confirmText='Delete'
-        message="This action cannot be undone. Are you sure you want to delete product"/>
+        <DeleteModels
+          isOpen={openDelete}
+          onClose={() => { setOpenDelete(false) }}
+          onConfirm={confirmDelete}
+          type="Delete"
+          confirmText='Delete'
+          message="This action cannot be undone. Are you sure you want to delete product" />
       </div>
-    </div>
+    </div >
   );
 };
 export default Page;

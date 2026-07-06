@@ -17,25 +17,31 @@ export async function GET(req) {
     const search = searchParams.get("search");
     const category = searchParams.get("category");
     const organic = searchParams.get("organic");
+    let filter = {
+      status: "approved", // use the exact value stored in MongoDB
+    };
 
-    let filter = {};
-
-    if (status) {
-      filter.status = status;
-    }
-    if (category && category !== "All Categories") {
-      filter.category = category;
-    }
-    if (organic === "true") filter.organic = true;
-    if (search) {
-      filter = {
-        $or: [
-          { name: { $regex: search, $options: "i" } },
-          { description: { $regex: search, $options: "i" } },
-          { category: { $regex: search, $options: "i" } },
-          { location: { $regex: search, $options: "i" } },
-        ],
+    if (
+      category &&
+      category !== "All categories"
+    ) {
+      filter.category = {
+        $regex: category,
+        $options: "i",
       };
+    }
+
+    if (organic === "true") {
+      filter.organic = true;
+    }
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+        { category: { $regex: search, $options: "i" } },
+        { location: { $regex: search, $options: "i" } },
+      ];
     }
 
     const product = await Product.find(filter)

@@ -33,7 +33,7 @@ export async function GET(req) {
     const products = await Product.find({
       userId: farmer._id,
     });
-
+    
     const productIds = products.map((p) => p._id);
 
     // Total products

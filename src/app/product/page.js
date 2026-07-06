@@ -9,6 +9,7 @@ import { FiShoppingBag } from "react-icons/fi";
 const Page = () => {
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
 
   return (
     <div className="min-h-screen bg-linear-to-br from-gray-950 via-black to-gray-900 text-white">
@@ -46,6 +47,8 @@ const Page = () => {
               setSearch={setSearch}
               products={products}
               setProducts={setProducts}
+              searchInput={searchInput}
+              setSearchInput={setSearchInput}
             />
           </div>
 

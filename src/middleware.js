@@ -5,8 +5,8 @@ export async function middleware(req) {
   const pathname = req.nextUrl.pathname;
   const token = req.cookies.get("token")?.value;
 
-  const publicPages = ["/login", "/register"];
-  const publicApis = ["/api/login", "/api/register"];
+  const publicPages = ["/login", "/user"];
+  const publicApis = ["/api/login", "/api/user"];
 
   // Allow login/register pages without login
   if (publicPages.includes(pathname) && !token) {

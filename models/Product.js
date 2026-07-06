@@ -43,14 +43,8 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
     farmerLocation: {
-      lat: {
-        type: Number,
-        required: true,
-      },
-      lng: {
-        type: Number,
-        required: true,
-      },
+      lat: Number,
+      lng: Number,
     },
     category: {
       type: String,

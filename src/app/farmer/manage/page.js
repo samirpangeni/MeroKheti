@@ -16,8 +16,8 @@ const Page = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("/api/product");
-      setProducts(res.data.product || []);
+      const res = await axios.get("/api/farmer/product");
+      setProducts(res.data.products || []);
     } catch (err) {
       toast.error("Failed to load products");
     } finally {
@@ -60,9 +60,9 @@ const Page = () => {
       <Toaster />
       <SlideBarForFarmer />
 
-      <div className="md:pl-70 p-6">
+      <div className="md:pl-70 p-6 md:pt-20">
         {/* HEADER */}
-        <div className="flex flex-col justify-between items-start lg:items-center gap-4">
+        <div className="flex justify-between items-start lg:items-center gap-4">
           <div>
             <h1 className="text-4xl font-bold text-green-400">
               Product Dashboard

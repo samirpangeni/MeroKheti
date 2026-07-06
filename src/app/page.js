@@ -12,6 +12,7 @@ const Page = () => {
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
   const [products, setProducts] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     async function fetchUser() {
@@ -38,6 +39,8 @@ const Page = () => {
           setSearch={setSearch}
           products={products}
           setProducts={setProducts}
+          setSearchInput={setSearchInput}
+          searchInput={searchInput}
         />
       </section>
 
@@ -59,6 +62,8 @@ const Page = () => {
           search={search}
           products={products}
           setProducts={setProducts}
+          setSearchInput={setSearchInput}
+          searchInput={searchInput}
         />
        
       </section>

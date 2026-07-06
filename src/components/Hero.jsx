@@ -1,6 +1,6 @@
 import React from 'react'
 import Search from './Search';
-const Hero = ({ search, setSearch, products, setProducts }) => {
+const Hero = ({ search, setSearch, products, setProducts, setSearchInput, searchInput }) => {
     return (
         <div className="relative flex flex-col items-center justify-center text-center px-6 pt-15 md:pt-20 pb-16 overflow-hidden">
             <div className="absolute w-96 h-96 bg-green-500/20 blur-[140px] rounded-full -top-40 -left-40" />
@@ -9,16 +9,12 @@ const Hero = ({ search, setSearch, products, setProducts }) => {
                 Fresh food, directly from
                 <span className="text-green-400">farmers</span>
             </h1>
-
             <p className="mt-3 text-gray-400 max-w-xl">
                 Discover organic, fresh, and local products without middlemen.
             </p>
 
-
             <div className="mt-8 w-full max-w-xl relative">
-
-
-                <Search search={search} setSearch={setSearch} products={products} setProducts={setProducts} />
+                <Search search={search} setSearch={setSearch} products={products} setProducts={setProducts} setSearchInput={setSearchInput} searchInput={searchInput} />
             </div>
 
 

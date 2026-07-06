@@ -34,7 +34,6 @@ export async function POST(req) {
         email: user.email,
       },
     });
-    console.log(response)
     response.cookies.set("token", token, {
       path: "/",
       httpOnly: true,

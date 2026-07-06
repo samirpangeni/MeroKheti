@@ -74,25 +74,25 @@ export default function ProductFeed({ products, setProducts, search }) {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="bg-[#0b0f0c] border border-green-900/40 px-4 py-2 rounded-lg text-green-200"
+          className="bg-white/20 border border-green-900/40 px-4 py-2 rounded-lg text-green-200"
         >
-          {["", "vegetables", "fruits", "grains", "dairy", "meat"].map((cat) => (
+          {["All categories", "vegetables", "fruits", "grains & cereals", "pulses & legumes", "seeds & nuts", "dairy & eggs", "meat & poultry", "herbs & spices", "organic products", "other"].map((cat) => (
             <option key={cat} value={cat} className="text-black">
-              {cat === "" ? "All Categories" : cat}
+              {cat === "All categories" ? "All Categories" : cat}
             </option>
           ))}
         </select>
       </div>
 
       {/* GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full p-2">
 
         {/* LOADING */}
         {loading &&
           Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="h-90 rounded-xl bg-[#0b0f0c] animate-pulse border border-green-900/20 w-full"
+              className="h-90 rounded-xl bg-[#0b0f0c] animate-pulse border border-green-900/20 w-full gap-2"
             />
           ))}
 
@@ -122,10 +122,6 @@ export default function ProductFeed({ products, setProducts, search }) {
   );
 }
 
-/* =======================
-   PRODUCT CARD COMPONENT
-======================= */
-
 function ProductCard({ item, selectProduct, setSelectProduct }) {
   const [index, setIndex] = useState(0);
 
@@ -141,12 +137,9 @@ function ProductCard({ item, selectProduct, setSelectProduct }) {
   }, [item.image]);
 
   return (
-    <div className="group bg-[#0b0f0c] border border-green-900/20 rounded-xl overflow-hidden w-90
-                    hover:border-green-500/40 transition shadow-sm hover:shadow-[0_0_25px_rgba(34,197,94,0.08)]">
-
+    <div className="group bg-[#0b0f0c] border w-full border-green-900/20 rounded-xl overflow-hidden  hover:border-green-500/40 transition shadow-sm hover:shadow-[0_0_25px_rgba(34,197,94,0.08)]">
       {/* IMAGE SLIDER */}
       <div className="relative h-52 overflow-hidden">
-
         <div
           className="flex transition-transform duration-700 ease-in-out h-full"
           style={{ transform: `translateX(-${index * 100}%)` }}
@@ -162,7 +155,6 @@ function ProductCard({ item, selectProduct, setSelectProduct }) {
 
         {/* overlay */}
         <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent" />
-
         {/* dots */}
         <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
           {item.image?.map((_, i) => (
