@@ -12,23 +12,24 @@ const Page = () => {
   const [pApproved, setPApproved] = useState([]);
   const [pReject, setPReject] = useState([]);
   const [loading, setLoading] = useState(false);
-  const customerCount = user.filter((u) => u.role === "customer").length;
+  const customerCount = user?.filter((u) => u.role === "customer")?.length;
 
-  const farmerCount = user.filter((u) => u.role === "farmer").length;
+  const farmerCount = user?.filter((u) => u.role === "farmer")?.length;
   useEffect(() => {
     const getData = async () => {
       try{
         setLoading(true)
-      const uRes = await axios.get("api/admin");
-      const pRes = await axios.get("api/product");
-      const pending = await axios.get("api/product?status=pending");
-      const approved = await axios.get("api/product?status=approved");
-      const reject = await axios.get("api/product?status=reject");
-      setPPending(pending.data.product);
-      setPReject(reject.data.product);
-      setPApproved(approved.data.product);
-      setUser(uRes.data.user);
-      setProduct(pRes.data.product);
+      const uRes = await axios.get("api/admin/user");
+      const pRes = await axios.get("api/admin/?status=All");
+      const pending = await axios.get("api/admin?status=pending");
+      const approved = await axios.get("api/admin?status=approved");
+      const reject = await axios.get("api/admin?status=reject");
+    
+      setPPending(pending.data.product || []);
+      setPReject(reject.data.product || []);
+      setPApproved(approved.data.product || []);
+      setUser(uRes.data.user || []);
+      setProduct(pRes.data.product || []);
       }catch(err){
         console.log(err)
       }finally{

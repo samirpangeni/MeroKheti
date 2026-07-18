@@ -19,8 +19,8 @@ const Page = () => {
       try {
         setLoading(true);
 
-        const res = await axios.get("/api/admin/product");
-        setProduct(res.data.products);
+        const res = await axios.get("/api/admin/product?status=approved");
+        setProduct(res.data.products || []);
       } catch (err) {
         console.log(err);
       } finally {
@@ -45,7 +45,7 @@ const Page = () => {
     }
   };
 
-  const filteredProducts = product.filter((item) => {
+  const filteredProducts = product?.filter((item) => {
     const matchSearch =
       item.name?.toLowerCase().includes(search.toLowerCase()) ||
       item.location?.toLowerCase().includes(search.toLowerCase());

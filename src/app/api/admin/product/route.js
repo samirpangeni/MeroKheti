@@ -4,12 +4,17 @@ import Review from "../../../../../models/Review";
 import Report from "../../../../../models/Report";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req) {
     try {
         await connectDB();
-
+        const { searchParams } = new URL(req.url);
+        const status = searchParams.get("status");
+        const filter = {};
+        if (status) {
+            filter.status = status;
+        }
         // 1. Get products
-        const products = await Product.find()
+        const products = await Product.find(filter)
             .populate("userId", "firstName lastName")
             .sort({ createdAt: -1 });
 
@@ -20,15 +25,12 @@ export async function GET() {
         // 3. Create maps
         const reviewMap = {};
         const reportMap = {};
-
         // 4. Process reviews
         reviews.forEach((r) => {
             const id = r.productId.toString();
-
             if (!reviewMap[id]) {
                 reviewMap[id] = { total: 0, count: 0 };
             }
-
             reviewMap[id].total += r.rating || 0;
             reviewMap[id].count += 1;
         });
@@ -36,18 +38,14 @@ export async function GET() {
         // 5. Process reports
         reports.forEach((r) => {
             const id = r.productId.toString();
-
             reportMap[id] = (reportMap[id] || 0) + 1;
         });
 
         // 6. Merge everything into products
         const finalProducts = products.map((p) => {
             const id = p._id.toString();
-
             const reviewData = reviewMap[id];
-
             const totalReview = reviewData?.count || 0;
-
             const averageRating =
                 totalReview > 0
                     ? Number((reviewData.total / totalReview).toFixed(1))
@@ -60,7 +58,7 @@ export async function GET() {
                 totalReport: reportMap[id] || 0,
             };
         });
-        
+
         return NextResponse.json({
             success: true,
             products: finalProducts,

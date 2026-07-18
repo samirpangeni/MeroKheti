@@ -9,17 +9,18 @@ export async function GET(req) {
   try {
     await connectDB();
     const { searchParams } = new URL(req.url);
-    const role = searchParams.get("role");
+    const status = searchParams.get("status");
 
-    let filter = {
-      role: {
-        $ne: "admin",
-      },
-    };
-    if (role && role !== "All") {
-      filter.role = role;
+    const filter = {};
+
+    if (status && status !== "All") {
+      filter.status = status;
     }
-    const user = await User.find(filter)
+
+    const product = await Product.find(filter)
+      .populate("userId")
+      .sort({ createdAt: -1 });
+
     const report = await Report.find()
       .populate("userId", "firstName lastName")
       .populate({
@@ -40,8 +41,8 @@ export async function GET(req) {
     return NextResponse.json({
       message: "all user",
       report,
-      user,
-      order
+      order,
+      product
     });
   } catch (err) {
     console.log(err);
@@ -145,12 +146,52 @@ export async function PUT(req) {
       productId: updateProduct,
       type: "approved",
     });
+    const searchParams = new URL(req.url);
+    const id = searchParams.get("id");
+    const user = await User.findByIdAndUpdate(id, {
+      suspended: false,
+      suspendedReason: "",
+      suspendedUntil: null,
+    },
+      { new: true }
+    );
     return NextResponse.json({
       message: "updated successfully",
       updateProduct,
+      user
     });
   } catch (err) {
     console.log(err);
     return NextResponse.json({ message: "error" }, { status: 500 });
+  }
+}
+
+export async function PATCH(req) {
+  try {
+    await connectDB();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    const { reason, days = 7 } = await req.json();
+    const suspendedUntil = new Date();
+    suspendedUntil.setDate(suspendedUntil.getDate() + Number(days));
+    if (!reason || !days) {
+      return NextResponse.json(
+        { message: "No reason and days provided" },
+        { status: 400 }
+      );
+    }
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        suspended: true,
+        suspendedReason: reason,
+        suspendedUntil,
+      },
+      { new: true }
+    );
+    return NextResponse.json(user);
+  } catch (err) {
+    console.log(err)
+    return NextResponse.json({ message: "error" }, { status: 500 })
   }
 }

@@ -16,7 +16,7 @@ const Page = () => {
     const getData = async () => {
       try {
         setLoading(true)
-        const res = await axios.get("/api/product?status=pending");
+        const res = await axios.get("/api/admin?status=pending");
         setProduct(res.data.product);
       } catch (err) {
         console.log(err);
