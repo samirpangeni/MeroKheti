@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import ProductFeed from "@/components/ProductFeed";
 import axios from "axios";
 import Loading from "@/components/Loading";
-import Link from "next/link"
+import Link from "next/link";
 const page = () => {
   const [products, setProducts] = useState([]);
   const [activity, setActivity] = useState([]);
@@ -15,36 +15,36 @@ const page = () => {
   const [pendingCount, setPendingCount] = useState([]);
   const [failedCount, setFailedCount] = useState([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const getData = async () => {
       try {
-        setLoading(true)
-        const res = await axios.get("/api/customer")
-        const ures = await axios.get("/api/user")
-        const pendingCount = res.data?.order?.filter(
-          (o) => o.paymentStatus === "pending"
-        ).length;
-        const failedCount = res.data?.order?.filter(
-          (o) => o.paymentStatus === "failed"
-        ).length;
-        setFailedCount(failedCount)
-        setPendingCount(pendingCount)
-        setActivity(res.data.activity)
-        console.log(res.data.activity)
-        setOrder(res.data.order)
-        setCart(res.data.cart)
-        setUser(res.data);
+        setLoading(true);
+        const [customerRes, productRes] = await Promise.all([
+          axios.get("/api/customer"),
+          axios.get("/api/product"),
+        ]);
+        const {order= [], activity= [], cart=[] }=customerRes.data;
+         setPendingCount(
+          order.filter((o)=> o.paymentStatus === "pending").length
+         )
+         setFailedCount(
+          order.filter((o)=>o.paymentStatus === "reject").length
+         )
+        setActivity(activity)
+        setOrder(order)
+        setCart(cart)
+        setUser(userRes.data)
       } catch (err) {
         console.log(err);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     };
     getData();
   }, []);
   if (loading) {
-    return <Loading />
+    return <Loading />;
   }
   return (
     <div className="flex gap-2 w-full h-screen">
@@ -89,7 +89,6 @@ const page = () => {
 
         {/* Recent Orders */}
         <div className="bg-white/5 rounded-3xl border border-white/10 p-4 sm:p-6 mb-8">
-
           {/* Header */}
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg sm:text-xl font-semibold text-white">
@@ -114,8 +113,8 @@ const page = () => {
                 <div
                   key={item._id}
                   className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 
-                     p-4 rounded-xl bg-white/5 hover:bg-white/10 transition">
-                  
+                     p-4 rounded-xl bg-white/5 hover:bg-white/10 transition"
+                >
                   <div>
                     <h1 className="text-white font-medium">
                       {item.productId?.name}
@@ -134,16 +133,20 @@ const page = () => {
           )}
         </div>
 
-
         {/* Recommendations */}
         <div>
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-semibold">Recommended Products</h2>
           </div>
-          <ProductFeed products={products} setProducts={setProducts} search={search} setSearch={setSearch} />
+          <ProductFeed
+            products={products}
+            setProducts={setProducts}
+            search={search}
+            setSearch={setSearch}
+          />
         </div>
       </div>
-    </div >
+    </div>
   );
 };
 

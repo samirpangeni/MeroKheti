@@ -124,7 +124,6 @@ export async function PUT(req) {
       );
     }
     order.paymentStatus = "paid";
-    order.orderStatus = "confirmed";
     await order.save();
     return NextResponse.json({
       message: "Payment confirmed successfully",

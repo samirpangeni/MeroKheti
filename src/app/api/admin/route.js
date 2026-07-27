@@ -4,7 +4,9 @@ import { NextResponse } from "next/server";
 import Activity from "../../../../models/Activity.js";
 import Product from "../../../../models/Product.js";
 import Report from "../../../../models/Report.js";
+import Review from "../../../../models/Review.js";
 import Order from "../../../../models/Order.js";
+import Cart from "../../../../models/Cart.js"
 export async function GET(req) {
   try {
     await connectDB();
@@ -32,17 +34,19 @@ export async function GET(req) {
         },
       });
 
-    const order = await Order.find().populate("userId", "firstName lastName mobile email").populate({
-      path: "product.productId",
-      populate: {
-        path: "userId",
-      },
-    });
+    const order = await Order.find()
+      .populate("userId", "firstName lastName mobile email")
+      .populate({
+        path: "product.productId",
+        populate: {
+          path: "userId",
+        },
+      });
     return NextResponse.json({
       message: "all user",
       report,
       order,
-      product
+      product,
     });
   } catch (err) {
     console.log(err);
@@ -53,78 +57,97 @@ export async function GET(req) {
 export async function DELETE(req) {
   try {
     await connectDB();
+
     const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("id");
-    const reportId = searchParams.get("id");
     const productId = searchParams.get("id");
-    if (!userId) {
+    console.log(productId);
+    if (!productId) {
       return NextResponse.json(
         {
-          message: "User ID required",
+          success: false,
+          message: "Product ID is required",
         },
-        { status: 400 },
+        {
+          status: 400,
+        },
       );
     }
-    if (productId) {
-      const product = await Product.findByIdAndDelete(productId);
-      if (!product) {
-        return NextResponse.json(
-          { message: "Product not found" }, { status: 404 }
-        )
-      }
-      await Promise.all([
-        Order.deleteMany({ "product.productId": productId, }),
-        Review.deleteMany({ productId }),
-        Report.deleteMany({ productId }),
-        Activity.deleteMany({ productId, }),
-        Cart.updateMany({},
-          {
-            $pull: {
-              products: { productId },
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Product not found",
+        },
+        {
+          status: 404,
+        },
+      );
+    }
+
+    // Delete Product
+    await Product.findByIdAndDelete(productId);
+
+    // Delete everything related to this product
+    await Promise.all([
+      // Orders
+      Order.deleteMany({
+        "product.productId": productId,
+      }),
+
+      // Reviews
+      Review.deleteMany({
+        productId,
+      }),
+
+      // Reports
+      Report.deleteMany({
+        productId,
+      }),
+
+      // Activities
+      Activity.deleteMany({
+        productId,
+      }),
+
+      // Remove product from every cart
+      Cart.updateMany(
+        {},
+        {
+          $pull: {
+            products: {
+              productId,
             },
-          }
-        ),
-      ]);
+          },
+        },
+      ),
+    ]);
 
-      return NextResponse.json({
-        message: "Product deleted successfully",
-      });
-    }
+    // Optional: create admin activity log
+    await Activity.create({
+      type: "delete",
+      productId,
+      message: `Product "${product.name}" was deleted by admin.`,
+    });
 
-    if (reportId) {
-      await Report.findByIdAndDelete(reportId);
-    }
+    return NextResponse.json({
+      success: true,
+      message: "Product and all related data deleted successfully.",
+    });
+  } catch (error) {
+    console.error(error);
 
-    else {
-      const user = await User.findByIdAndDelete(userId);
-      if (!user) {
-        return NextResponse.json(
-          { message: "User not found" },
-          { status: 404 }
-        );
-      }
-      await Promise.all([
-        Product.deleteMany({ userId }),
-        Order.deleteMany({ userId }),
-        Review.deleteMany({ userId }),
-        Report.deleteMany({ userId }),
-        Cart.deleteMany({ userId }),
-        Activity.deleteMany({ userId }),
-      ]);
-
-      await Activity.create({
-        message: `User ${user.email} was deleted`,
-        type: "delete",
-      });
-
-      return NextResponse.json({
-        success: true,
-        message: "User deleted successfully",
-      });
-    }
-  } catch (err) {
-    console.log(err);
-    return NextResponse.json({ message: "error" }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Internal Server Error",
+      },
+      {
+        status: 500,
+      },
+    );
   }
 }
 
@@ -148,17 +171,19 @@ export async function PUT(req) {
     });
     const searchParams = new URL(req.url);
     const id = searchParams.get("id");
-    const user = await User.findByIdAndUpdate(id, {
-      suspended: false,
-      suspendedReason: "",
-      suspendedUntil: null,
-    },
-      { new: true }
+    const user = await User.findByIdAndUpdate(
+      id,
+      {
+        suspended: false,
+        suspendedReason: "",
+        suspendedUntil: null,
+      },
+      { new: true },
     );
     return NextResponse.json({
       message: "updated successfully",
       updateProduct,
-      user
+      user,
     });
   } catch (err) {
     console.log(err);
@@ -177,7 +202,7 @@ export async function PATCH(req) {
     if (!reason || !days) {
       return NextResponse.json(
         { message: "No reason and days provided" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const user = await User.findByIdAndUpdate(
@@ -187,11 +212,11 @@ export async function PATCH(req) {
         suspendedReason: reason,
         suspendedUntil,
       },
-      { new: true }
+      { new: true },
     );
     return NextResponse.json(user);
   } catch (err) {
-    console.log(err)
-    return NextResponse.json({ message: "error" }, { status: 500 })
+    console.log(err);
+    return NextResponse.json({ message: "error" }, { status: 500 });
   }
 }

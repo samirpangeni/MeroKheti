@@ -4,10 +4,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DashboardNav from "@/components/DashboardNav";
 import Loading from "@/components/Loading";
-import Link from "next/link"
+import { toast } from "react-toastify";
+import ReportOrder from "@/components/ReportOrder";
+import DeleteModal from "@/components/DeleteModels";
 const Page = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [reason, SetReason] = useState("");
+  const [open, SetOpen] = useState(false);
+  const [selectionId, setSelectionId] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -25,20 +31,20 @@ const Page = () => {
 
     fetchOrders();
   }, []);
-
-  // ORDER STATUS STYLE
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "confirmed":
-        return "bg-blue-500/20 text-blue-300 border-blue-500/30";
-      case "processing":
-        return "bg-yellow-500/20 text-yellow-300 border-yellow-500/30";
-      case "delivered":
-        return "bg-green-500/20 text-green-300 border-green-500/30";
-      case "cancelled":
-        return "bg-red-500/20 text-red-300 border-red-500/30";
-      default:
-        return "bg-gray-500/20 text-gray-300 border-gray-500/30";
+  const updateStatus = async (id) => {
+    setSelectionId(id);
+    SetOpen(true);
+  };
+  const confirmReceived = async () => {
+    try {
+      await axios.put(`/api/OrderReport`, {
+        selectionId,
+      });
+      toast.success("product update successfully");
+      SetOpen(false)
+    } catch (err) {
+      console.log(err);
+      toast.error("Failed to update product");
     }
   };
 
@@ -51,23 +57,16 @@ const Page = () => {
 
   return (
     <div className="flex min-h-screen bg-black text-white mb-10">
-      {/* Sidebar */}
       <DashboardNav />
 
-      {/* Main Content */}
       <div className="flex-1 md:ml-72 p-6 md:p-10 bg-linear-to-b from-black via-green-950/20 to-black md:mt-20">
-
-        {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-green-300">
-            My Orders
-          </h1>
+          <h1 className="text-3xl font-bold text-green-300">My Orders</h1>
           <p className="text-gray-400 text-sm mt-1">
             Track your purchases, payments, and delivery status
           </p>
         </div>
 
-        {/* Loading */}
         {loading ? (
           <Loading />
         ) : orders.length === 0 ? (
@@ -85,11 +84,18 @@ const Page = () => {
                   key={order._id}
                   className={`not-first:overflow-hidden rounded-2xl grid md:grid-cols-2
                    bg-linear-to-b from-green-950/30 to-black
-                   border border-green-500/20 ${order.orderStatus === "pending" ? 'border-red-500 text-red-400' : 'bg-green-500/20'}
+                   border border-green-500/20 ${order.orderStatus === "pending" ? "border-red-500 text-red-400" : "bg-green-500/20"}
                    shadow-[0_0_30px_rgba(0,255,100,0.06)]
                    hover:scale-[1.02] transition duration-300`}
                 >
-                  {/* Product Image */}
+                  <div className="absolute m-2">
+                    <button
+                      onClick={() => setSelectedOrder(order)}
+                      className="p-2 bg-red-700 rounded-xl text-white"
+                    >
+                      Report Order
+                    </button>
+                  </div>
                   <div className="h-52 w-full overflow-hidden">
                     <img
                       src={product?.image?.[0]?.url || "/placeholder.jpg"}
@@ -99,7 +105,6 @@ const Page = () => {
                   </div>
 
                   <div className="p-5">
-                    {/* Order Header */}
                     <div className="flex justify-between items-start">
                       <div>
                         <h2 className="text-lg font-semibold text-green-300">
@@ -110,17 +115,8 @@ const Page = () => {
                           Order #{order._id.slice(-6)}
                         </p>
                       </div>
-
-                      <span
-                        className={`text-xs px-3 py-1 rounded-full border ${getStatusColor(
-                          order.orderStatus
-                        )}`}
-                      >
-                        {order.orderStatus}
-                      </span>
                     </div>
 
-                    {/* Product Details */}
                     <div className="mt-4 space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-gray-400">Quantity</span>
@@ -149,12 +145,13 @@ const Page = () => {
                       <div className="space-y-1 text-sm">
                         <p>
                           <span className="text-gray-400">Name:</span>{" "}
-                          {order.userId?.firstName || "N/A"} {order.userId?.lastName || "N/A"}
+                          {order?.userId?.firstName || "N/A"}{" "}
+                          {order?.userId?.lastName || "N/A"}
                         </p>
 
                         <p>
                           <span className="text-gray-400">Phone:</span>{" "}
-                          {order.userId?.mobile || "N/A"}
+                          {order?.userId?.mobile || "N/A"}
                         </p>
 
                         <p>
@@ -177,7 +174,7 @@ const Page = () => {
 
                         <span
                           className={`text-xs px-3 py-1 rounded-full border ${getPaymentColor(
-                            order.paymentStatus
+                            order.paymentStatus,
                           )}`}
                         >
                           {order.paymentStatus}
@@ -189,84 +186,40 @@ const Page = () => {
                       </p>
                     </div>
                     <div className="mt-5">
-                      <p className="text-green-300"> Message: <span className="text-sm text-gray-500">{order.message}</span> </p>
+                      <p className="text-green-300">
+                        Message:
+                        <span className="text-sm text-gray-500">
+                          {order.message}
+                        </span>{" "}
+                      </p>
                     </div>
                     {/* Order Dates */}
                     <div className="mt-5 pt-4 border-t border-green-500/10">
                       <div className="space-y-1 text-xs text-gray-400">
                         <p>
-                          Ordered On:{" "}
+                          Ordered On:
                           {new Date(order.createdAt).toLocaleString()}
                         </p>
 
                         {order.updatedAt && (
                           <p>
-                            Last Updated:{" "}
+                            Last Updated:
                             {new Date(order.updatedAt).toLocaleString()}
                           </p>
                         )}
-                        {order.location &&
-                          order.product?.[0]?.productId?.farmerLocation && (
-                            <div className="bg-zinc-900 rounded-2xl p-4 border border-green-900">
-
-                              <div className="flex justify-between items-center mb-4">
-                                <div>
-                                  <h3 className="font-semibold text-green-400">
-                                    🚚 Delivery Route
-                                  </h3>
-
-                                  <p className="text-sm text-gray-400">
-                                    Farmer → Customer
-                                  </p>
-                                </div>
-
-                                <button
-                                  onClick={() => {
-                                    const farmer =
-                                      order.product[0].productId
-                                        .farmerLocation;
-
-                                    const customer =
-                                      order.location;
-
-                                    window.open(
-                                      `https://www.google.com/maps/dir/${farmer.lat},${farmer.lng}/${customer.lat},${customer.lng}`,
-                                      "_blank"
-                                    );
-                                  }}
-                                  className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 transition"
-                                >
-                                  Open Maps
-                                </button>
-                              </div>
-
-                              <div className="overflow-hidden rounded-xl">
-                                <DeliveryMap
-                                  farmerLocation={
-                                    order.product[0].productId
-                                      .farmerLocation
-                                  }
-                                  customerLocation={
-                                    order.location
-                                  }
-                                />
-                              </div>
-                            </div>
-                          )}
                       </div>
                     </div>
-
-                    {/* Action Button */}
-                    <Link href={`/product/${order._id}`}>
+                    {order.orderStatus !== "delivered" && (
                       <button
                         className="w-full mt-5 py-3 rounded-xl
                        bg-green-500/10 hover:bg-green-500/20
-                         border border-green-500/20
-                        text-green-300 transition"
+                        border border-green-500/20
+                       text-green-300 transition"
+                        onClick={() => updateStatus(order._id)}
                       >
-                        View Full Details
+                        Get Product
                       </button>
-                    </Link>
+                    )}
                   </div>
                 </div>
               );
@@ -274,6 +227,24 @@ const Page = () => {
           </div>
         )}
       </div>
+      <DeleteModal
+        isOpen={open}
+        onClose={() => SetOpen(false)}
+        onConfirm={confirmReceived}
+        type="Confirm Delivery"
+        message="Please confirm that you have successfully received your product. Once confirmed, this action cannot be undone and the order will be marked as Delivered."
+        confirmText="I Received It"
+      />
+
+      <ReportOrder
+        isReportOrder={!!selectedOrder}
+        onClose={() => setSelectedOrder(null)}
+        reason={reason}
+        setReason={SetReason}
+        productId={selectedOrder?.product?.[0]?.productId?._id}
+        orderId={selectedOrder?._id}
+        userId={selectedOrder?.userId?._id}
+      />
     </div>
   );
 };

@@ -107,6 +107,7 @@ export async function middleware(req) {
     return NextResponse.next();
   } catch (err) {
     console.log(err);
+    
 
     if (pathname.startsWith("/api")) {
       return NextResponse.json(
