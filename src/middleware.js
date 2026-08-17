@@ -107,13 +107,24 @@ export async function middleware(req) {
     return NextResponse.next();
   } catch (err) {
     console.log(err);
-    
-
-    if (pathname.startsWith("/api")) {
-      return NextResponse.json(
-        { message: "Invalid token" },
-        { status: 401 }
+    if (
+      err.code == "ERR_JWT_EXPIRED" ||
+      err.code == "ERR_JWT_INVALID" ||
+      err.code == "ERR_JWT_INVALID"
+    ) {
+      if (pathname.startsWith("/api")) {
+        const response = NextResponse.json({ message: "session expired.Please login again." }, { status: 401 })
+        response.cookies.delete("token");
+        return response
+      }
+      const response = NextResponse.redirect(
+        new URL("/login", req.url)
       );
+      response.cookies.delete("token");
+      return response;
+    }
+    if (pathname.startsWith("/api")) {
+      return NextResponse.json({ message: "Invalid token" }, { status: 401 })
     }
     if (
       pathname === "/suspend" &&

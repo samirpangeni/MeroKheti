@@ -69,8 +69,8 @@ const Page = () => {
       </section>
 
       {/* FLOATING BUTTON */}
-      <div className="fixed md:right-0 bottom-5 right-[-17]">
-        <div className="p-4 md:rounded-2xl shadow-lg transition pb-10">
+      <div className="fixed md:right-0 bottom-5 right-[20]">
+        <div className="p-4  shadow-lg transition pb-10">
          {user?.role =="farmer"&&(
           <Product />
          )}
