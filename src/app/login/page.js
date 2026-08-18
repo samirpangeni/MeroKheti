@@ -24,7 +24,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.log(err)
-      toast.success(err.response?.data?.message || "Login failed");
+      toast.error(err.response?.data?.message || "Login failed");
     }
   };
 
