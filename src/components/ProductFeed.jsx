@@ -58,7 +58,7 @@ export default function ProductFeed({ products, setProducts, search }) {
   }, [page, hasMore, loading]);
 
   return (
-    <section className="min-h-screen bg-backgournd text-white px-5 md:px-12 py-10 w-full">
+    <section className="min-h-screen bg-backgournd text-foreground px-5 md:px-12 py-10 w-full">
 
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between gap-4 mb-10">
@@ -175,43 +175,21 @@ function ProductCard({ item, selectProduct, setSelectProduct }) {
         </div>
 
         {/* IMAGE OVERLAY */}
-        <div
-          className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
+        <div className="absolute inset-0 bg-linear-to-t from-background via-secondary to-transparent" />
         {/* BADGES */}
         <div className="absolute left-3 right-3 top-3 flex items-start justify-between">
-
           {/* LEFT */}
           <div className="flex flex-wrap gap-2">
 
             {item.organic && (
               <span
-                className="
-              rounded-full
-              bg-green-500/90
-              px-2.5 py-1
-              text-[10px]
-              font-semibold
-              text-white
-              shadow-sm
-            "
-              >
+                className="rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold text-foreground shadow-sm">
                 🌱 Organic
               </span>
             )}
 
             <span
-              className="
-            rounded-full
-            border border-white/20
-            bg-black/50
-            px-2.5 py-1
-            text-[10px]
-            font-medium
-            text-white
-            backdrop-blur-sm
-          "
-            >
+              className="rounded-full border border-border bg-card px-2.5 py-1 text-[10px] font-medium text-foreground backdrop-blur-sm">
               {item.category}
             </span>
 
@@ -219,7 +197,7 @@ function ProductCard({ item, selectProduct, setSelectProduct }) {
 
           {/* FARMER */}
           <span
-            className="max-w-[120px] truncate rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold text-gray-900 shadow-sm">
+            className="max-w-30 truncate rounded-full bg-background px-2.5 py-1 text-[10px] font-semibold text-foreground shadow-sm">
             {item.userId?.firstName} {item.userId?.lastName}
           </span>
 
@@ -236,8 +214,8 @@ function ProductCard({ item, selectProduct, setSelectProduct }) {
               rounded-full
               transition-all
               ${i === index
-                    ? "w-4 bg-white"
-                    : "w-1.5 bg-white/50"
+                    ? "w-4 bg-foreground"
+                    : "w-1.5 bg-card"
                   }
             `}
               />
