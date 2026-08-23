@@ -63,23 +63,23 @@ const Page = () => {
   });
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-background text-white">
       <SlideBarForAdmin />
 
-      <div className="flex-1 p-8 pl-70 bg-linear-to-br from-black via-gray-950 to-green-950">
+      <div className="flex-1 p-8 pl-70 bg-linear-to-br from-background via-card to-secondary">
         {/* HEADER */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-green-400">
+            <h1 className="text-3xl font-bold text-primary">
               Approved Products
             </h1>
-            <p className="text-gray-400">
+            <p className="text-muted">
               Manage marketplace products
             </p>
           </div>
 
-          <div className="bg-green-900/30 border border-green-500 px-4 py-2 rounded-xl">
-            <span className="text-green-400 font-bold">
+          <div className="bg-card border border-border px-4 py-2 rounded-xl">
+            <span className="text-primary font-bold">
               Total Products: {filteredProducts.length}
             </span>
           </div>
@@ -92,13 +92,13 @@ const Page = () => {
             placeholder="Search product or location..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="p-3 rounded-xl bg-gray-900 border border-gray-700 focus:border-green-500 outline-none"
+            className="p-3 rounded-xl bg-card border text-foreground border-muted focus:border-primary outline-none"
           />
 
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="p-3 rounded-xl bg-gray-900 border border-gray-700"
+            className="p-3 rounded-xl bg-card border border-muted text-foreground"
           >
             <option value="">All Category</option>
             <option value="fruits">Fruits</option>
@@ -109,7 +109,7 @@ const Page = () => {
           <select
             value={organic}
             onChange={(e) => setOrganic(e.target.value)}
-            className="p-3 rounded-xl bg-gray-900 border border-gray-700"
+            className="p-3 rounded-xl bg-card border border-muted text-foreground"
           >
             <option value="">All Products</option>
             <option value="true">Organic</option>
@@ -125,20 +125,20 @@ const Page = () => {
             {filteredProducts.map((item) => (
               <div
                 key={item._id}
-                className="bg-[#111] border border-gray-800 rounded-2xl overflow-hidden hover:border-green-500 hover:shadow-lg hover:shadow-green-500/10 transition-all duration-300"
+                className="bg-card border border-muted rounded-2xl overflow-hidden hover:border-primary-hover hover:shadow-lg hover:shadow-green-500/10 transition-all duration-300"
               >
                 {/* IMAGE */}
                 <div className="relative">
                   <img
                     src={item.image?.[0]?.url}
                     alt={item.name}
-                    className="w-full h-56 object-cover"
+                    className="w-full h-56 object-cover p-2 rounded-2xl"
                   />
 
                   <span
                     className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold ${item.organic
-                      ? "bg-green-600"
-                      : "bg-orange-600"
+                      ? "bg-primary dark:bg-green-400"
+                      : "bg-orange-600 dark:bg-orange-400"
                       }`}
                   >
                     {item.organic ? "Organic" : "Non Organic"}
@@ -147,75 +147,75 @@ const Page = () => {
 
                 <div className="p-5">
                   {/* NAME */}
-                  <h2 className="text-2xl font-bold mb-1">
+                  <h2 className="text-2xl text-muted font-bold mb-1">
                     {item.name}
                   </h2>
 
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-muted text-sm">
                     📍 {item.location}
                   </p>
 
                   {/* PRICE */}
                   <div className="flex justify-between items-center mt-3">
-                    <span className="text-green-400 text-xl font-bold">
+                    <span className="text-primary text-xl font-bold">
                       Rs {item.price}
                     </span>
 
-                    <span className="px-3 py-1 bg-gray-800 rounded-full text-xs capitalize">
+                    <span className="px-3 py-1 bg-card rounded-full text-xs capitalize">
                       {item.category}
                     </span>
                   </div>
 
                   {/* STATS */}
                   <div className="grid grid-cols-3 gap-2 mt-4">
-                    <div className="bg-gray-900 rounded-lg p-2 text-center">
-                      <p className="text-yellow-400 font-bold">
+                    <div className="bg-card rounded-lg p-2 text-center">
+                      <p className="text-yellow-400 dark:text-yellow-600 font-bold">
                         ⭐ {item.averageRating || 0}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted">
                         Rating
                       </p>
                     </div>
 
-                    <div className="bg-gray-900 rounded-lg p-2 text-center">
-                      <p className="text-blue-400 font-bold">
+                    <div className="bg-card rounded-lg p-2 text-center">
+                      <p className="text-blue-400 dark:text-blue-600 font-bold">
                         {item.totalReview || 0}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted">
                         Reviews
                       </p>
                     </div>
 
-                    <div className="bg-gray-900 rounded-lg p-2 text-center">
-                      <p className="text-red-400 font-bold">
+                    <div className="bg-card rounded-lg p-2 text-center">
+                      <p className="text-red-400 dark:text-red-600 font-bold">
                         {item.totalReport || 0}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-muted">
                         Reports
                       </p>
                     </div>
                   </div>
 
                   {/* PRODUCT INFO */}
-                  <div className="mt-4 border-t border-gray-800 pt-4 space-y-2 text-sm">
+                  <div className="mt-4 border-t border-card pt-4 space-y-2 text-sm">
                     <p>
-                      <span className="text-gray-500">
+                      <span className="text-muted">
                         Quantity:
                       </span>{" "}
                       {item.quantity} {item.unit}
                     </p>
 
                     <p>
-                      <span className="text-gray-500">
+                      <span className="text-muted">
                         Status:
                       </span>{" "}
-                      <span className="text-green-400 capitalize">
+                      <span className="text-primary capitalize">
                         {item.status}
                       </span>
                     </p>
 
                     <p>
-                      <span className="text-gray-500">
+                      <span className="text-muted">
                         Harvest:
                       </span>{" "}
                       {new Date(
@@ -224,7 +224,7 @@ const Page = () => {
                     </p>
 
                     <p>
-                      <span className="text-gray-500">
+                      <span className="text-muted">
                         Expiry:
                       </span>{" "}
                       {new Date(
@@ -233,7 +233,7 @@ const Page = () => {
                     </p>
 
                     <p>
-                      <span className="text-gray-500">
+                      <span className="text-muted">
                         Created:
                       </span>{" "}
                       {new Date(
@@ -243,8 +243,8 @@ const Page = () => {
                   </div>
 
                   {/* FARMER */}
-                  <div className="mt-4 border-t border-gray-800 pt-4">
-                    <h3 className="text-green-400 font-semibold mb-2">
+                  <div className="mt-4 border-t border-card pt-4">
+                    <h3 className="text-primary font-semibold mb-2">
                       Farmer Information
                     </h3>
 
@@ -253,31 +253,31 @@ const Page = () => {
                       {item.userId?.lastName}
                     </p>
 
-                    <p className="text-xs text-gray-500 mt-1 break-all">
+                    <p className="text-xs text-muted mt-1 break-all">
                       ID: {item.userId?._id}
                     </p>
                   </div>
 
                   {/* DESCRIPTION */}
-                  <div className="mt-4 border-t border-gray-800 pt-4">
-                    <h3 className="text-green-400 font-semibold mb-2">
+                  <div className="mt-4 border-t border-card pt-4">
+                    <h3 className="text-primary font-semibold mb-2">
                       Description
                     </h3>
 
-                    <p className="text-sm text-gray-400 line-clamp-3">
+                    <p className="text-sm text-muted line-clamp-3">
                       {item.description}
                     </p>
                   </div>
 
                   {/* ACTIONS */}
                   <div className="mt-5 flex gap-3">
-                    <button className="flex-1 bg-green-600 hover:bg-green-700 py-2 rounded-lg font-medium transition">
+                    <button className="flex-1 bg-primary hover:bg-primary-hover py-2 rounded-lg font-medium transition">
                       View Details
                     </button>
 
                     <button
                       onClick={() => deleteProduct(item._id)}
-                      className="flex-1 bg-red-500 hover:bg-red-600 py-2 rounded-lg font-medium transition"
+                      className="flex-1 bg-red-600 dark:bg-red-400 hover:bg-red-600 hover:dark:bg-red-400 py-2 rounded-lg font-medium transition"
                     >
                       Delete
                     </button>
@@ -290,7 +290,7 @@ const Page = () => {
 
         {!loading && filteredProducts.length === 0 && (
           <div className="flex justify-center items-center h-60">
-            <h1 className="text-gray-500 text-xl">
+            <h1 className="text-muted text-xl">
               No Products Found
             </h1>
           </div>

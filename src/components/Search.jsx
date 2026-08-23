@@ -8,7 +8,7 @@ const Search = ({ search, setSearch, setProducts, setSearchInput, searchInput })
         e.preventDefault();
         try {
             const query = search.trim();
-            let url =   "";
+            let url = "";
             if (!query) {
                 url = "/api/product";
             } else {
@@ -29,11 +29,11 @@ const Search = ({ search, setSearch, setProducts, setSearchInput, searchInput })
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                     placeholder="Search tomatoes, rice, fruits..."
-                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-green-500 outline-none text-white"
+                    className="w-full pl-11 pr-4 py-3 rounded-xl bg-input border placeholder:text-muted border-input-border focus:border-primary outline-none text-foreground focus:ring-primary/20 focus:ring-2 transition"
                 />
                 <button type="submit"
-                onClick={()=>{setSearch(searchInput)}}
-                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 onFocus:bg-red-400">
+                    onClick={() => { setSearch(searchInput) }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-color">
                     <FiSearch />
                 </button>
             </form>

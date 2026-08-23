@@ -84,45 +84,45 @@ const Page = () => {
   if (loading) return <Loading />;
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-background text-foreground">
       <SlideBarForAdmin />
 
-      <div className="flex-1 p-6 md:pl-70 bg-linear-to-br from-black via-gray-950 to-green-950 ">
+      <div className="flex-1 p-6 md:pl-70 bg-linear-to-br from-background via-card to-secondary ">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-green-400">
+          <h1 className="text-3xl font-bold text-primary">
             Order Management
           </h1>
-          <p className="text-gray-400">
+          <p className="text-muted">
             Manage all marketplace orders
           </p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
-            <p className="text-gray-400">Total Orders</p>
+          <div className="bg-card rounded-xl p-5 border border-muted">
+            <p className="text-muted">Total Orders</p>
             <h2 className="text-3xl font-bold">
               {orders.length}
             </h2>
           </div>
 
-          <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
-            <p className="text-gray-400">Pending</p>
+          <div className="bg-card rounded-xl p-5 border border-muted">
+            <p className="text-muted">Pending</p>
             <h2 className="text-3xl font-bold text-yellow-400">
               {pending}
             </h2>
           </div>
 
-          <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
-            <p className="text-gray-400">Completed</p>
-            <h2 className="text-3xl font-bold text-green-400">
+          <div className="bg-card rounded-xl p-5 border border-muted">
+            <p className="text-muted">Completed</p>
+            <h2 className="text-3xl font-bold text-primary">
               {completed}
             </h2>
           </div>
 
-          <div className="bg-gray-900 rounded-xl p-5 border border-gray-800">
-            <p className="text-gray-400">Revenue</p>
+          <div className="bg-card rounded-xl p-5 border border-muted">
+            <p className="text-muted">Revenue</p>
             <h2 className="text-3xl font-bold text-blue-400">
               Rs {totalRevenue}
             </h2>
@@ -138,7 +138,7 @@ const Page = () => {
             onChange={(e) =>
               setSearch(e.target.value)
             }
-            className="flex-1 p-3 bg-gray-900 rounded-xl border border-gray-800"
+            className="flex-1 p-3 bg-card rounded-xl border border-muted"
           />
 
           <select
@@ -146,7 +146,7 @@ const Page = () => {
             onChange={(e) =>
               setFilter(e.target.value)
             }
-            className="p-3 bg-gray-900 rounded-xl border border-gray-800"
+            className="p-3 bg-card rounded-xl border border-muted"
           >
             <option value="">All Status</option>
             <option value="pending">
@@ -172,11 +172,11 @@ const Page = () => {
             return (
               <div
                 key={order._id}
-                className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden"
+                className="bg-card border border-muted rounded-2xl overflow-hidden"
               >
-                <div className="p-5 border-b border-gray-800">
+                <div className="p-5 border-b border-muted">
                   <div className="flex justify-between">
-                    <h2 className="font-bold text-green-400">
+                    <h2 className="font-bold text-primary">
                       #{order._id.slice(-8)}
                     </h2>
 
@@ -188,7 +188,7 @@ const Page = () => {
                           e.target.value
                         )
                       }
-                      className="bg-black border border-gray-700 rounded px-3 py-1"
+                      className="bg-background border border-gray-700 rounded px-3 py-1"
                     >
                       <option value="pending">
                         Pending
@@ -224,18 +224,18 @@ const Page = () => {
                         {product?.name}
                       </h3>
 
-                      <p className="text-gray-400">
+                      <p className="text-muted">
                         Qty: {item?.quantity}
                       </p>
 
-                      <p className="text-green-400 font-bold">
+                      <p className="text-primary font-bold">
                         Rs {item?.price}
                       </p>
                     </div>
                   </div>
 
                   <div className="mt-5 grid md:grid-cols-2 gap-4">
-                    <div className="bg-black/40 rounded-xl p-4">
+                    <div className="bg-background/40 rounded-xl p-4">
                       <h3 className="text-blue-400 mb-2">
                         Buyer
                       </h3>
@@ -245,17 +245,17 @@ const Page = () => {
                         {buyer?.lastName}
                       </p>
 
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-muted">
                         {buyer?.email}
                       </p>
 
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-muted">
                         {buyer?.mobile}
                       </p>
                     </div>
 
-                    <div className="bg-black/40 rounded-xl p-4">
-                      <h3 className="text-green-400 mb-2">
+                    <div className="bg-background/40 rounded-xl p-4">
+                      <h3 className="text-primary mb-2">
                         Seller
                       </h3>
 
@@ -264,27 +264,27 @@ const Page = () => {
                         {seller?.lastName}
                       </p>
 
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-muted">
                         {seller?.email}
                       </p>
 
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-muted">
                         {seller?.mobile}
                       </p>
                     </div>
                   </div>
 
-                  <div className="mt-4 bg-black/40 p-4 rounded-xl">
+                  <div className="mt-4 bg-background/40 p-4 rounded-xl">
                     <p>
                       Transaction:
                     </p>
 
-                    <p className="text-xs text-gray-400 break-all">
+                    <p className="text-xs text-muted break-all">
                       {order.transaction_uuid}
                     </p>
                   </div>
 
-                  <div className="mt-4 bg-linear-to-r from-blue-900/20 to-green-900/20 p-4 rounded-xl border border-gray-800">
+                  <div className="mt-4 bg-linear-to-r from-blue-900/20 to-green-900/20 p-4 rounded-xl border border-muted">
                     <p className="text-center">
                       👤{" "}
                       {buyer?.firstName} →
@@ -295,7 +295,7 @@ const Page = () => {
 
                   <div className="mt-4 flex justify-between">
                     <div>
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-muted text-sm">
                         Payment
                       </p>
                       <p>
@@ -304,19 +304,19 @@ const Page = () => {
                     </div>
 
                     <div>
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-muted text-sm">
                         Status
                       </p>
-                      <p className="text-green-400">
+                      <p className="text-primary">
                         {order.paymentStatus}
                       </p>
                     </div>
 
                     <div>
-                      <p className="text-gray-400 text-sm">
+                      <p className="text-muted text-sm">
                         Total
                       </p>
-                      <p className="font-bold text-green-400">
+                      <p className="font-bold text-primary">
                         Rs {order.totalAmount}
                       </p>
                     </div>

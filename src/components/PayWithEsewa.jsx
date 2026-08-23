@@ -81,7 +81,7 @@ const PayWithEsewa = ({ payMethod, price, productId, location }) => {
       <button
         type="button"
         onClick={handelEsewa}
-        className={`w-full p-4 rounded-2xl transition ${payMethod === "eSewa" ? "bg-green-700" : "bg-green-500"
+        className={`w-full p-4 rounded-2xl transition text-foreground ${payMethod === "eSewa" ? "bg-primary" : "bg-primary-hover"
           }`}
       >
         Pay with eSewa

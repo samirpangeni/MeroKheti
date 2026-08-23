@@ -17,124 +17,251 @@ const Page = () => {
   const farmerCount = user?.filter((u) => u.role === "farmer")?.length;
   useEffect(() => {
     const getData = async () => {
-      try{
+      try {
         setLoading(true)
-      const uRes = await axios.get("api/admin/user");
-      const pRes = await axios.get("api/admin/?status=All");
-      const pending = await axios.get("api/admin?status=pending");
-      const approved = await axios.get("api/admin?status=approved");
-      const reject = await axios.get("api/admin?status=reject");
-    
-      setPPending(pending.data.product || []);
-      setPReject(reject.data.product || []);
-      setPApproved(approved.data.product || []);
-      setUser(uRes.data.user || []);
-      setProduct(pRes.data.product || []);
-      }catch(err){
+        const uRes = await axios.get("api/admin/user");
+        const pRes = await axios.get("api/admin/?status=All");
+        const pending = await axios.get("api/admin?status=pending");
+        const approved = await axios.get("api/admin?status=approved");
+        const reject = await axios.get("api/admin?status=reject");
+
+        setPPending(pending.data.product || []);
+        setPReject(reject.data.product || []);
+        setPApproved(approved.data.product || []);
+        setUser(uRes.data.user || []);
+        setProduct(pRes.data.product || []);
+      } catch (err) {
         console.log(err)
-      }finally{
+      } finally {
         setLoading(false)
       }
     };
     getData();
   }, []);
-if(loading){
-  return <Loading />
-}
+  if (loading) {
+    return <Loading />
+  }
   return (
     <div className="flex gap-2">
       <SlideBarForAdmin />
       <div className="py-10 w-full pl-70">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-5 w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5 w-full">
+
           {/* TOTAL USERS */}
+          <div className="
+    bg-card
+    border border-border
+    rounded-2xl
+    p-5
+    shadow-sm
+    transition-all duration-300
+    hover:-translate-y-1
+    hover:shadow-md
+  ">
+            <div className="space-y-4">
 
-          <div className="bg-black border border-green-900 rounded-3xl p-5 shadow-2xl hover:scale-105 transition-all duration-300">
-            <div className="flex flex-col gap-3">
-              <h1 className="text-gray-400 text-sm uppercase tracking-wider">
+              <p className="text-sm font-medium text-muted">
                 Total Users
-              </h1>
+              </p>
 
-              <h1 className="text-5xl font-bold text-green-400">
+              <h2 className="text-4xl font-bold text-primary">
                 {user.length}
-              </h1>
+              </h2>
 
-              <div className="w-full h-1 bg-green-900 rounded-full overflow-hidden">
-                <div className="w-[80%] h-full bg-green-500 rounded-full"></div>
+              <div>
+                <div className="flex justify-between text-xs text-muted mb-2">
+                  <span>Users</span>
+                  <span>100%</span>
+                </div>
+
+                <div className="w-full h-2 bg-muted-background rounded-full overflow-hidden">
+                  <div className="w-full h-full bg-primary rounded-full" />
+                </div>
               </div>
+
             </div>
           </div>
+
 
           {/* TOTAL PRODUCTS */}
+          <div className="
+    bg-card
+    border border-border
+    rounded-2xl
+    p-5
+    shadow-sm
+    transition-all duration-300
+    hover:-translate-y-1
+    hover:shadow-md
+  ">
+            <div className="space-y-4">
 
-          <div className="bg-black border border-green-900 rounded-3xl p-5 shadow-2xl hover:scale-105 transition-all duration-300">
-            <div className="flex flex-col gap-3">
-              <h1 className="text-gray-400 text-sm uppercase tracking-wider">
+              <p className="text-sm font-medium text-muted">
                 Total Products
-              </h1>
+              </p>
 
-              <h1 className="text-5xl font-bold text-green-400">
+              <h2 className="text-4xl font-bold text-primary">
                 {product.length}
-              </h1>
+              </h2>
 
-              <div className="w-full h-1 bg-green-900 rounded-full overflow-hidden">
-                <div className="w-[70%] h-full bg-green-500 rounded-full"></div>
+              <div>
+                <div className="flex justify-between text-xs text-muted mb-2">
+                  <span>Products</span>
+                  <span>100%</span>
+                </div>
+
+                <div className="w-full h-2 bg-muted-background rounded-full overflow-hidden">
+                  <div className="w-full h-full bg-primary rounded-full" />
+                </div>
               </div>
+
             </div>
           </div>
+
 
           {/* PENDING PRODUCTS */}
+          <div className="
+    bg-card
+    border border-border
+    rounded-2xl
+    p-5
+    shadow-sm
+    transition-all duration-300
+    hover:-translate-y-1
+    hover:shadow-md
+  ">
+            <div className="space-y-4">
 
-          <div className="bg-black border border-yellow-900 rounded-3xl p-5 shadow-2xl hover:scale-105 transition-all duration-300">
-            <div className="flex flex-col gap-3">
-              <h1 className="text-gray-400 text-sm uppercase tracking-wider">
+              <p className="text-sm font-medium text-muted">
                 Pending Products
-              </h1>
+              </p>
 
-              <h1 className="text-5xl font-bold text-yellow-400">
+              <h2 className="text-4xl font-bold text-yellow-500">
                 {pPending.length}
-              </h1>
+              </h2>
 
-              <div className="w-full h-1 bg-yellow-900 rounded-full overflow-hidden">
-                <div className="w-[50%] h-full bg-yellow-500 rounded-full"></div>
+              <div>
+                <div className="flex justify-between text-xs text-muted mb-2">
+                  <span>Pending</span>
+                  <span>
+                    {product.length
+                      ? Math.round((pPending.length / product.length) * 100)
+                      : 0}%
+                  </span>
+                </div>
+
+                <div className="w-full h-2 bg-muted-background rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-yellow-500 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${product.length
+                          ? (pPending.length / product.length) * 100
+                          : 0
+                        }%`,
+                    }}
+                  />
+                </div>
               </div>
+
             </div>
           </div>
+
 
           {/* APPROVED PRODUCTS */}
+          <div className="
+    bg-card
+    border border-border
+    rounded-2xl
+    p-5
+    shadow-sm
+    transition-all duration-300
+    hover:-translate-y-1
+    hover:shadow-md
+  ">
+            <div className="space-y-4">
 
-          <div className="bg-black border border-green-900 rounded-3xl p-5 shadow-2xl hover:scale-105 transition-all duration-300">
-            <div className="flex flex-col gap-3">
-              <h1 className="text-gray-400 text-sm uppercase tracking-wider">
+              <p className="text-sm font-medium text-muted">
                 Approved Products
-              </h1>
+              </p>
 
-              <h1 className="text-5xl font-bold text-green-400">
+              <h2 className="text-4xl font-bold text-primary">
                 {pApproved.length}
-              </h1>
+              </h2>
 
-              <div className="w-full h-1 bg-green-900 rounded-full overflow-hidden">
-                <div className="w-[90%] h-full bg-green-500 rounded-full"></div>
+              <div>
+                <div className="flex justify-between text-xs text-muted mb-2">
+                  <span>Approved</span>
+                  <span>
+                    {product.length
+                      ? Math.round((pApproved.length / product.length) * 100)
+                      : 0}%
+                  </span>
+                </div>
+
+                <div className="w-full h-2 bg-muted-background rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all duration-500"
+                    style={{
+                      width: `${product.length
+                          ? (pApproved.length / product.length) * 100
+                          : 0
+                        }%`,
+                    }}
+                  />
+                </div>
               </div>
+
             </div>
           </div>
+
 
           {/* REJECTED PRODUCTS */}
+          <div className="
+    bg-card
+    border border-border
+    rounded-2xl
+    p-5
+    shadow-sm
+    transition-all duration-300
+    hover:-translate-y-1
+    hover:shadow-md
+  ">
+            <div className="space-y-4">
 
-          <div className="bg-black border border-red-900 rounded-3xl p-5 shadow-2xl hover:scale-105 transition-all duration-300">
-            <div className="flex flex-col gap-3">
-              <h1 className="text-gray-400 text-sm uppercase tracking-wider">
+              <p className="text-sm font-medium text-muted">
                 Rejected Products
-              </h1>
+              </p>
 
-              <h1 className="text-5xl font-bold text-red-400">
+              <h2 className="text-4xl font-bold text-red-500">
                 {pReject.length}
-              </h1>
+              </h2>
 
-              <div className="w-full h-1 bg-red-900 rounded-full overflow-hidden">
-                <div className="w-[30%] h-full bg-red-500 rounded-full"></div>
+              <div>
+                <div className="flex justify-between text-xs text-muted mb-2">
+                  <span>Rejected</span>
+                  <span>
+                    {product.length
+                      ? Math.round((pReject.length / product.length) * 100)
+                      : 0}%
+                  </span>
+                </div>
+
+                <div className="w-full h-2 bg-muted-background rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-red-600 dark:bg-red-400 rounded-full transition-all duration-500"
+                    style={{
+                      width: `${product.length
+                          ? (pReject.length / product.length) * 100
+                          : 0
+                        }%`,
+                    }}
+                  />
+                </div>
               </div>
+
             </div>
           </div>
+
         </div>
         <div>
           <UserGrowthChart

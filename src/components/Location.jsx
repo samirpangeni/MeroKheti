@@ -5,16 +5,16 @@ const Location = ({ location, setLocation }) => {
   return (
     <div className="space-y-5">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-green-900/40 pb-4">
-        <div className="w-10 h-10 rounded-xl bg-green-900/30 border border-green-700/30 flex items-center justify-center">
-          <FiMapPin className="text-green-400 text-lg" />
+      <div className="flex items-center gap-3 border-b border-border pb-4">
+        <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center">
+          <FiMapPin className="text-primary text-lg" />
         </div>
 
         <div>
-          <h2 className="text-xl font-bold text-white">
+          <h2 className="text-xl font-bold text-foreground">
             Origin & Location
           </h2>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-muted">
             Specify where your product comes from
           </p>
         </div>
@@ -22,10 +22,10 @@ const Location = ({ location, setLocation }) => {
 
       {/* Input */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-gray-300 flex items-center gap-2">
-          <FiMapPin className="text-green-400" />
+        <label className="text-sm font-medium text-muted flex items-center gap-2">
+          <FiMapPin className="text-primary" />
           Product Origin / Location
-          <span className="text-red-400">*</span>
+          <span className="dark:text-red-400 text-red-600">*</span>
         </label>
 
         <input
@@ -33,9 +33,9 @@ const Location = ({ location, setLocation }) => {
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           placeholder="Pokhara, Chitwan, Kathmandu Valley..."
-          className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-green-900/40 text-white placeholder:text-gray-500 outline-none transition-all duration-300 focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-green-700/50"/>
+          className="w-full px-4 py-3 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted outline-none transition-all duration-300 focus:border-primary focus:ring-4 focus:ring-primary/10 hover:border-primary-hover"/>
 
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-muted">
           Mention the exact place where the product was grown or produced.
         </p>
       </div>
@@ -48,7 +48,7 @@ const Location = ({ location, setLocation }) => {
               key={place}
               type="button"
               onClick={() => setLocation(place)}
-              className="px-3 py-1.5 text-xs rounded-full bg-green-950/40 border border-green-800/30 text-green-300 hover:bg-green-900/40 hover:border-green-500/40 transition">
+              className="px-3 py-1.5 text-xs rounded-full bg-card border border-border text-primary hover:bg-primary/40 hover:border-priamry-hover transition">
               {place}
             </button>
           )

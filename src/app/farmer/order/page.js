@@ -26,7 +26,6 @@ const Page = () => {
     try {
       const res = await axios.get("/api/farmer/product");
       setOrders(res.data.order || []);
-      console.log(res.data.order);
     } catch (err) {
       console.log(err);
     } finally {
@@ -52,7 +51,7 @@ const Page = () => {
   };
   if (loading) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center text-green-400 text-xl">
+      <div className="min-h-screen bg-background flex items-center justify-center text-primary text-xl">
         Loading Orders...
       </div>
     );
@@ -75,64 +74,64 @@ const Page = () => {
     <div>
       <SlideBarForFarmer />
 
-      <div className="min-h-screen bg-black text-white md:pl-72 p-6">
-        <h1 className="text-4xl font-bold text-green-400 mb-8">
+      <div className="min-h-screen bg-background text-foreground md:pl-72 p-6">
+        <h1 className="text-4xl font-bold text-primary mb-8">
           Farmer Order Dashboard
         </h1>
 
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-8">
-          <div className="bg-green-950 border border-green-800 rounded-2xl p-5">
-            <p className="text-gray-400">Total Orders</p>
-            <h2 className="text-3xl font-bold text-green-400 mt-2">
+          <div className="text-secondary-foreground border border-border rounded-2xl p-5">
+            <p className="text-muted">Total Orders</p>
+            <h2 className="text-3xl font-bold text-primary mt-2">
               {orders.length}
             </h2>
           </div>
 
-          <div className="bg-green-950 border border-green-800 rounded-2xl p-5">
-            <p className="text-gray-400">Pending Orders</p>
+          <div className="text-secondary-foreground border border-border rounded-2xl p-5">
+            <p className="text-muted">Pending Orders</p>
             <h2 className="text-3xl font-bold text-yellow-400 mt-2">
               {pendingOrders}
             </h2>
           </div>
 
-          <div className="bg-green-950 border border-green-800 rounded-2xl p-5">
-            <p className="text-gray-400">Delivered</p>
-            <h2 className="text-3xl font-bold text-green-400 mt-2">
+          <div className="text-secondary-foreground border border-border rounded-2xl p-5">
+            <p className="text-muted">Delivered</p>
+            <h2 className="text-3xl font-bold text-primary mt-2">
               {deliveredOrders}
             </h2>
           </div>
 
-          <div className="bg-green-950 border border-green-800 rounded-2xl p-5">
-            <p className="text-gray-400">Revenue</p>
-            <h2 className="text-3xl font-bold text-green-400 mt-2">
+          <div className="text-secondary-foreground border border-border rounded-2xl p-5">
+            <p className="text-muted">Revenue</p>
+            <h2 className="text-3xl font-bold text-primary mt-2">
               NPR {totalRevenue}
             </h2>
           </div>
         </div>
 
         {/* Orders */}
-        <div className="space-y-6">
+        <div className="space-y-6 grid md:grid-cols-2 gap-3">
           {orders.length === 0 ? (
-            <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 text-center text-gray-400">
+            <div className="bg-card border border-border rounded-2xl p-8 text-center text-muted">
               No Orders Found
             </div>
           ) : (
             orders.map((order) => (
               <div
                 key={order._id}
-                className="bg-zinc-950 border border-green-900 rounded-3xl overflow-hidden shadow-lg"
+                className="bg-card border border-border rounded-3xl overflow-hidden shadow-lg"
               >
                 <div className="absolute m-2">
                   <button
                     onClick={() => setSelectedOrder(order)}
-                    className="p-2 bg-red-700 rounded-xl text-white"
+                    className="p-2 bg-red-700 rounded-xl text-foreground"
                   >
                     Report Order
                   </button>
                 </div>
                 {/* Header */}
-                <div className="bg-linear-to-r from-green-950 via-green-900 to-emerald-950 border-b border-green-800 p-6">
+                <div className="bg-linear-to-r from-background via-card to-secondary border-b border-border p-6">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     {/* Customer Info */}
                     <div className="flex items-center gap-4">
@@ -141,11 +140,11 @@ const Page = () => {
                       </div>
 
                       <div>
-                        <h2 className="text-xl font-bold text-white">
+                        <h2 className="text-xl font-bold text-foreground">
                           {order.userId?.name || "Customer"}
                         </h2>
 
-                        <p className="text-green-300 text-sm">
+                        <p className="text-primary text-sm">
                           {order.userId?.email}
                         </p>
                       </div>
@@ -153,13 +152,13 @@ const Page = () => {
 
                     {/* Order Details */}
                     <div className="flex flex-col items-start md:items-end">
-                      <span className="px-3 py-1 rounded-full bg-green-500/20 text-green-300 text-xs font-medium border border-green-500/30">
+                      <span className="px-3 py-1 rounded-full bg-border text-primary text-xs font-medium border border-green-500/30">
                         {order.orderStatus}
                       </span>
 
-                      <p className="text-xs text-gray-400 mt-2">Order ID</p>
+                      <p className="text-xs text-muted mt-2">Order ID</p>
 
-                      <p className="text-green-300 text-xs break-all max-w-55">
+                      <p className="text-primary text-xs break-all max-w-55">
                         {order._id}
                       </p>
                     </div>
@@ -171,7 +170,7 @@ const Page = () => {
                   {order.product?.map((item) => (
                     <div
                       key={item._id}
-                      className="bg-zinc-900 rounded-2xl p-4 border border-zinc-800"
+                      className="bg-card rounded-2xl p-4 border border-border"
                     >
                       <div className="flex gap-4">
                         <img
@@ -184,16 +183,16 @@ const Page = () => {
                         />
 
                         <div className="flex-1">
-                          <h3 className="text-xl font-semibold text-green-400">
+                          <h3 className="text-xl font-semibold text-primary">
                             {item.productId?.name}
                           </h3>
 
                           <div className="mt-3 flex flex-wrap gap-3 text-sm">
-                            <span className="bg-zinc-800 px-3 py-1 rounded-full">
+                            <span className="bg-card px-3 py-1 rounded-full">
                               Qty: {item.quantity}
                             </span>
 
-                            <span className="bg-zinc-800 px-3 py-1 rounded-full">
+                            <span className="bg-card px-3 py-1 rounded-full">
                               NPR {item.price}
                             </span>
                           </div>
@@ -204,36 +203,35 @@ const Page = () => {
 
                   {/* Summary Cards */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                    <div className="bg-zinc-900 rounded-2xl p-4">
-                      <p className="text-xs text-gray-500">Total Amount</p>
+                    <div className="bg-card rounded-2xl p-4">
+                      <p className="text-xs text-muted">Total Amount</p>
 
-                      <h3 className="text-2xl font-bold text-green-400 mt-2">
+                      <h3 className="text-2xl font-bold text-primary mt-2">
                         NPR {order.totalAmount}
                       </h3>
                     </div>
 
-                    <div className="bg-zinc-900 rounded-2xl p-4">
-                      <p className="text-xs text-gray-500">Payment Method</p>
+                    <div className="bg-card rounded-2xl p-4">
+                      <p className="text-xs text-muted">Payment Method</p>
 
                       <h3 className="capitalize mt-2">{order.paymentMethod}</h3>
                     </div>
 
-                    <div className="bg-zinc-900 rounded-2xl p-4">
-                      <p className="text-xs text-gray-500">Payment Status</p>
+                    <div className="bg-card rounded-2xl p-4">
+                      <p className="text-xs text-muted">Payment Status</p>
 
                       <h3
-                        className={`mt-2 font-semibold ${
-                          order.paymentStatus === "paid"
-                            ? "text-green-400"
+                        className={`mt-2 font-semibold ${order.paymentStatus === "paid"
+                            ? "text-primary"
                             : "text-yellow-400"
-                        }`}
+                          }`}
                       >
                         {order.paymentStatus}
                       </h3>
                     </div>
 
-                    <div className="bg-zinc-900 rounded-2xl p-4">
-                      <p className="text-xs text-gray-500">Ordered On</p>
+                    <div className="bg-card rounded-2xl p-4">
+                      <p className="text-xs text-muted">Ordered On</p>
 
                       <h3 className="mt-2">
                         {new Date(order.createdAt).toLocaleDateString()}
@@ -243,20 +241,20 @@ const Page = () => {
 
                   {/* Message */}
                   {order.message && (
-                    <div className="bg-zinc-900 rounded-2xl p-4">
-                      <p className="text-sm text-gray-400 mb-2">
+                    <div className="bg-card rounded-2xl p-4">
+                      <p className="text-sm text-muted mb-2">
                         Customer Message
                       </p>
 
-                      <p className="text-green-300">{order.message}</p>
+                      <p className="text-primary">{order.message}</p>
                     </div>
                   )}
 
                   {/* Transaction */}
-                  <div className="bg-zinc-900 rounded-2xl p-4">
-                    <p className="text-sm text-gray-400">Transaction ID</p>
+                  <div className="bg-card rounded-2xl p-4">
+                    <p className="text-sm text-muted">Transaction ID</p>
 
-                    <p className="text-green-300 break-all mt-1">
+                    <p className="text-primary break-all mt-1">
                       {order.transactionId || order.transaction_uuid || "N/A"}
                     </p>
                   </div>
@@ -265,7 +263,7 @@ const Page = () => {
                   {order.paymentMethod === "Cash" &&
                     order.paymentStatus === "pending" && (
                       <button
-                        className="w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 font-medium transition"
+                        className="w-full py-3 rounded-xl bg-primary hover:bg-primary-hover font-medium transition"
                         onClick={() => updataStatus(order._id)}
                       >
                         ✓ Confirm Customer Payment
@@ -274,14 +272,14 @@ const Page = () => {
                   {/* Delivery Route */}
                   {order.location &&
                     order.product?.[0]?.productId?.farmerLocation && (
-                      <div className="bg-zinc-900 rounded-2xl p-4 border border-green-900">
+                      <div className="bg-card rounded-2xl p-4 border border-border">
                         <div className="flex justify-between items-center mb-4">
                           <div>
-                            <h3 className="font-semibold text-green-400">
+                            <h3 className="font-semibold text-primary">
                               🚚 Delivery Route
                             </h3>
 
-                            <p className="text-sm text-gray-400">
+                            <p className="text-sm text-muted">
                               Farmer → Customer
                             </p>
                           </div>

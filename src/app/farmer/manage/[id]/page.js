@@ -47,18 +47,18 @@ const Page = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-black flex justify-center items-center text-green-500 text-2xl">
+      <div className="min-h-screen bg-background flex justify-center items-center text-primary text-2xl">
         Loading Product...
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-black">
+    <div className="flex min-h-screen bg-background">
       <SlideBarForFarmer />
 
       <div className="flex-1 md:pl-70 mt-10 p-10">
-        <div className="max-w-4xl mx-auto bg-zinc-900 border border-green-900 rounded-3xl overflow-hidden shadow-xl">
+        <div className="max-w-4xl mx-auto bg-background border border-border rounded-3xl overflow-hidden shadow-xl">
           {/* Product Image */}
           <div className="h-72 overflow-hidden">
             <img
@@ -70,63 +70,63 @@ const Page = () => {
 
           {/* Form */}
           <div className="p-8">
-            <h1 className="text-2xl font-bold text-green-500 mb-8">
+            <h1 className="text-2xl font-bold text-primary mb-8">
               Edit Product
             </h1>
 
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex gap-2">
                 <div className="flex flex-col">
-                  <label className="text-gray-300 block mb-2 ">
+                  <label className="text-muted block mb-2 ">
                     Current Name:
                   </label>
                   <input
                     type="text"
                     value={product?.name}
                     readOnly
-                    className="w-full bg-black border border-green-800 text-white p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full bg-background border border-boder text-foreground p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label className="text-gray-300 block mb-2">
+                  <label className="text-muted block mb-2">
                     Change Name:
                   </label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-black border border-green-800 text-white p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full bg-background border border-boder text-foreground p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
               <div className="flex gap-2">
                 <div className="flex-col flex">
-                  <label className="text-gray-300 block mb-2">
+                  <label className="text-muted block mb-2">
                     {" "}
                     Current Price (Rs):
                   </label>
                   <input
                     type="number"
                     value={product?.price}
-                    className="w-full bg-black border border-green-800 text-white p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full bg-background border border-boder text-foreground p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label className="text-gray-300 block mb-2">
+                  <label className="text-muted block mb-2">
                     Change Price (Rs):
                   </label>
                   <input
                     type="number"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    className="w-full bg-black border border-green-800 text-white p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full bg-background border border-boder text-foreground p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
 
               <div className="flex gap-2">
                 <div className="flex flex-col">
-                  <label className="text-gray-300 block mb-2">
+                  <label className="text-muted block mb-2">
                     Current Quantity:
                   </label>
 
@@ -134,54 +134,54 @@ const Page = () => {
                     type="number"
                     value={product?.quantity}
                     readOnly
-                    className="w-full bg-black border border-green-800 text-white p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full bg-background border border-boder text-foreground p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label className="text-gray-300 block mb-2">Change Quantity</label>
+                  <label className="text-muted block mb-2">Change Quantity</label>
 
                   <input
                     type="number"
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
-                    className="w-full bg-black border border-green-800 text-white p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+                    className="w-full bg-background border border-boder text-foreground p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-gray-300 block mb-2">Category</label>
+                <label className="text-muted block mb-2">Category</label>
 
                 <input
                   disabled
                   value={product.category}
-                  className="w-full bg-zinc-800 border border-zinc-700 text-gray-400 p-4 rounded-xl"
+                  className="w-full bg-card border border-border text-muted p-4 rounded-xl"
                 />
               </div>
             </div>
 
             <div className="mt-6">
-              <label className="text-gray-300 block mb-2">Description</label>
+              <label className="text-muted block mb-2">Description</label>
 
               <textarea
                 rows={5}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full bg-black border border-green-800 text-white p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="w-full bg-background border border-boder text-foreground p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
               />
             </div>
 
             <div className="flex gap-4 mt-8">
               <button
                 onClick={() => { setOpen(true) }}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white py-4 rounded-xl font-bold text-lg transition"
+                className="flex-1 bg-primary hover:bg-primary-hover text-foreground py-4 rounded-xl font-bold text-lg transition"
               >
                 Save Changes
               </button>
 
               <button
                 onClick={() => router.back()}
-                className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-white py-4 rounded-xl font-bold text-lg transition"
+                className="flex-1 bg-muted hover:border-border hover:bg-secondary text-foreground py-4 rounded-xl font-bold text-lg transition"
               >
                 Cancel
               </button>

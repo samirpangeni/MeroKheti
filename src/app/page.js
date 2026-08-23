@@ -8,6 +8,7 @@ import Feature from "@/components/Feature";
 import Hero from "@/components/Hero";
 
 
+
 const Page = () => {
   const [user, setUser] = useState(null);
   const [search, setSearch] = useState("");
@@ -28,7 +29,7 @@ const Page = () => {
     fetchUser();
   }, []);
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-950 via-gray-900 to-black text-white w-full">
+    <div className="min-h-screen  w-full">
       {/* NAVBAR */}
       <Navbar />
 
@@ -65,15 +66,15 @@ const Page = () => {
           setSearchInput={setSearchInput}
           searchInput={searchInput}
         />
-       
+
       </section>
 
       {/* FLOATING BUTTON */}
       <div className="fixed md:right-0 bottom-5 right-[20]">
-        <div className="p-4  shadow-lg transition pb-10">
-         {user?.role =="farmer"&&(
-          <Product />
-         )}
+        <div className="p-4   transition pb-10 bg-transparent">
+          {user?.role == "farmer" && (
+            <Product />
+          )}
         </div>
       </div>
     </div>

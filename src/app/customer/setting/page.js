@@ -61,7 +61,6 @@ const Page = () => {
       );
 
       toast.success("Updated successfully");
-
       setPassword("");
       setConfirmPassword("");
       setCurrentPassword("");
@@ -73,99 +72,126 @@ const Page = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
-
+    <div className="min-h-screen bg-background text-foreground">
       <DashboardNav />
 
-      {/* MAIN */}
-      <div className="flex-1 md:ml-72 p-6 md:p-10 pt-20 bg-linear-to-b from-black via-green-950/10 to-black md:mt-20">
+      {/* MAIN CONTENT */}
+      <main className="md:ml-64 px-4 sm:px-6 lg:px-10 pt-24 pb-10">
 
         {/* HEADER */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-green-400">
+        <div className="max-w-6xl mx-auto mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground">
             Account Settings
           </h1>
-          <p className="text-gray-400 mt-1">
-            Manage your profile and security preferences
+
+          <p className="text-muted mt-2">
+            Manage your profile and security preferences.
           </p>
         </div>
 
-        {/* TOP SECTION */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        {/* CONTENT */}
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className=" bg-card border border-border rounded-2xl p-6 shadow-sm">
 
-          {/* PROFILE CARD */}
-          <div className="relative overflow-hidden bg-linear-to-br from-green-950/40 via-black to-green-950/20 border border-green-500/20 rounded-3xl p-6 shadow-lg">
-
-            <div className="absolute inset-0 bg-green-500/5 blur-3xl opacity-60"></div>
-
-            <div className="relative z-10 flex flex-col items-center text-center">
-
-              <img
-                src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                className="w-28 h-28 rounded-full border-4 border-green-400 object-cover"
-              />
-
-              <h2 className="mt-4 text-xl font-semibold text-green-300">
+            {/* PROFILE HEADER */}
+            <div className="flex flex-col items-center text-center">
+              <div className=" w-24 h-24 rounded-full p-1 bg-secondary border border-border">
+                <img
+                  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                  alt="Profile"
+                  className=" w-full h-full rounded-full object-cover"
+                />
+              </div>
+              <h2 className="mt-4 text-xl font-semibold text-foreground">
                 {data?.firstName} {data?.lastName}
               </h2>
-
-              <p className="text-gray-400 text-sm mt-1">
+              <p className="text-sm text-muted mt-1 break-all">
                 {data?.email}
               </p>
+            </div>
 
-              <div className="mt-5 w-full space-y-3">
-
-                <div className="bg-black/40 border border-green-500/10 rounded-xl p-3 flex items-center gap-3">
-                  <User size={18} className="text-green-400" />
-                  <span className="text-sm text-gray-300">
-                    {data?.role || "User"} Account
-                  </span>
+            {/* ACCOUNT INFO */}
+            <div className="mt-6">
+              <p className=" text-xs font-semibold uppercase tracking-wider text-muted mb-3">
+                Account
+              </p>
+              <div className=" flex items-center gap-3 p-3 rounded-xl bg-secondary border border-border">
+                <div className=" w-9 h-9 rounded-lg bg-card flex items-center justify-center border border-border">
+                  <User
+                    size={18}
+                    className="text-primary"
+                  />
                 </div>
-
+                <div>
+                  <p className="text-xs text-muted">
+                    Account Type
+                  </p>
+                  <p className="text-sm font-medium text-foreground">
+                    {data?.role || "User"} Account
+                  </p>
+                </div>
               </div>
-
             </div>
           </div>
 
-          {/* FORM */}
-          <div className="lg:col-span-2 bg-linear-to-br from-green-950/40 via-black to-green-950/10 border border-green-500/20 rounded-3xl p-6">
+          <div className="lg:col-span-2 bg-card border border-border rounded-2xl p-6 md:p-8 shadow-sm">
+            <div className="mb-7">
+              <h2 className="text-xl font-semibold text-foreground">
+                Profile & Security
+              </h2>
+              <p className="text-sm text-muted mt-1">
+                Update your email and password.
+              </p>
+            </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
               {/* EMAIL */}
               <div>
-                <label className="text-green-300 text-sm">Email</label>
+                <label className=" block text-sm font-medium text-foreground mb-2">
+                  Email Address
+                </label>
 
-                <div className="flex items-center mt-2 bg-black/40 border border-green-500/20 rounded-xl overflow-hidden">
-                  <Mail className="ml-3 text-green-400" size={18} />
+                <div className="flex items-center bg-input border border-input-border rounded-xl focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition">
+                  <Mail
+                    size={18}
+                    className="ml-3 text-muted shrink-0"
+                  />
                   <input
+                    type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-transparent p-3 outline-none text-white"
-                    placeholder="Email"
+                    className="w-full bg-transparent px-3 py-3 outline-none text-foreground placeholder:text-muted"
+                    placeholder="Enter your email"
                   />
+
                 </div>
               </div>
 
               {/* CURRENT PASSWORD */}
               <div>
-                <label className="text-green-300 text-sm">
+                <label className="block text-sm font-medium text-foreground mb-2">
                   Current Password
                 </label>
 
-                <div className="flex items-center mt-2 bg-black/40 border border-green-500/20 rounded-xl overflow-hidden">
-                  <Lock className="ml-3 text-green-400" size={18} />
+                <div className="flex items-center bg-input border border-input-border rounded-xl focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/10 transition">
+                  <Lock
+                    size={18}
+                    className="ml-3 text-muted shrink-0"
+                  />
                   <input
                     type="password"
                     value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className="w-full bg-transparent p-3 outline-none"
-                    placeholder="Current password"
+                    onChange={(e) =>
+                      setCurrentPassword(e.target.value)
+                    }
+                    className=" w-full bg-transparent px-3 py-3 outline-none text-foreground placeholder:text-muted"
+                    placeholder="Enter current password"
                   />
                 </div>
               </div>
-
-              {/* PASSWORD COMPONENTS */}
               <PasswordUI
                 strength={strength}
                 password={password}
@@ -182,28 +208,32 @@ const Page = () => {
                 setShowConfirm={setShowConfirm}
                 password={password}
               />
+              {/* DIVIDER */}
+              <div className="border-t border-border pt-6">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  {/* SAVE */}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className=" px-6 py-3 rounded-xl bg-button text-button-foreground font-semibold transition hover:bg-primary-hover disabled:opacity-50 disabled:cursor-not-allowed">
+                    {loading
+                      ? "Updating..."
+                      : "Save Changes"}
+                  </button>
 
-              {/* BUTTONS */}
-              <div className="flex gap-4 pt-4">
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-6 py-3 rounded-xl bg-green-500 text-black font-semibold hover:bg-green-400 transition"
-                >
-                  {loading ? "Updating..." : "Save Changes"}
-                </button>
 
-                <button
-                  type="button"
-                  className="px-6 py-3 rounded-xl border border-green-500/30 text-green-300 hover:bg-green-500/10 transition"
-                >
-                  Cancel
-                </button>
+                  {/* CANCEL */}
+                  <button
+                    type="button"
+                    className=" px-6 py-3 rounded-xl border border-border bg-card text-muted font-medium transition hover:bg-muted-background hover:text-foreground">
+                    Cancel
+                  </button>
+                </div>
               </div>
             </form>
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

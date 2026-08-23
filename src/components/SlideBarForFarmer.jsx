@@ -34,7 +34,7 @@ const SlideBarForFarmer = () => {
     return (
       <Link href={href}>
         <li
-          className={`px-3 py-2 rounded-lg cursor-pointer transition ${isActive ? "bg-green-500/20 text-green-400" : "hover:bg-green-500/10 hover:text-green-400"}`}
+          className={`px-3 py-2 rounded-lg cursor-pointer transition ${isActive ? "bg-secondary text-primary" : "text-muted hover:bg-muted-background hover:text-primary"}`}
         >
           {label}
         </li>
@@ -46,16 +46,18 @@ const SlideBarForFarmer = () => {
       <Navbar />
       <button
         onClick={() => setOpen(!open)}
-        className="md:hidden fixed top-4 left-10 z-50 bg-green-600 text-white p-2 rounded-lg "
+        className="md:hidden fixed top-4 left-10 z-50 bg-button text-button-foreground p-2 rounded-lg transition"
       >
         ☰
       </button>
-      <div className={`md:w-60 w-full flex flex-col fixed top-0 bottom-0 items-center  bg-green-900 border-r border-green-500/20 h-screen  p-5  justify-between text-white shadow-2xl mb:z-99  mb-10 ${ open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
+      <div
+        className={`fixed bottom-0 top-0 flex h-screen w-full flex-col items-center justify-between border-r border-border bg-card p-5 text-card-foreground shadow-xl transition-transform duration-300 md:w-60 md:translate-x-0
+        ${open ? "translate-x-0" : "-translate-x-full"}`}>
         <div className="mb-10">
           <h1 className="text-3xl font-bold">
-            <span className="text-green-400">Mero</span>kheti
+            <span className="text-primary">Mero</span>kheti
           </h1>
-          <p className="text-gray-400 text-sm mt-1 text-center">
+          <p className="text-muted text-sm mt-1 text-center">
             {user?.firstName} {user?.lastName}
           </p>
         </div>
@@ -71,7 +73,7 @@ const SlideBarForFarmer = () => {
         </div>
         <div className="w-full text-center h-screen justify-end flex flex-col pb-10">
           <button
-            className="p-2 bg-red-500/20 border-red-500/30 text-red-400  w-full transition rounded-lg"
+            className="w-full rounded-lg border border-red-200 bg-red-50 p-2 text-red-600 transition hover:bg-red-100 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50"
             onClick={handleLogout}
           >
             Logout

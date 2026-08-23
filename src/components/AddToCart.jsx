@@ -27,8 +27,7 @@ const AddToCart = ({ product }) => {
         <button
             onClick={handleCart}
             type="button"
-            className="flex-1 bg-gray-600 hover:bg-white/20 transition py-3 rounded-xl font-medium"
-        >
+            className=" flex-1 rounded-xl bg-primary py-3 font-medium text-button-foreground transition hover:bg-primary-hover active:scale-[0.98]">
             Add to Cart
         </button>
     );

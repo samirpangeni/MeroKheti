@@ -14,8 +14,8 @@ export async function GET(req) {
     }
     const decode = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decode.userId || decode.id || decode._id;
-
-    const carts = await Cart.find({ user: userId }).populate("product");
+    const carts = await Cart.find({ userId: userId }).populate("productId", "price name location image quantity");
+    console.log(carts)
     return NextResponse.json({ carts });
   } catch (err) {
     console.log(err);

@@ -69,7 +69,7 @@ const Success = () => {
   if (loading) {
     return (
       <div className="w-full h-screen flex flex-col items-center justify-center bg-white">
-        <div className="w-16 h-16 border-4 border-green-600 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
         <p className="mt-4">Verifying payment...</p>
       </div>
     );
@@ -80,37 +80,37 @@ const Success = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-6">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-lg p-8">
+    <div className="min-h-screen bg-background flex items-center justify-center p-6">
+      <div className="w-full max-w-md bg-background rounded-3xl shadow-lg p-8">
 
         <div className="flex justify-center">
-          <div className="h-20 w-20 rounded-full bg-green-100 flex items-center justify-center">
+          <div className="h-20 w-20 rounded-full bg-background flex items-center justify-center">
             <span className="text-4xl">✔</span>
           </div>
         </div>
 
-        <h2 className="text-3xl font-bold text-center text-green-600 mt-6">
+        <h2 className="text-3xl font-bold text-center text-primary mt-6">
           Payment Successful
         </h2>
 
-        <div className="mt-8 bg-gray-50 rounded-2xl p-5 border space-y-4">
+        <div className="mt-8 bg-background rounded-2xl p-5 border space-y-4">
           <div className="flex justify-between">
-            <span className="text-gray-500">Transaction ID:</span>
-            <span className="font-semibold text-gray-800">
+            <span className="text-muted">Transaction ID:</span>
+            <span className="font-semibold text-foreground">
               {transaction?.transaction_uuid}
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-gray-500">Amount:</span>
-            <span className="font-semibold text-gray-800">
+            <span className="text-muted">Amount:</span>
+            <span className="font-semibold text-foreground">
               {transaction?.totalAmount}
             </span>
           </div>
 
           <div className="flex justify-between">
-            <span className="text-gray-500">Status:</span>
-            <span className="font-semibold text-green-600">
+            <span className="text-muted">Status:</span>
+            <span className="font-semibold text-primary">
               {transaction?.orderStatus}
             </span>
           </div>
@@ -118,7 +118,7 @@ const Success = () => {
 
         <button
           onClick={() => router.push("/")}
-          className="mt-8 w-full py-3 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold"
+          className="mt-8 w-full py-3 rounded-lg bg-primary hover:bg-primary-hover text-card font-semibold"
         >
           Back to Home
         </button>

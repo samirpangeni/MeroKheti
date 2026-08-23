@@ -34,23 +34,23 @@ const Page = () => {
   }
 
   return (
-    <div className="flex min-h-screen bg-black mb-10">
+    <div className="flex min-h-screen bg-background mb-10">
       <SlideBarForFarmer />
 
       <div className="flex-1 p-2 md:pl-70 md: pt-20">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-green-500">
+            <h1 className="text-4xl font-bold text-primary">
               Manage Products
             </h1>
-            <p className="text-gray-400 mt-2">
+            <p className="text-muted mt-2">
               Manage and update your farm products
             </p>
           </div>
 
           <Link href="/addProduct">
-            <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl font-semibold transition">
+            <button className="bg-button hover:bg-green-700 text-foreground px-6 py-3 rounded-xl font-semibold transition">
               + Add Product
             </button>
           </Link>
@@ -58,43 +58,43 @@ const Page = () => {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-5 mb-8">
-          <div className="bg-zinc-900 border border-green-900 rounded-2xl p-6">
-            <p className="text-gray-400">Total Products</p>
-            <h2 className="text-3xl font-bold text-green-500 mt-2">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <p className="text-muted">Total Products</p>
+            <h2 className="text-3xl font-bold text-primary mt-2">
               {product?.length}
             </h2>
           </div>
 
-          <div className="bg-zinc-900 border border-green-900 rounded-2xl p-6">
-            <p className="text-gray-400">Categories</p>
-            <h2 className="text-3xl font-bold text-green-500 mt-2">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <p className="text-muted">Categories</p>
+            <h2 className="text-3xl font-bold text-primary mt-2">
               {new Set(product?.map((p) => p.category)).size}
             </h2>
           </div>
 
-          <div className="bg-zinc-900 border border-green-900 rounded-2xl p-6">
-            <p className="text-gray-400">Approved Products</p>
-            <h2 className="text-3xl font-bold text-green-500 mt-2">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <p className="text-muted">Approved Products</p>
+            <h2 className="text-3xl font-bold primary mt-2">
               {product?.length}
             </h2>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-zinc-900 border border-green-900 rounded-2xl p-5 mb-8 ">
+        <div className="bg-card border border-border rounded-2xl p-5 mb-8 gap-2 justify-between">
           <div className="grid md:grid-cols-2 gap-4">
             <input
               type="text"
               placeholder="Search products..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-black border border-green-800 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="bg-backgouund border border-border text-foreground rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary w-3/2"
             />
 
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="bg-black border border-green-800 text-white rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="bg-background border border-border text-foreground rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary w-1/2"
             >
               {["All categories", "vegetables", "fruits", "grains & cereals", "pulses & legumes", "seeds & nuts", "dairy & eggs", "meat & poultry", "herbs & spices", "organic products", "other"].map(
                   (item, idx) => (
@@ -112,7 +112,7 @@ const Page = () => {
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
             {product.map((item) => (
               <div key={item._id}
-                className="bg-zinc-900 border border-green-900 rounded-3xl overflow-hidden hover:border-green-500 transition duration-300 hover:shadow-lg hover:shadow-green-900/30"
+                className="bg-card border border-border rounded-3xl overflow-hidden hover:border-border-500 transition duration-300 hover:shadow-lg hover:shadow-border/30"
               >
                 <img
                   src={item.image?.[0]?.url}
@@ -122,31 +122,31 @@ const Page = () => {
 
                 <div className="p-5">
                   <div className="flex justify-between items-start">
-                    <h2 className="text-xl font-bold text-white">
+                    <h2 className="text-xl font-bold text-foreground">
                       {item.name}
                     </h2>
 
-                    <span className="bg-green-600 text-white text-xs px-3 py-1 rounded-full">
+                    <span className="bg-primary text-foreground text-xs px-3 py-1 rounded-full">
                       {item.status}
                     </span>
                   </div>
 
-                  <p className="text-green-500 text-2xl font-bold mt-3">
+                  <p className="text-primary text-2xl font-bold mt-3">
                     Rs. {item.price}
                   </p>
 
-                  <div className="mt-4 space-y-2 text-gray-400">
+                  <div className="mt-4 space-y-2 text-muted">
                     <p>
                       Category:
-                      <span className="text-white ml-2">{item.category}</span>
+                      <span className="text-foreground ml-2">{item.category}</span>
                     </p>
                     <p>
                       Quantity:
-                      <span className="text-white ml-2">{item.quantity}</span>
+                      <span className="text-foreground ml-2">{item.quantity}</span>
                     </p>
                   </div>
 
-                  <p className="text-gray-500 mt-4 line-clamp-2">
+                  <p className="text-muted mt-4 line-clamp-2">
                     {item.description}
                   </p>
 
@@ -155,12 +155,12 @@ const Page = () => {
                       onClick={() => {
                         router.push(`/farmer/manage/${item._id}`);
                       }}
-                      className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-2xl"
+                      className="flex-1 bg-primary hover:bg-primary-hover text-foreground py-2 rounded-2xl"
                     >
                       Edit
                     </button>
 
-                    <button className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-xl font-medium transition"
+                    <button className="flex-1 bg-red-600 hover:bg-red-700 text-foreground py-2 rounded-xl font-medium transition"
                       onClick={() => { deleteProduct(item._id) }}>
                       Delete
                     </button>
@@ -170,7 +170,7 @@ const Page = () => {
             ))}
           </div>
         ) : (
-          <div className="bg-zinc-900 border border-green-900 rounded-2xl p-10 text-center">
+          <div className="bg-zinc-900 border border-border-900 rounded-2xl p-10 text-center">
             <h2 className="text-xl text-gray-400">No products found</h2>
           </div>
         )}

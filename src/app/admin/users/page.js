@@ -127,15 +127,15 @@ const page = () => {
         <div className="w-full">
           {/* HEADER */}
           <div className="mb-6">
-            <h1 className="text-3xl font-bold text-green-400">
+            <h1 className="text-3xl font-bold text-primary">
               Users Management
             </h1>
-            <p className="text-gray-400">Manage all registered users</p>
+            <p className="text-muted">Manage all registered users</p>
           </div>
           <div className="flex justify-end md-5">
             <div className="border-2 w-fit p-2 rounded-lg ">
               <select
-                className="text-white outline-none"
+                className="text-foreground outline-none"
                 value={role}
                 onChange={(e) => {
                   setRole(e.target.value);
@@ -145,7 +145,7 @@ const page = () => {
                   <option
                     key={idx}
                     value={item}
-                    className="text-black outline-none"
+                    className="text-background outline-none"
                   >
                     {item}
                   </option>
@@ -154,10 +154,10 @@ const page = () => {
             </div>
           </div>
           {/* TABLE */}
-          <div className="bg-[#0b0b0b] border border-green-900 rounded-2xl overflow-hidden mt-6 shadow-xl">
-            <table className="w-full text-left text-white">
+          <div className="bg-card border border-border rounded-2xl overflow-hidden mt-6 shadow-xl">
+            <table className="w-full text-left text-foreground">
               {/* Table Head */}
-              <thead className="bg-green-950 text-green-300 uppercase text-sm">
+              <thead className="bg-border text-primary uppercase text-sm">
                 <tr>
                   <th className="p-4">Name</th>
                   <th>Email</th>
@@ -175,7 +175,7 @@ const page = () => {
                     className={`border-b transition duration-300
                      ${u.suspended
                         ? "border-red-900 bg-red-950/20 hover:bg-red-950/30"
-                        : "border-green-900 hover:bg-green-950/20"
+                        : "border-border hover:bg-green-950/20"
                       }`}
                   >
 
@@ -185,24 +185,24 @@ const page = () => {
                         <p className="font-semibold">
                           {u.firstName} {u.lastName}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted">
                           ID: {u._id.slice(-6)}
                         </p>
                       </div>
                     </td>
 
                     <td>
-                      <p className="text-gray-300"> {u.email}</p>
+                      <p className="text-muted"> {u.email}</p>
                     </td>
 
                     <td>
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-semibold
               ${u.role === "admin"
-                            ? "bg-red-600"
+                            ? "bg-red-400 dark:bg-red-600"
                             : u.role === "farmer"
-                              ? "bg-green-600"
-                              : "bg-blue-600"
+                              ? "bg-green-400 dark:bg-green-400"
+                              : "bg-blue-400 dark:bg-blue-600"
                           }`}
                       >
                         {u.role}
@@ -212,11 +212,11 @@ const page = () => {
                     {/* Status */}
                     <td>
                       {u.suspended ? (
-                        <span className="px-3 py-1 rounded-full bg-red-600 text-xs font-semibold">
+                        <span className="px-3 py-1 rounded-full bg-red-400 dark:bg-red-600 text-xs font-semibold">
                           🔴 Suspended
                         </span>
                       ) : (
-                        <span className="px-3 py-1 rounded-full bg-green-600 text-xs font-semibold">
+                        <span className="px-3 py-1 rounded-full dark:bg-green-600 bg-green-400 text-xs font-semibold">
                           🟢 Active
                         </span>
                       )}
@@ -226,23 +226,23 @@ const page = () => {
                     <td>
                       {u.suspended ? (
                         <div className="space-y-1">
-                          <p className="text-sm font-semibold text-red-400">
+                          <p className="text-sm font-semibold text-red-600 dark:text-red-400">
                             {getRemainingDays(u.suspendedUntil)} days left
                           </p>
-                          <p className="text-xs text-gray-400">
+                          <p className="text-xs text-muted">
                             Until{" "}
                             {new Date(
                               u.suspendedUntil
                             ).toLocaleDateString()}
                           </p>
                           {u.suspendedReason && (
-                            <p className="text-xs text-gray-500 italic">
+                            <p className="text-xs text-muted italic">
                               "{u.suspendedReason}"
                             </p>
                           )}
                         </div>
                       ) : (
-                        <span className="text-gray-500 text-sm">
+                        <span className="text-muted text-sm">
                           —
                         </span>
                       )}
@@ -257,21 +257,21 @@ const page = () => {
                         {u.suspended ? (
                           <button
                             onClick={() => unsuspendUserConfirm(u._id)}
-                            className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium hover:bg-green-700 transition"
+                            className="rounded-lg bg-primary px-4 py-2 text-sm font-medium hover:bg-primary-hover transition"
                           >
                             Unsuspend
                           </button>
                         ) : (
                           <button
                             onClick={() => SuspendUser(u._id)}
-                            className="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-medium hover:bg-yellow-600 transition"
+                            className="rounded-lg bg-yellow-400 dark:bg-yellow-600 px-4 py-2 text-sm font-medium hover:dark:bg-yellow-600 hover:bg-yellow-400 transition"
                           >
                             Suspend
                           </button>
                         )}
                         <button
                           onClick={() => deleteUser(u._id)}
-                          className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium hover:bg-red-700 transition"
+                          className="rounded-lg bg-red-400 dark:bg-red-600 px-4 py-2 text-sm font-medium hover:dark:bg-red-600 hover:bg-red-400 transition"
                         >
                           Delete
                         </button>

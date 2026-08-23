@@ -4,20 +4,18 @@ import React from "react";
 
 import {
   ResponsiveContainer,
-
-  // LINE CHART
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
   Cell,
-  // PIE CHART
+  Line,
+  LineChart,
   PieChart,
   Pie,
-
 } from "recharts";
 
 const UserGrowthChart = ({
@@ -62,110 +60,112 @@ const UserGrowthChart = ({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-10">
-
-      {/* ================= USER CHART ================= */}
-
-      <div className="bg-black border border-green-900 rounded-3xl p-6 shadow-2xl">
+      <div className="bg-card border border-border rounded-3xl p-6 shadow-sm">
 
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-green-400">
+          <h1 className="text-2xl md:text-3xl font-bold text-primary">
             User Analytics
           </h1>
 
-          <p className="text-gray-400">
+          <p className="text-sm text-muted mt-1">
             Customer & Farmer Overview
           </p>
         </div>
 
-        <div className="w-full h-100">
-
+        <div className="w-full h-[380px]">
           <ResponsiveContainer width="100%" height="100%">
-
             <LineChart
               data={userData}
               margin={{
                 top: 10,
                 right: 20,
-                left: 0,
+                left: -10,
                 bottom: 0,
               }}
             >
 
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke="#14532d"
+                stroke="var(--border)"
+                opacity={0.5}
               />
 
               <XAxis
                 dataKey="month"
-                stroke="#4ade80"
+                stroke="var(--muted)"
+                tickLine={false}
+                axisLine={false}
               />
 
               <YAxis
-                stroke="#4ade80"
+                stroke="var(--muted)"
+                tickLine={false}
+                axisLine={false}
               />
 
               <Tooltip
                 contentStyle={{
-                  backgroundColor: "#111827",
-                  border: "1px solid #166534",
-                  borderRadius: "10px",
-                  color: "#fff",
+                  backgroundColor: "var(--card)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "12px",
+                  color: "var(--foreground)",
                 }}
               />
 
               <Legend />
 
+              {/* CUSTOMER */}
               <Line
                 type="monotone"
                 dataKey="Customer"
+                name="Customers"
                 stroke="#22c55e"
-                strokeWidth={4}
+                strokeWidth={3}
                 dot={{
-                  r: 5,
+                  r: 4,
                   fill: "#22c55e",
+                }}
+                activeDot={{
+                  r: 7,
                 }}
               />
 
+              {/* FARMER */}
               <Line
                 type="monotone"
                 dataKey="Farmer"
+                name="Farmers"
                 stroke="#86efac"
-                strokeWidth={4}
+                strokeWidth={3}
                 dot={{
-                  r: 5,
+                  r: 4,
                   fill: "#86efac",
+                }}
+                activeDot={{
+                  r: 7,
                 }}
               />
 
             </LineChart>
-
           </ResponsiveContainer>
-
         </div>
 
       </div>
 
-      {/* ================= PRODUCT PIE CHART ================= */}
-
-      <div className="bg-black border border-green-900 rounded-3xl p-6 shadow-2xl">
-
+      {/* ================ PRODUCT PIE CHART ================= */}
+      <div div className="bg-background border border-border rounded-3xl p-6 shadow-2xl" >
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-green-400">
+          <h1 className="text-3xl font-bold text-primary">
             Product Status
           </h1>
-
-          <p className="text-gray-400">
+          <p className="text-muted">
             Approved, Pending & Rejected Products
           </p>
         </div>
 
         <div className="w-full h-100">
-
           <ResponsiveContainer width="100%" height="100%">
-
             <PieChart>
-
               <Pie
                 data={productData}
                 cx="50%"
@@ -174,7 +174,6 @@ const UserGrowthChart = ({
                 dataKey="value"
                 label
               >
-
                 {productData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
@@ -183,7 +182,6 @@ const UserGrowthChart = ({
                 ))}
 
               </Pie>
-
               <Tooltip
                 contentStyle={{
                   backgroundColor: "#111827",
@@ -192,18 +190,12 @@ const UserGrowthChart = ({
                   color: "#fff",
                 }}
               />
-
               <Legend />
-
             </PieChart>
-
           </ResponsiveContainer>
-
         </div>
-
       </div>
-
-    </div>
+    </div >
   );
 };
 

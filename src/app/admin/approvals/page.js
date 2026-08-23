@@ -65,23 +65,23 @@ const Page = () => {
     setOpen(true);
   };
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-background text-foreground">
       <SlideBarForAdmin />
 
-      <div className="flex-1 p-8 bg-linear-to-br from-black via-gray-950 to-green-950 pl-70">
+      <div className="flex-1 p-8 bg-linear-to-br from-background via-card to-secondary pl-70">
         {/* HEADER */}
         <div className="flex justify-between items-center mb-10">
           <div>
-            <h1 className="text-4xl font-bold text-green-400">
+            <h1 className="text-4xl font-bold text-primary">
               Product Approval Panel
             </h1>
-            <p className="text-gray-400 mt-2">
+            <p className="text-muted mt-2">
               Approve or reject farmer products
             </p>
           </div>
 
-          <div className="bg-green-500/20 border border-green-500 px-5 py-3 rounded-2xl">
-            <h1 className="text-green-400 font-bold">
+          <div className="bg-border border border-primary px-5 py-3 rounded-2xl">
+            <h1 className="text-primary font-bold">
               Total Pending: {product.length}
             </h1>
           </div>
@@ -91,7 +91,7 @@ const Page = () => {
         {loading ? (
           <Loading />
         ) : product.length === 0 ? (
-          <p className="text-gray-400 flex items-center justify-center m-50">
+          <p className="text-muted flex items-center justify-center m-50">
             No product yet
           </p>
         ) : (
@@ -99,12 +99,12 @@ const Page = () => {
             {product.map((item) => (
               <div
                 key={item._id}
-                className="bg-[#111] border border-gray-800 rounded-3xl overflow-hidden hover:border-green-500 transition"
+                className="bg-card border border-muted rounded-3xl overflow-hidden hover:border-primary-hover transition"
               >
                 {/* MAIN IMAGE */}
                 <img
                   src={item.image?.[0]?.url}
-                  className="w-full h-52 object-cover"
+                  className="w-full h-52 object-cover p-2 rounded-2xl"
                 />
 
                 {/* THUMBNAILS */}
@@ -124,22 +124,22 @@ const Page = () => {
                   <h1 className="text-xl font-bold">{item.name}</h1>
 
                   {/* FARMER INFO */}
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-muted text-sm">
                     👤 {item.userId?.firstName}
                   </p>
-                  <p className="text-gray-500 text-xs">
+                  <p className="text-muted text-xs">
                     📧 {item.userId?.email || "No email"}
                   </p>
 
                   {/* PRICE */}
                   <div className="flex justify-between mt-2">
-                    <span className="text-green-400 font-bold">
+                    <span className="text-primary font-bold">
                       Rs {item.price}
                     </span>
-                    <span className="text-gray-400 text-sm">{item.category}</span>
+                    <span className="text-muted text-sm">{item.category}</span>
                   </div>
 
-                  <div className="text-sm text-gray-400 mt-3 space-y-1">
+                  <div className="text-sm text-muted mt-3 space-y-1">
                     <p>📍 {item.location}</p>
                     <p> 📦 {item.quantity} {item.unit} </p>
                     <p>
@@ -152,18 +152,18 @@ const Page = () => {
                   {/* BADGES */}
                   <div className="flex gap-2 mt-3">
                     {item.organic && (
-                      <span className="bg-green-500 text-black px-2 py-1 text-xs rounded">
+                      <span className="bg-primary text-background px-2 py-1 text-xs rounded">
                         Organic
                       </span>
                     )}
 
-                    <span className="bg-yellow-500 text-black px-2 py-1 text-xs rounded">
+                    <span className="bg-yellow-400 dark:bg-yellow-600 text-background px-2 py-1 text-xs rounded">
                       Pending
                     </span>
                   </div>
 
                   {/* DESCRIPTION */}
-                  <p className="text-gray-500 text-sm mt-3 line-clamp-2">
+                  <p className="text-muted text-sm mt-3 line-clamp-2">
                     {item.description}
                   </p>
 
@@ -171,14 +171,14 @@ const Page = () => {
                   <div className="flex gap-3 mt-5">
                     <button
                       onClick={() => openModal(item._id, "approve")}
-                      className="flex-1 bg-green-500 hover:bg-green-600 text-black font-bold py-2 rounded-xl"
+                      className="flex-1 bg-primary hover:bg-primary-hover text-background font-bold py-2 rounded-xl"
                     >
                       Approve
                     </button>
 
                     <button
                       onClick={() => openModal(item._id, "delete")}
-                      className="flex-1 bg-red-500 hover:bg-red-600 text-white font-bold py-2 rounded-xl"
+                      className="flex-1 bg-red-400 hover:bg-red-600 dark:bg-red-600 hover:dark:bg-red-400 text-foreground font-bold py-2 rounded-xl"
                     >
                       Reject
                     </button>

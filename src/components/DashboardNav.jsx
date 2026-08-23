@@ -25,13 +25,16 @@ const DashboardNav = () => {
   ];
 
   useEffect(() => {
-    setShow(false)
+    setShow(false);
+
     const fetchUser = async () => {
       try {
-        setLoading(true)
+        setLoading(true);
+
         const res = await axios.get("/api/user", {
           withCredentials: true,
         });
+
         setUser(res.data.user);
       } catch (err) {
         console.error(err);
@@ -39,15 +42,22 @@ const DashboardNav = () => {
         setLoading(false);
       }
     };
+
     fetchUser();
   }, [pathname]);
+
   if (loading) {
-    return <Loading />
+    return <Loading />;
   }
 
   const handleLogout = async () => {
     try {
-      await axios.post("/api/logout", {}, { withCredentials: true });
+      await axios.post(
+        "/api/logout",
+        {},
+        { withCredentials: true }
+      );
+
       router.push("/login");
     } catch (err) {
       console.error(err);
@@ -55,48 +65,84 @@ const DashboardNav = () => {
   };
 
   return (
-    <div className="flex fixed top-0 w-70 z-99">
+    <>
       <Navbar />
+
+      {/* MOBILE MENU BUTTON */}
       <button
         onClick={() => setShow(!show)}
-        className="fixed top-4 left-4 z-50 md:hidden bg-linear-to-r from-green-500 to-emerald-700 text-white p-3 rounded-xl shadow-lg hover:scale-105 transition">
+        className="fixed top-4 left-4 z-50 md:hidden bg-primary text-primary-foreground p-3 rounded-xl shadow-lg hover:bg-primary-hover transition">
         ☰
       </button>
 
+      {/* SIDEBAR */}
       <aside
-        className={`fixed md:static top-0 left-0 h-screen w-64 z-40 bg-linear-to-b from-black via-green-950/40 to-black border-r border-green-500/20 text-white flex flex-col justify-between backdrop-blur-xl  shadow-[0_0_40px_rgba(0,255,100,0.08)] transition-transform duration-300
-        ${show ? "translate-x-0" : "-translate-x-full md:translate-x-0"}`}>
+        className={`fixed top-0 left-0 h-screen w-64 z-40 bg-background border-r border-border text-foreground flex flex-col justify-between shadow-xl backdrop-blur-xl transition-transform duration-300
+          ${show
+            ? "translate-x-0"
+            : "-translate-x-full md:translate-x-0"
+          }
+        `}
+      >
+
+        {/* TOP SECTION */}
         <div className="p-6">
-          {/* Profile Card */}
-          <div className="mb-8 p-4 rounded-2xl bg-green-500/10 border border-green-500/20 backdrop-blur-md shadow-inner mt-12">
-              <h1 className="text-lg font-semibold text-green-300">
-                {user?.firstName} {user?.lastName}
-              </h1>
-              <p className="text-xs text-gray-400 mt-1">
-                {user?.role} Dashboard
-              </p>
+
+          {/* PROFILE */}
+          <div
+            className="mb-8 mt-12 p-4 rounded-2xl bg-card border border-border shadow-sm">
+            <h1 className="text-lg font-semibold text-primary">
+              {user?.firstName} {user?.lastName}
+            </h1>
+
+            <p className="text-xs text-muted mt-1">
+              {user?.role} Dashboard
+            </p>
           </div>
 
+
+          {/* MENU */}
           <ul className="space-y-2">
+
             {menuItems.map((item) => {
               const isActive = pathname === item.href;
 
               return (
                 <li key={item.href}>
+
                   <Link
                     href={item.href}
-                    className={`group flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300
+                    className={`group flex items-center gap-3 px-4 py-3 rounded-xltransition-all duration-300
+
                       ${isActive
-                        ? "bg-green-500/20 text-green-300 shadow-[0_0_20px_rgba(34,197,94,0.2)]"
-                        : "text-gray-300 hover:bg-green-500/10 hover:text-green-300"
-                      }`}
+                        ? `
+                            bg-secondary
+                            text-primary
+                            border
+                            border-border
+                            shadow-sm
+                            rounded-2xl
+                            hover:rounded-2xl
+                          `
+                        : `
+                            text-muted
+                            hover:bg-muted-background
+                            hover:text-primary
+                            hover:rounded-2xl
+                            rounded-2xl
+                          `
+                      }
+                    `}
                   >
+
+                    {/* ACTIVE DOT */}
                     <span
                       className={`h-2 w-2 rounded-full transition-all
-                      ${isActive
-                          ? "bg-green-400 shadow-[0_0_10px_rgba(34,197,94,0.8)]"
-                          : "bg-gray-600 group-hover:bg-green-400"
-                        }`}
+                        ${isActive
+                          ? "bg-primary"
+                          : "bg-secondary group-hover:bg-primary"
+                        }
+                      `}
                     />
                     {item.label}
                   </Link>
@@ -106,22 +152,28 @@ const DashboardNav = () => {
           </ul>
         </div>
 
+        {/* LOGOUT */}
         <div className="p-6">
           <button
             onClick={handleLogout}
-            className="w-full py-3 rounded-xl bg-linear-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 shadow-lg hover:shadow-red-500/20 transition-all duration-300 mb-10 font-medium">
+            className="w-full py-3 rounded-xl border-red-200 bg-red-50 p-2 text-red-600  hover:bg-red-100 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50 font-medium transition-all duration-300 shadow-sm">
             Logout
           </button>
+
         </div>
+
       </aside>
 
+
+      {/* MOBILE OVERLAY */}
       {show && (
         <div
           onClick={() => setShow(false)}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm md:hidden
+          "
         />
       )}
-    </div>
+    </>
   );
 };
 

@@ -28,6 +28,15 @@ const Page = () => {
   const [location, setLocation] = useState("");
   const [farmerLocation, setFarmerLocation] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalStep = 5;
+
+  const nextStep = () => {
+    setCurrentStep((prev) => Math.min(prev + 1, totalStep));
+  };
+  const previousStep = () => {
+    setCurrentStep((prev) => Math.min(prev - 1, 1))
+  }
 
   const isValid =
     name.trim() &&
@@ -115,93 +124,151 @@ const Page = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-black via-[#06140d] to-[#0b1f14] text-white relative overflow-hidden">
-
-      {/* Glow Background */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute top-40 left-1/2 -translate-x-1/2 w-125 h-125 bg-green-700/10 rounded-full blur-[140px]" />
-        <div className="absolute bottom-20 right-10 w-100 h-100 bg-emerald-700/10 rounded-full blur-[140px]" />
-      </div>
+    <div className="min-h-screen bg-linear-to-br from-background via-secondary to-card text-foreground relative overflow-hidden">
 
       <Navbar />
-
       <div className="max-w-4xl mx-auto px-4 py-10">
 
         {/* Header */}
-        <div className="mb-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-900/30 border border-green-500/20 text-green-300 text-sm backdrop-blur-sm">
-            🌾 Fresh Farm Product
-          </div>
-
-          <h1 className="text-4xl md:text-5xl font-extrabold mt-5 bg-linear-to-r from-green-300 via-emerald-400 to-green-500 bg-clip-text text-transparent">
+        <div className="mb-10 mt-20">
+          <h1 className="text-4xl md:text-5xl font-extrabold mt-5  bg-linear-to-r from-primary via-primary-hover to-primary bg-clip-text text-transparent">
             Add Your Product
           </h1>
 
-          <p className="text-gray-300 mt-3 text-lg max-w-2xl">
+          <p className="text-muted mt-3 text-lg max-w-2xl">
             Sell fresh vegetables, fruits and grains directly to customers
           </p>
+        </div>
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <p className="text-sm text-muted">
+                Step {currentStep} of {totalStep}
+              </p>
+
+              <h2 className="text-xl font-semibold text-foreground">
+                {currentStep === 1 && "Basic Information"}
+                {currentStep === 2 && "Price & Quantity"}
+                {currentStep === 3 && "Location & Date"}
+                {currentStep === 4 && "Description"}
+                {currentStep === 5 && "Review & Submit"}
+              </h2>
+            </div>
+
+            <span className="text-sm font-medium text-primary">
+              {Math.round((currentStep / totalStep) * 100)}%
+            </span>
+          </div>
+
+          <div className="h-2 w-full rounded-full bg-muted-background overflow-hidden">
+            <div
+              className="h-full rounded-full bg-primary transition-all duration-500"
+              style={{
+                width: `${(currentStep / totalStep) * 100}%`,
+              }}
+            />
+          </div>
         </div>
 
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="bg-linear-to-b from-[#101010] to-[#0c1a12] border border-green-500/15 shadow-2xl shadow-green-950/40 rounded-3xl p-6 md:p-10 space-y-8 backdrop-blur-xl"
+          className="bg-linear-to-b from-background to-card border border-border shadow-2xl shadow-green-950/40 rounded-3xl p-6 md:p-10 space-y-8 backdrop-blur-xl"
         >
+          {currentStep === 1 && (
+            <div>
+              <BasicInfo
+                name={name}
+                setName={setName}
+                category={category}
+                setCategory={setCategory}
+              />
 
-          <BasicInfo
-            name={name}
-            setName={setName}
-            category={category}
-            setCategory={setCategory}
-          />
+              <Image files={files} setFiles={setFiles} />
+            </div>
+          )}
+          {currentStep === 2 && (
+            <div>
+              <PriceInput
+                price={price}
+                setPrice={setPrice}
+                quantity={quantity}
+                setQuantity={setQuantity}
+                unit={unit}
+                setUnit={setUnit}
+              />
+            </div>
+          )}
+          {currentStep === 3 && (
+            <div>
+              <Location
+                location={location}
+                setLocation={setLocation}
+              />
 
-          <Image files={files} setFiles={setFiles} />
-
-          <PriceInput
-            price={price}
-            setPrice={setPrice}
-            quantity={quantity}
-            setQuantity={setQuantity}
-            unit={unit}
-            setUnit={setUnit}
-          />
-
-          <Location
-            location={location}
-            setLocation={setLocation}
-          />
-
-          <DateSection
-            expiryDate={expiryDate}
-            setExpiryDate={setExpiryDate}
-            harvestDate={harvestDate}
-            setHarvestDate={setHarvestDate}
-          />
-
-          <Description
-            description={description}
-            setDescription={setDescription}
-            organic={organic}
-            setOrganic={setOrganic}
-          />
+              <DateSection
+                expiryDate={expiryDate}
+                setExpiryDate={setExpiryDate}
+                harvestDate={harvestDate}
+                setHarvestDate={setHarvestDate}
+              />
+            </div>
+          )}
+          {currentStep === 4 && (
+            <Description
+              description={description}
+              setDescription={setDescription}
+              organic={organic}
+              setOrganic={setOrganic}
+            />
+          )}
 
           {/* Submit */}
-          <div className="pt-6 border-t border-green-900/30">
-            <Button
-              isSubmitting={isSubmitting}
-              isValid={isValid}
-            />
-
-            <div className="mt-5 bg-linear-to-r from-green-900/20 to-emerald-900/10 border border-green-500/20 rounded-2xl p-4">
-              <p className="text-sm text-green-300">
-                💡 Tip: High-quality photos + clear pricing increase sales.
-              </p>
+          {currentStep === 5 && (
+            <div className="pt-6 border-t border-border">
+              <Button
+                name={name}
+                category={category}
+                price={price}
+                quantity={quantity}
+                unit={unit}
+                location={location}
+                harvestDate={harvestDate}
+                expiryDate={expiryDate}
+                description={description}
+                organic={organic}
+                files={files}
+                isSubmitting={isSubmitting}
+                isValid={isValid}
+              />
             </div>
-          </div>
+          )}
+          <div className="flex items-center justify-between border-t border-border pt-6 mt-8">
 
+            {/* BACK */}
+            <button
+              type="button"
+              onClick={previousStep}
+              disabled={currentStep === 1}
+              className="rounded-xl border border-border bg-card px-5 py-2.5 font-medium text-muted transition hover:bg-muted-background hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40">
+              ← Back
+            </button>
+
+
+            {currentStep < totalStep && (
+              <button
+                type="button"
+                onClick={nextStep}
+                className="rounded-xl bg-button px-6 py-2.5 font-semibold text-button-foreground transition hov er:bg-primary-hover"
+              >
+                Continue →
+              </button>
+            )}
+
+          </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 

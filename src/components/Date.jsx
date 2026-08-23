@@ -18,16 +18,16 @@ const DateSection = ({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3 border-b border-green-900/40 pb-4">
-        <div className="w-10 h-10 rounded-xl bg-green-900/30 border border-green-700/30 flex items-center justify-center">
-          <FiCalendar className="text-green-400 text-lg" />
+      <div className="flex items-center gap-3 border-b border-border pb-4">
+        <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center">
+          <FiCalendar className="text-primary text-lg" />
         </div>
 
         <div>
-          <h2 className="text-xl font-bold text-white">
+          <h2 className="text-xl font-bold text-foreground">
             Important Dates
           </h2>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-muted">
             Harvest and expiry information
           </p>
         </div>
@@ -37,8 +37,8 @@ const DateSection = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Harvest Date */}
         <div className="space-y-2">
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
-            <FiTruck className="text-green-400" />
+          <label className="flex items-center gap-2 text-sm font-medium text-muted">
+            <FiTruck className="text-primary" />
             Harvest Date
           </label>
 
@@ -55,30 +55,30 @@ const DateSection = ({
               px-4
               py-3
               rounded-2xl
-              bg-black/40
+              bg-input
               border
-              border-green-900/40
-              text-white
-              placeholder:text-gray-500
+              border-border
+              text-foreground
+              placeholder:text-muted
               outline-none
               transition-all
               duration-300
-              focus:border-green-500
+              focus:border-primary
               focus:ring-4
-              focus:ring-green-500/10
-              hover:border-green-700/50
+              focus:ring-primary/10
+              hover:border-primary-hover
             "
           />
 
-          <p className="text-xs text-gray-500">
+          <p className="text-xs text-muted">
             When was this product harvested?
           </p>
         </div>
 
         {/* Expiry Date */}
         <div className="space-y-2">
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
-            <FiCalendar className="text-green-400" />
+          <label className="flex items-center gap-2 text-sm font-medium text-muted">
+            <FiCalendar className="text-primary" />
             Expiry Date
           </label>
 
@@ -90,9 +90,8 @@ const DateSection = ({
             onChange={(e) =>
               setExpiryDate(formatDate(e.target.value))
             }
-            className="w-full px-4 py-3 rounded-2xl bg-black/40 border border-green-900/40 text-white placeholder:text-gray-500 outline-none             transition-all
-              duration-300 focus:border-green-500 focus:ring-4 focus:ring-green-500/10 hover:border-green-700/50"/>
-          <p className="text-xs text-gray-500">
+            className="w-full px-4 py-3 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted outline-none transition-all duration-300 focus:border-primary focus:ring-4 focus:ring-primary/10 hover:border-primary-hover"/>
+          <p className="text-xs text-muted">
             Best before / expiry date (if applicable)
           </p>
         </div>

@@ -4,8 +4,8 @@ const Cash = ({ payMethod, price, productId }) => {
     return (
         <div>
             <button type='button' className={`w-full p-4 rounded-2xl transition ${payMethod === "Cash"
-                ? "bg-green-600 text-black"
-                : "bg-zinc-800 hover:bg-zinc-700"
+                ? "bg-primary text-foreground"
+                : "bg-card hover:bg-card-foreground"
                 }`}>
                 Cash on Delivery
             </button>

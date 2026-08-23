@@ -45,29 +45,29 @@ const Page = () => {
     }, [suspendUntil]);
 
     return (
-        <div className="min-h-screen bg-black flex items-center justify-center px-6">
-            <div className="w-full max-w-xl rounded-3xl border border-red-600/40 bg-[#101010] shadow-2xl overflow-hidden">
+        <div className="min-h-screen bg-background flex items-center justify-center px-6">
+            <div className="w-full max-w-xl rounded-3xl border border-red-600/40 bg-card shadow-2xl overflow-hidden">
                 {/* Header */}
-                <div className="bg-red-600/10 border-b border-red-600/30 p-8 text-center">
-                    <div className="w-20 h-20 rounded-full bg-red-600/20 flex items-center justify-center mx-auto">
-                        <Ban className="w-10 h-10 text-red-500" />
+                <div className="bg-red-600/10 border-b border-border p-8 text-center">
+                    <div className="w-20 h-20 rounded-full bg-card flex items-center justify-center mx-auto">
+                        <Ban className="w-10 h-10 text-red-400 dark:text-red-600" />
                     </div>
-                    <h1 className="mt-5 text-4xl font-bold text-white">
+                    <h1 className="mt-5 text-4xl font-bold text-foreground">
                         Account Suspended
                     </h1>
-                    <p className="mt-3 text-gray-400">
+                    <p className="mt-3 text-muted">
                         Your account has been temporarily suspended by an administrator.
                     </p>
                 </div>
                 {/* Body */}
                 <div className="p-8">
-                    <div className="flex items-center gap-3 bg-red-500/10 border border-red-500/20 rounded-xl p-4">
-                        <ShieldAlert className="text-red-500 w-6 h-6" />
+                    <div className="flex items-center gap-3 bg-card border border-border rounded-xl p-4">
+                        <ShieldAlert className="text-red-400 dark:text-red-600 w-6 h-6" />
                         <div>
-                            <p className="text-white font-semibold">
+                            <p className="text-foreground font-semibold">
                                 Access Restricted
                             </p>
-                            <p className="text-gray-400 text-sm">
+                            <p className="text-muted text-sm">
                                 You cannot use your account until the suspension period ends.
                             </p>
                         </div>
@@ -75,17 +75,17 @@ const Page = () => {
                     {/* Countdown */}
                     <div className="mt-8">
                         <div className="flex items-center justify-center gap-2 mb-6">
-                            <Clock className="text-red-400" />
-                            <h2 className="text-xl font-semibold text-white">
+                            <Clock className="dark:text-red-600 text-red-400" />
+                            <h2 className="text-xl font-semibold text-foreground">
                                 Suspension Ends In
                             </h2>
                         </div>
                         {timeLeft.expired ? (
                             <div className="text-center">
-                                <p className="text-green-400 text-xl font-bold">
+                                <p className="text-primary text-xl font-bold">
                                     Suspension Expired
                                 </p>
-                                <p className="text-gray-400 mt-2">
+                                <p className="text-muted mt-2">
                                     Please refresh the page or log in again.
                                 </p>
                             </div>
@@ -99,12 +99,12 @@ const Page = () => {
                                 ].map((item) => (
                                     <div
                                         key={item.label}
-                                        className="bg-black border border-red-600/30 rounded-2xl py-5 text-center"
+                                        className="bg-background border border-border rounded-2xl py-5 text-center"
                                     >
-                                        <p className="text-3xl font-bold text-red-500">
+                                        <p className="text-3xl font-bold text-rd-400 dark:text-red-600">
                                             {String(item.value).padStart(2, "0")}
                                         </p>
-                                        <p className="text-gray-500 text-sm mt-2">
+                                        <p className="text-muted text-sm mt-2">
                                             {item.label}
                                         </p>
                                     </div>
@@ -113,14 +113,14 @@ const Page = () => {
                         )}
                     </div>
                     {/* Contact */}
-                    <div className="mt-10 rounded-xl bg-white/5 border border-white/10 p-5">
+                    <div className="mt-10 rounded-xl bg-card border border-border p-5">
                         <div className="flex items-center gap-3">
-                            <Mail className="text-red-400" />
+                            <Mail className="text-red-400 dark:text-red-600" />
                             <div>
-                                <p className="text-white font-medium">
+                                <p className="text-foreground font-medium">
                                     Need Assistance?
                                 </p>
-                                <p className="text-gray-400 text-sm">
+                                <p className="text-muted text-sm">
                                     If you believe this suspension was made in error, please
                                     contact the administrator for assistance.
                                 </p>

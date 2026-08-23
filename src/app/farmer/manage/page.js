@@ -56,7 +56,7 @@ const Page = () => {
   const totalStock = products.reduce((sum, p) => sum + Number(p.quantity), 0);
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <Toaster />
       <SlideBarForFarmer />
 
@@ -64,40 +64,50 @@ const Page = () => {
         {/* HEADER */}
         <div className="flex justify-between items-start lg:items-center gap-4">
           <div>
-            <h1 className="text-4xl font-bold text-green-400">
+            <h1 className="text-4xl font-bold text-primary">
               Product Dashboard
             </h1>
-            <p className="text-zinc-400 mt-2">
+            <p className="text-card/10 mt-2">
               Manage all your farm products from one place.
             </p>
           </div>
 
           <Link
             href="/addProduct"
-            className="px-6 py-3 rounded-xl bg-green-600 hover:bg-green-500 transition font-semibold">
+            className="px-6 py-3 rounded-xl bg-primary hover:bg-primary-hover transition font-semibold">
             + Add Product
           </Link>
         </div>
 
         {/* STATS */}
-        <div className="grid grid-cols-3 gap-5 mt-8">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-            <p className="text-zinc-500 text-sm">Total Products</p>
-            <h2 className="text-3xl font-bold text-green-400 mt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mt-8">
+
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm transition hover:shadow-md">
+            <p className="text-muted text-sm">
+              Total Products
+            </p>
+
+            <h2 className="text-3xl font-bold text-primary mt-2">
               {totalProducts}
             </h2>
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-            <p className="text-zinc-500 text-sm">Approved Products</p>
-            <h2 className="text-3xl font-bold text-green-400 mt-2">
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm transition hover:shadow-md">
+            <p className="text-muted text-sm">
+              Approved Products
+            </p>
+
+            <h2 className="text-3xl font-bold text-primary mt-2">
               {approvedProducts}
             </h2>
           </div>
 
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
-            <p className="text-zinc-500 text-sm">Total Stock</p>
-            <h2 className="text-3xl font-bold text-green-400 mt-2">
+          <div className="bg-card border border-border rounded-2xl p-5 shadow-sm transition hover:shadow-md">
+            <p className="text-muted text-sm">
+              Total Stock
+            </p>
+
+            <h2 className="text-3xl font-bold text-primary mt-2">
               {totalStock}
             </h2>
           </div>
@@ -110,7 +120,7 @@ const Page = () => {
             placeholder="Search products..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className=" w-full md:w-112.5 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-3 outline-none focus:border-green-500" />
+            className=" w-full md:w-112.5 bg-card border border-border rounded-xl px-4 py-3 outline-none focus:border-green-500" />
         </div>
 
         {/* LOADING */}
@@ -119,7 +129,7 @@ const Page = () => {
             <div className="w-14 h-14 border-4 border-green-500 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="mt-10 bg-zinc-900 rounded-2xl p-10 text-center border border-zinc-800">
+          <div className="mt-10 bg-card rounded-2xl p-10 text-center border border-zinc-800">
             <h2 className="text-xl text-zinc-400">No products found</h2>
           </div>
         ) : (
@@ -127,7 +137,7 @@ const Page = () => {
             {filtered.map((p) => (
               <div
                 key={p._id}
-                className=" bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden hover:border-green-500 transition-all duration-300">
+                className=" bg-card border border-zinc-800 rounded-3xl overflow-hidden hover:border-green-500 transition-all duration-300">
                 {/* IMAGE */}
                 <div className="relative">
                   <img
@@ -139,16 +149,12 @@ const Page = () => {
                   {/* STATUS */}
                   <div className="absolute top-4 left-4">
                     <span
-                      className={`
-                        px-3 py-1 rounded-full text-xs font-semibold
-                        ${p.status === "approved"
-                          ? "bg-green-900 text-green-400"
-                          : p.status === "pending"
-                            ? "bg-yellow-900 text-yellow-400"
-                            : "bg-red-900 text-red-400"
-                        }
-                      `}
-                    >
+                      className={`rounded-full px-3 py-1 text-xs font-semibold capitalize ${p.status === "approved"
+                        ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
+                        : p.status === "pending"
+                          ? "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400"
+                          : "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
+                        }`}>
                       {p.status}
                     </span>
                   </div>
@@ -156,7 +162,7 @@ const Page = () => {
                   {/* ORGANIC */}
                   {p.organic && (
                     <div className="absolute top-4 right-4">
-                      <span className="bg-green-600 text-black px-3 py-1 rounded-full text-xs font-bold">
+                      <span className="bg-primary text-foreground px-3 py-1 rounded-full text-xs font-bold">
                         Organic
                       </span>
                     </div>
@@ -167,15 +173,21 @@ const Page = () => {
                 <div className="p-5">
                   <div className="flex justify-between items-start">
                     <div>
-                      <h2 className="text-xl font-bold">{p.name}</h2>
+                      <h2 className="text-xl font-bold text-card-foreground">
+                        {p.name}
+                      </h2>
 
-                      <p className="text-zinc-500 text-sm">{p.category}</p>
+                      <p className="text-sm text-muted">
+                        {p.category}
+                      </p>
                     </div>
 
                     <div className="text-right">
-                      <p className="text-zinc-500 text-xs">Price</p>
+                      <p className="text-xs text-muted">
+                        Price
+                      </p>
 
-                      <h3 className="text-green-400 font-bold text-lg">
+                      <h3 className="text-lg font-bold text-primary">
                         Rs {p.price}
                       </h3>
                     </div>
@@ -187,16 +199,16 @@ const Page = () => {
 
                   {/* INFO */}
                   <div className="grid grid-cols-2 gap-3 mt-5">
-                    <div className="bg-zinc-800 rounded-xl p-3">
-                      <p className="text-zinc-500 text-xs">Stock</p>
+                    <div className="bg-card rounded-xl p-3">
+                      <p className="text-muted text-xs">Stock</p>
 
                       <p className="font-semibold">
                         {p.quantity} {p.unit}
                       </p>
                     </div>
 
-                    <div className="bg-zinc-800 rounded-xl p-3">
-                      <p className="text-zinc-500 text-xs">Location</p>
+                    <div className="bg-card rounded-xl p-3">
+                      <p className="text-muted text-xs">Location</p>
 
                       <p className="font-semibold truncate">{p.location}</p>
                     </div>
@@ -205,14 +217,14 @@ const Page = () => {
                   {/* STOCK BAR */}
                   <div className="mt-5">
                     <div className="flex justify-between text-xs mb-2">
-                      <span className="text-zinc-500">Stock Level</span>
+                      <span className="text-muted">Stock Level</span>
 
-                      <span className="text-green-400">{p.quantity}</span>
+                      <span className="text-primary">{p.quantity}</span>
                     </div>
 
-                    <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-2 bg-card rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-green-500"
+                        className="h-full bg-primary"
                         style={{
                           width: `${Math.min((p.quantity / 100) * 100, 100)}%`,
                         }}
@@ -221,7 +233,7 @@ const Page = () => {
                   </div>
 
                   {/* FARMER */}
-                  <div className="mt-5 pt-4 border-t border-zinc-800">
+                  <div className="mt-5 pt-4 border-t border-card">
                     <p className="text-zinc-500 text-xs">Farmer</p>
 
                     <p className="text-sm font-medium">
@@ -233,13 +245,13 @@ const Page = () => {
                   <div className="flex gap-3 mt-6">
                     <Link
                       href={`/farmer/manage/${p._id}`}
-                      className="flex-1 text-center py-3 rounded-xl bg-green-600 hover:bg-green-500 font-medium">
+                      className="flex-1 text-center py-3 rounded-xl bg-primary hover:bg-primary-hover font-medium">
                       Edit
                     </Link>
 
                     <button
                       onClick={() => deleteProduct(p._id)}
-                      className="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 font-medium">
+                      className="flex-1 rounded-xl border border-red-200 bg-red-50 py-3 font-medium text-red-600 transition hover:bg-red-100 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-400 dark:hover:bg-red-950/50">
                       Delete
                     </button>
                   </div>

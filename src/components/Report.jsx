@@ -52,17 +52,17 @@ const Report = ({ productId, setOpenReport }) => {
 
   return (
 
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0  flex items-center justify-center bg-black/50 backdrop-blur-sm">
 
       <form
         onSubmit={handelData}
-        className="w-[90%] md:w-125 bg-white rounded-2xl shadow-2xl p-6 flex flex-col gap-5 animate-in fade-in zoom-in duration-300"
+        className="w-[90%] md:w-125 bg-background rounded-2xl shadow-2xl p-6 flex flex-col gap-5 animate-in fade-in zoom-in duration-300"
       >
 
         {/* Header */}
         <div className="flex items-center justify-between">
 
-          <h1 className="text-2xl font-bold text-gray-800">
+          <h1 className="text-2xl font-bold text-muted">
             Report Product
           </h1>
 
@@ -79,7 +79,7 @@ const Report = ({ productId, setOpenReport }) => {
         {/* Product */}
         <div className="flex flex-col gap-2">
 
-          <label className="font-semibold text-gray-700">
+          <label className="font-semibold text-card-foreground">
             Product Name
           </label>
 
@@ -87,15 +87,14 @@ const Report = ({ productId, setOpenReport }) => {
             type="text"
             value={product?.name || ""}
             readOnly
-            className="border border-gray-300 rounded-xl p-3 bg-gray-100 outline-none text-black"
-          />
+            className="w-full rounded-xl border border-input-border bg-muted-background p-3 text-foreground outline-none" />
 
         </div>
 
         {/* User */}
         <div className="flex flex-col gap-2">
 
-          <label className="font-semibold text-gray-700">
+          <label className="font-semibold text-foreground">
             Your Name
           </label>
 
@@ -103,44 +102,25 @@ const Report = ({ productId, setOpenReport }) => {
             type="text"
             value={`${user?.firstName || ""} ${user?.lastName || ""}`}
             readOnly
-            className="border border-gray-300 rounded-xl p-3 bg-gray-100 outline-none text-black"
+            className="border border-input-border rounded-xl p-3 bg-muted-background outline-none text-foreground"
           />
 
         </div>
         <div className="flex flex-col gap-2">
 
-          <label className=" text-black">
+          <label className=" text-card-foreground">
             Report type
           </label>
 
           <select
             value={reportType}
             onChange={(e) => setReportType(e.target.value)}
-            className="border p-3 rounded-xl outline-none text-black"
+            className="border p-3 rounded-xl outline-none text-foreground"
           >
             <option value="">Select Type</option>
-            <option value="Fake Product">
-              Fake Product
-            </option>
-            <option value="Spam">
-              Spam
-            </option>
-            <option value="Fraud">
-              Scam / Fraud
-            </option>
-            <option value="Wrong Information">
-              Wrong Information
-            </option>
-            <option value="Offensive Content">
-              Offensive Content
-            </option>
-            <option value="Duplicate Product">
-              Duplicate Product
-            </option>
-
-            <option value="Other">
-              Other
-            </option>
+            {["Fake Product", "Spam", "Scam / Fraud", "Wrong Information", "Offensice Content", "Duplicate Product", "other"].map((item, idx) => (
+              <option key={idx} value={item} className="text-foreground bg-background focus:bg-background">{item}</option>
+            ))}
           </select>
         </div>
 
@@ -148,7 +128,7 @@ const Report = ({ productId, setOpenReport }) => {
         {/* Report */}
         <div className="flex flex-col gap-2">
 
-          <label className="font-semibold text-gray-700">
+          <label className="font-semibold text-card-foreground" >
             Report Details
           </label>
 
@@ -157,7 +137,7 @@ const Report = ({ productId, setOpenReport }) => {
             value={reportText}
             onChange={(e) => setReportText(e.target.value)}
             placeholder="Describe the issue with this product..."
-            className="border border-gray-300 rounded-xl p-3 outline-none focus:border-red-400 resize-none text-black"
+            className="border border-gray-300 rounded-xl p-3 outline-none focus:border-red-400 resize-none text-foreground"
           />
 
         </div>
@@ -168,22 +148,18 @@ const Report = ({ productId, setOpenReport }) => {
           <button
             type="button"
             onClick={() => setOpenReport(false)}
-            className="px-5 py-2 rounded-xl bg-gray-200 hover:bg-gray-300"
-          >
+            className=" rounded-xl border border-border bg-card px-5 py-2 font-medium text-muted transition hover:bg-muted-background hover:text-foreground">
             Cancel
           </button>
 
+          {/* SUBMIT */}
           <button
             type="submit"
-            className="px-5 py-2 rounded-xl bg-red-500 text-white hover:bg-red-600"
-          >
+            className="rounded-xl bg-button px-5 py-2 font-semibold text-button-foreground transition hover:bg-primary-hover">
             Submit Report
           </button>
-
         </div>
-
       </form>
-
     </div>
   );
 };

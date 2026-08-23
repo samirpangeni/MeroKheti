@@ -36,9 +36,9 @@ const ShowReview = ({ productId }) => {
             </h2>
 
             {loading ? (
-               <Loading />
+                <Loading />
             ) : review.length === 0 ? (
-                <p className="text-gray-400">
+                <p className="text-muted">
                     No reviews yet
                 </p>
             ) : (
@@ -46,12 +46,12 @@ const ShowReview = ({ productId }) => {
                     {review.map((r) => (
                         <div
                             key={r._id}
-                            className="bg-white/5 border border-white/10 p-6 rounded-2xl backdrop-blur-lg"
+                            className="bg-card border border-border p-6 rounded-2xl backdrop-blur-lg"
                         >
                             {/* USER */}
                             <div className="flex items-center justify-between mb-3">
                                 <div>
-                                    <p className="text-green-400 font-semibold text-lg">
+                                    <p className="text-primary font-semibold text-lg">
                                         {r.userId
                                             ? `${r.userId.firstName} ${r.userId.lastName}`
                                             : "Anonymous"}
@@ -60,18 +60,16 @@ const ShowReview = ({ productId }) => {
                                 </div>
 
                                 {/* RATING */}
-                                <div className="bg-green-500/10 text-green-400 px-3 py-1 rounded-xl text-sm">
+                                <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-xl text-sm">
                                     ⭐ {r.rating}/5
                                 </div>
                             </div>
-
                             {/* REVIEW */}
-                            <p className="text-gray-300 leading-relaxed">
+                            <p className="text-muted leading-relaxed">
                                 {r.review}
                             </p>
                         </div>
                     ))}
-                    
                 </div>
             )}
         </div>

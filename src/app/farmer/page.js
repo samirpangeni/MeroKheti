@@ -45,7 +45,7 @@ const Page = () => {
 
   if (!data) {
     return (
-      <div className="min-h-screen bg-black flex items-center justify-center text-red-500">
+      <div className="min-h-screen bg-backgournd flex items-center justify-center text-red-500">
         Failed to load dashboard
       </div>
     );
@@ -89,77 +89,78 @@ const Page = () => {
     {
       title: "Total Products",
       value: data.totalProducts,
-      gradient: "from-green-700 to-green-900",
+      accent: "text-primary",
+      iconBg: "bg-secondary",
     },
     {
       title: "Approved Products",
       value: data.approvedProducts,
-      gradient: "from-emerald-600 to-green-800",
+      accent: "text-green-600 dark:text-green-400",
+      iconBg: "bg-green-100 dark:bg-green-900/30",
     },
     {
       title: "Pending Products",
       value: data.pendingProducts,
-      gradient: "from-yellow-600 to-yellow-900",
+      accent: "text-yellow-600 dark:text-yellow-400",
+      iconBg: "bg-yellow-100 dark:bg-yellow-900/30",
     },
     {
       title: "Rejected Products",
       value: data.rejectedProducts,
-      gradient: "from-red-700 to-red-900",
+      accent: "text-red-600 dark:text-red-400",
+      iconBg: "bg-red-100 dark:bg-red-900/30",
     },
     {
       title: "Total Reviews",
       value: data.totalReviews,
-      gradient: "from-lime-700 to-green-900",
+      accent: "text-primary",
+      iconBg: "bg-secondary",
     },
     {
       title: "Average Rating",
       value: data.averageRating,
-      gradient: "from-green-500 to-green-800",
+      accent: "text-yellow-600 dark:text-yellow-400",
+      iconBg: "bg-yellow-100 dark:bg-yellow-900/30",
     },
     {
       title: "Total Sold",
       value: data.totalSold,
-      gradient: "from-emerald-700 to-green-950",
+      accent: "text-primary",
+      iconBg: "bg-secondary",
     },
   ];
 
   return (
-    <div className="flex min-h-screen bg-linear-to-br from-black via-[#051407] to-black text-white">
+    <div className="flex min-h-screen bg-background text-foreground">
       <SlideBarForFarmer />
 
       <div className="w-full md:pl-72 p-6 md:mt-16">
         {/* Header */}
         <div className="mb-10">
-          <h1 className="text-4xl font-bold text-green-400">
+          <h1 className="text-4xl font-bold text-primary">
             Farmer Dashboard
           </h1>
 
-          <p className="text-green-200/60 mt-2">
+          <p className="text-secondary mt-2">
             Welcome back! Here's an overview of your business.
           </p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5 mb-10">
+        <div className="grid grid-cols-1 gap-5 mb-10 sm:grid-cols-2 xl:grid-cols-4">
           {stats.map((item, index) => (
             <div
               key={index}
-              className={`
-                bg-linear-to-br ${item.gradient}
-                rounded-2xl
-                p-6
-                border border-green-500/20
-                shadow-lg shadow-green-950/30
-                hover:scale-105
-                hover:shadow-green-700/20
-                transition-all duration-300
-              `}
-            >
-              <p className="text-sm text-gray-200 uppercase tracking-widest">
+              className=" rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+              {/* TITLE */}
+              <p className="text-sm font-medium uppercase tracking-widest text-muted">
                 {item.title}
               </p>
 
-              <h2 className="text-4xl font-bold mt-3">
+              {/* VALUE */}
+              <h2
+                className={`mt-3 text-4xl font-bold ${item.accent}`}
+              >
                 {item.value || 0}
               </h2>
             </div>
@@ -170,16 +171,8 @@ const Page = () => {
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {/* Pie Chart */}
           <div
-            className="
-            bg-[#07150a]
-            border border-green-500/20
-            rounded-3xl
-            p-6
-            backdrop-blur-lg
-            shadow-xl shadow-green-950/30
-          "
-          >
-            <h2 className="text-xl font-semibold text-green-400 mb-6">
+            className="bg-background border border-border rounded-3xl p-6 backdrop-blur-lg shadow-xl shadow-green-950/30">
+            <h2 className="text-xl font-semibold text-primary mb-6">
               Product Status
             </h2>
 
@@ -215,16 +208,8 @@ const Page = () => {
 
           {/* Bar Chart */}
           <div
-            className="
-            bg-[#07150a]
-            border border-green-500/20
-            rounded-3xl
-            p-6
-            backdrop-blur-lg
-            shadow-xl shadow-green-950/30
-          "
-          >
-            <h2 className="text-xl font-semibold text-green-400 mb-6">
+            className="bg-background border-border rounded-3xl p-6 backdrop-blur-lg shadow-xl shadow-green-950/30">
+            <h2 className="text-xl font-semibold text-primary mb-6">
               Overview Analytics
             </h2>
 
@@ -239,7 +224,7 @@ const Page = () => {
 
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#000",
+                    backgroundColor: "background",
                     border: "1px solid #22c55e",
                     borderRadius: "12px",
                     color: "#fff",

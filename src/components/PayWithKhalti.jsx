@@ -20,7 +20,7 @@ const PayWithKhalti = ({ payMethod, price, productId, quantity, message, locatio
         if (productId)
             fetchProduct();
     }, [productId]);
-    console.log(location)
+    
     const handleKhaltiPayment = async () => {
         try {
             const orderRes = await axios.post("/api/order", {
@@ -48,7 +48,7 @@ const PayWithKhalti = ({ payMethod, price, productId, quantity, message, locatio
         <div>
             <button
                 onClick={handleKhaltiPayment}
-                className="w-full p-4 rounded-2xl bg-purple-700 hover:bg-purple-600 transition"
+                className="w-full p-4 rounded-2xl bg-purple-400 dark:bg-purple-600 hover:dark:bg-purple-600 hover:bg-purple-400 transition"
             >
                 Pay with Khalti
             </button>

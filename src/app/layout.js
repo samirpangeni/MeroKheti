@@ -1,6 +1,7 @@
 import "./globals.css";
 import "../../lib/cron"
 import { ToastContainer } from "react-toastify";
+import ThemeToggle from "@/components/ThemeToggle"
 import "react-toastify/dist/ReactToastify.css";
 
 export default function RootLayout({ children }) {
@@ -10,6 +11,7 @@ export default function RootLayout({ children }) {
       <body className="min-h-screen bg-white text-black antialiased">
         {children}
         <ToastContainer position="bottom-right" />
+        <ThemeToggle />
       </body>
     </html>
   );

@@ -84,37 +84,37 @@ const Checkout = ({ productId, onClose }) => {
   }, []);
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-black w-full">
+      <div className="flex justify-center items-center h-screen bg-background w-full">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-green-400">Loading Product...</p>
+          <div className="w-16 h-16 border-4 border-border border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="mt-4 text-primary">Loading Product...</p>
         </div>
       </div>
     );
   }
 
   if (!product) {
-    return <div className="text-center text-white p-10">Product not found</div>;
+    return <div className="text-center text-foreground p-10">Product not found</div>;
   }
 
   const total = product.price * quantity;
 
   return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="w-full max-w-7xl bg-zinc-900 rounded-3xl border border-zinc-800 shadow-2xl overflow-hidden max-h-[95vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-card backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="w-full max-w-7xl bg-card rounded-3xl border border-border shadow-2xl overflow-hidden max-h-[95vh] overflow-y-auto">
         {/* Header */}
-        <div className="sticky top-0 z-20 bg-zinc-900 border-b border-zinc-800 px-6 py-5 flex items-center justify-between">
+        <div className="sticky top-0 z-20 bg-card border-b border-border px-6 py-5 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-white">Checkout</h2>
+            <h2 className="text-2xl font-bold text-foreground">Checkout</h2>
 
-            <p className="text-zinc-400 text-sm mt-1">
+            <p className="text-muted text-sm mt-1">
               Review your order before payment
             </p>
           </div>
 
           <button
             onClick={onClose}
-            className="w-10 h-10 rounded-full bg-zinc-800 hover:bg-red-500 transition text-white"
+            className="w-10 h-10 rounded-full bg-card hover:bg-red-400 hover:dark:bg-red-600 transition text-foreground"
           >
             ✕
           </button>
@@ -123,7 +123,7 @@ const Checkout = ({ productId, onClose }) => {
         {/* Content */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-6">
           <div className="space-y-6">
-            <div className="overflow-hidden rounded-3xl border border-zinc-800">
+            <div className="overflow-hidden rounded-3xl border border-border">
               <img
                 src={product.image?.[0]?.url}
                 alt={product.name}
@@ -132,48 +132,48 @@ const Checkout = ({ productId, onClose }) => {
             </div>
 
             <div>
-              <h1 className="text-3xl font-bold text-white">{product.name}</h1>
+              <h1 className="text-3xl font-bold text-foreground">{product.name}</h1>
 
-              <p className="mt-4 text-zinc-400 leading-7">
+              <p className="mt-4 text-muted leading-7">
                 {product.description}
               </p>
             </div>
 
-            <div className="bg-zinc-800 rounded-3xl p-6 space-y-5">
+            <div className="bg-card rounded-3xl p-6 space-y-5">
               <div className="flex justify-between">
-                <span className="text-zinc-400">Price</span>
+                <span className="text-muted">Price</span>
 
-                <span className="text-green-400 font-bold text-2xl">
+                <span className="text-primary font-bold text-2xl">
                   NPR {product.price}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-zinc-400">Stock</span>
+                <span className="text-muted">Stock</span>
 
-                <span className="text-white font-semibold">
+                <span className="text-foreground font-semibold">
                   {product.quantity}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-zinc-400">Category</span>
+                <span className="text-muted">Category</span>
 
-                <span className="text-white">{product.category}</span>
+                <span className="text-foreground">{product.category}</span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-zinc-400">Organic</span>
+                <span className="text-muted">Organic</span>
 
-                <span className="text-green-400">
+                <span className="text-primary">
                   {product.organic ? "Yes 🌱" : "No"}
                 </span>
               </div>
 
               <div className="flex justify-between">
-                <span className="text-zinc-400">Harvest Date</span>
+                <span className="text-muted">Harvest Date</span>
 
-                <span className="text-white">
+                <span className="text-foreground">
                   {product.harvestDate
                     ? new Date(product.harvestDate).toLocaleDateString()
                     : "-"}
@@ -185,22 +185,22 @@ const Checkout = ({ productId, onClose }) => {
           <div className="space-y-6">
             {/* Quantity */}
 
-            <div className="bg-zinc-800 rounded-3xl p-6">
-              <h3 className="text-xl font-semibold text-white mb-5">
+            <div className="bg-card rounded-3xl p-6">
+              <h3 className="text-xl font-semibold text-foreground mb-5">
                 Order Summary
               </h3>
 
               <div className="flex justify-between items-center">
-                <span className="text-zinc-400">Quantity</span>
+                <span className="text-muted">Quantity</span>
 
-                <div className="flex items-center rounded-xl overflow-hidden border border-zinc-700">
+                <div className="flex items-center rounded-xl overflow-hidden border border-card">
                   <button
                     onClick={() => {
                       if (quantity > 1) {
                         setQuantity((prev) => prev - 1);
                       }
                     }}
-                    className="w-12 h-12 bg-zinc-900 hover:bg-zinc-700 active:scale-95 transition text-xl"
+                    className="w-12 h-12 bg-card hover:bg-secondary-foreground active:scale-95 transition text-xl"
                   >
                     −
                   </button>
@@ -215,7 +215,7 @@ const Checkout = ({ productId, onClose }) => {
                         setQuantity((prev) => prev + 1);
                       }
                     }}
-                    className="w-12 h-12 bg-green-600 hover:bg-green-500 active:scale-95 transition text-xl"
+                    className="w-12 h-12 bg-primary hover:bg-primary-hover active:scale-95 transition text-xl"
                   >
                     +
                   </button>
@@ -223,7 +223,7 @@ const Checkout = ({ productId, onClose }) => {
               </div>
             </div>
 
-            <div className="rounded-3xl bg-gradient-to-r from-green-600 to-emerald-500 p-6 text-black">
+            <div className="rounded-3xl bg-linear-to-r from-primary to-primary-hover p-6 text-foregroud">
               <p className="font-medium">Total Amount</p>
 
               <h2 className="text-4xl font-bold mt-2">NPR {total}</h2>
@@ -235,32 +235,32 @@ const Checkout = ({ productId, onClose }) => {
 
             {/* Delivery Location */}
 
-            <div className="bg-zinc-800 rounded-3xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-4">
+            <div className="bg-card rounded-3xl p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-4">
                 Delivery Location
               </h3>
 
               {location.lat ? (
                 <div className="space-y-2">
-                  <p className="text-green-400">📍 Location Detected</p>
+                  <p className="text-primary">📍 Location Detected</p>
 
-                  <p className="text-zinc-400 text-sm break-all">
+                  <p className="text-muted text-sm break-all">
                     Latitude : {location.lat}
                   </p>
 
-                  <p className="text-zinc-400 text-sm break-all">
+                  <p className="text-muted text-sm break-all">
                     Longitude : {location.lng}
                   </p>
                 </div>
               ) : (
-                <p className="text-red-400">Unable to fetch location.</p>
+                <p className="text-red-400 dark:text-red-600">Unable to fetch location.</p>
               )}
             </div>
 
             {/* Message */}
 
-            <div className="bg-zinc-800 rounded-3xl p-6">
-              <label className="block text-white font-semibold mb-4">
+            <div className="bg-card rounded-3xl p-6">
+              <label className="block text-foreground font-semibold mb-4">
                 Special Instructions
               </label>
 
@@ -269,14 +269,14 @@ const Checkout = ({ productId, onClose }) => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Write delivery instructions..."
-                className="w-full rounded-2xl bg-zinc-900 border border-zinc-700 p-4 outline-none resize-none focus:border-green-500 text-white"
+                className="w-full rounded-2xl bg-card border border-border p-4 outline-none resize-none focus:border-primary-hover text-foreground"
               />
             </div>
 
             {/* Payment */}
 
-            <div className="bg-zinc-800 rounded-3xl p-6">
-              <h3 className="text-lg font-semibold text-white mb-5">
+            <div className="bg-card rounded-3xl p-6">
+              <h3 className="text-lg font-semibold text-foreground mb-5">
                 Payment Method
               </h3>
 
@@ -312,7 +312,7 @@ const Checkout = ({ productId, onClose }) => {
             <button
               onClick={handleOrder}
               disabled={ordering}
-              className="w-full py-5 rounded-3xl bg-gradient-to-r from-green-500 to-emerald-400 text-black text-lg font-bold hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50"
+              className="w-full py-5 rounded-3xl bg-linear-to-r from-primary to-primary-hover text-foreground text-lg font-bold hover:scale-[1.02] active:scale-95 transition-all duration-300 disabled:opacity-50"
             >
               {ordering ? "Processing..." : "Place Order"}
             </button>

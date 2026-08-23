@@ -19,6 +19,7 @@ const Page = () => {
           withCredentials: true,
         });
         setData(response.data.carts || []);
+        console.log(response.data.carts.productId.price)
       } catch (err) {
         console.log(err);
       } finally {
@@ -39,27 +40,22 @@ const Page = () => {
       console.log(err);
     }
   };
-
   const totalItems = data.reduce((sum, item) => sum + item.quantity, 0);
-
   const totalPrice = data.reduce(
-    (sum, item) => sum + item.quantity * item.product.price,
+    (sum, item) => sum + item.quantity * item.productId.price,
     0
   );
 
   return (
-    <div className="flex min-h-screen bg-black text-white mb-10">
-
+    <div className="flex min-h-screen bg-backgroundtext-foreground mb-10">
       <DashboardNav />
-
-      <div className="flex-1 md:ml-72 p-6 md:p-10 pt-20 bg-linear-to-b from-black via-green-950/10 to-black md:mt-20">
-
+      <div className="flex-1 md:ml-72 p-6 md:p-10 pt-20 bg-linear-to-b from-background via-primary/10 to-background md:mt-20">
         {/* HEADER */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-green-400">
+          <h1 className="text-3xl font-bold text-primary">
             🛒 My Cart
           </h1>
-          <p className="text-gray-400 mt-1">
+          <p className="text-muted mt-1">
             Review your selected fresh products
           </p>
         </div>
@@ -67,23 +63,23 @@ const Page = () => {
         {/* SUMMARY */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-5 mb-10">
 
-          <div className="bg-green-950/40 border border-green-500/20 rounded-2xl p-5">
-            <p className="text-gray-400 text-sm">Total Items</p>
-            <h2 className="text-3xl font-bold text-green-300 mt-2">
+          <div className="bg-card border border-border rounded-2xl p-5">
+            <p className="text-muted text-sm">Total Items</p>
+            <h2 className="text-3xl font-bold text-primary mt-2">
               {totalItems}
             </h2>
           </div>
 
-          <div className="bg-green-950/40 border border-green-500/20 rounded-2xl p-5">
-            <p className="text-gray-400 text-sm">Total Price</p>
-            <h2 className="text-3xl font-bold text-green-300 mt-2">
+          <div className="bg-card border border-border rounded-2xl p-5">
+            <p className="text-muted text-sm">Total Price</p>
+            <h2 className="text-3xl font-bold text-primary mt-2">
               Rs {totalPrice}
             </h2>
           </div>
 
-          <div className="bg-green-950/40 border border-green-500/20 rounded-2xl p-5">
-            <p className="text-gray-400 text-sm">Status</p>
-            <h2 className="text-2xl font-bold text-yellow-300 mt-2">
+          <div className="bg-card border border-border rounded-2xl p-5">
+            <p className="text-muted text-sm">Status</p>
+            <h2 className="text-2xl font-bold dark:text-yellow-600 text-yellow-300 mt-2">
               {data.length > 0 ? "Ready to checkout" : "Cart empty"}
             </h2>
           </div>
@@ -94,10 +90,10 @@ const Page = () => {
         {loading ? (
           <Loading />
         ) : data.length === 0 ? (
-          <div className="text-center py-20 text-gray-400">
+          <div className="text-center py-20 text-muted grid grid-cols-3">
             <p className="text-lg">Your cart is empty 🌱</p>
             <Link href="/product">
-              <button className="mt-4 px-6 py-2 bg-green-500 text-black rounded-xl hover:bg-green-400 transition">
+              <button className="mt-4 px-6 py-2 bg-primary text-background rounded-xl hover:bg-primary-hover transition">
                 Browse Products
               </button>
             </Link>
@@ -108,100 +104,95 @@ const Page = () => {
             {data.map((item) => (
               <div
                 key={item._id}
-                className="
-                  group flex flex-col w-fit md:flex-row gap-5
-                  bg-linear-to-br from-green-950/40 via-black to-green-950/10
-                  border border-green-500/20
-                  rounded-2xl p-5
-                  hover:border-green-400/40
-                  hover:shadow-[0_0_30px_rgba(34,197,94,0.15)]
-                  transition-all duration-300
-                "
-              >
+                className=" group flex flex-col md:flex-row gap-5 bg-card border border-border rounded-2xl p-5 transition-all duration-300 hover:border-primary hover:shadow-lg">
 
                 {/* IMAGE */}
-                <div className="w-full md:w-44 h-44 overflow-hidden rounded-xl">
+                <div className="w-full md:w-44 h-44 overflow-hidden rounded-xl bg-muted-background shrink-0">
                   <img
-                    src={item.product.image?.[0]?.url}
-                    alt={item.product.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-                  />
+                    src={item.productId?.image?.[0]?.url}
+                    alt={item.productId?.name || "Product"}
+                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"/>
                 </div>
-
                 {/* DETAILS */}
                 <div className="flex-1 flex flex-col justify-between">
-
                   <div>
-
-                    <h2 className="text-xl font-semibold text-green-300">
-                      {item.product.name}
+                    {/* PRODUCT NAME */}
+                    <h2 className="text-xl font-semibold text-primary">
+                      {item.productId?.name}
                     </h2>
-
-                    <p className="text-gray-400 text-sm mt-1">
+                    <p className="text-muted text-sm mt-1">
                       Fresh product directly from farmer 🌱
                     </p>
 
-                    <div className="mt-3 space-y-1 text-sm">
-
-                      <p>
-                        Quantity:{" "}
-                        <span className="text-white font-medium">
+                    {/* PRODUCT INFORMATION */}
+                    <div className="mt-4 space-y-2 text-sm">
+                      <p className="text-muted">
+                        Quantity:
+                        <span className="ml-2 font-medium text-foreground">
                           {item.quantity}
                         </span>
                       </p>
 
-                      <p>
-                        Price:{" "}
-                        <span className="text-green-300">
-                          Rs {item.product.price}
+                      <p className="text-muted">
+                        Price:
+                        <span className="ml-2 font-semibold text-primary">
+                          Rs {item.productId?.price}
                         </span>
                       </p>
 
-                      <p className="font-bold text-yellow-300">
-                        Total: Rs {item.quantity * item.product.price}
+                      <p className="text-muted">
+                        Location:
+                        <span className="ml-2 text-foreground">
+                          {item.productId?.location}
+                        </span>
                       </p>
 
+                      {/* TOTAL */}
+                      <p className="pt-1 font-bold text-yellow-600 dark:text-yellow-300">
+                        Total: Rs{" "}
+                        {item.quantity * item.productId?.price}
+                      </p>
                     </div>
-
                   </div>
-
                   {/* BUTTONS */}
-                  <div className="flex gap-3 mt-5">
-
-                    <Link href={`/product/${item.product._id}`}>
-                      <button className="px-4 py-2 bg-green-500 text-black rounded-xl hover:bg-green-400 transition">
-                        View
-                      </button>
+                  <div className="flex flex-wrap gap-3 mt-5">
+                    {/* VIEW */}
+                    <Link
+                      href={`/product/${item.productId?._id}`}
+                      className="px-4 py-2 rounded-xl bg-primary text-primary-foreground font-medium transition hover:bg-primary-hover">
+                      View
                     </Link>
-
+                    {/* REMOVE */}
                     <button
                       onClick={() => removeCart(item._id)}
-                      className="px-4 py-2 bg-red-500 text-white rounded-xl hover:bg-red-600 transition"
-                    >
+                      className="px-4 py-2 rounded-xl bg-red-600 text-white font-medium transition hover:bg-red-700">
                       Remove
                     </button>
+
+
+                    {/* BUY */}
                     <button
-                      onClick={() => setSelectProduct(item._id)}
-                      className="flex-1 text-xs py-2 rounded-lg bg-green-600 hover:bg-green-500 text-black font-semibold"
-                    >
-                      Buy
+                      onClick={() => setSelectProduct(item)}
+                      className="px-5 py-2 rounded-xl bg-button text-button-foreground font-semibold transition hover:bg-primary-hover">
+                      Buy Now
                     </button>
                   </div>
                 </div>
                 {/* CHECKOUT MODAL */}
-                {selectProduct === item._id && (
-                  <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+                {selectProduct && (
+                  <div className=" fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
                     <Checkout
-                      productId={selectProduct?.productId}
-                      quantity={selectProduct?.quantity}
-                      cartId={selectProduct?.cartId}
+                      productId={selectProduct.productId?._id}
+                      quantity={selectProduct.quantity}
+                      cartId={selectProduct._id}
                       onClose={() => setSelectProduct(null)}
-                     
                     />
                   </div>
                 )}
+
               </div>
             ))}
+
           </div>
         )}
       </div>

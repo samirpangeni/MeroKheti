@@ -34,17 +34,17 @@ const Page = ({ params }) => {
   }, [id]);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-950 via-black to-gray-900 text-white">
+    <div className="min-h-screen bg-linear-to-br from-background via-card to-background text-foreground">
       <Navbar />
 
       {/* MAIN CONTAINER */}
       <div className="max-w-6xl mx-auto px-6 py-16 sm:mt-1">
         {!item ? (
-          <div className="text-center text-gray-400">Loading product...</div>
+          <div className="text-center text-muted">Loading product...</div>
         ) : (
           <div className="grid md:grid-cols-2 gap-10">
             {/* LEFT - IMAGE */}
-            <div className="bg-white/5 rounded-2xl overflow-hidden border border-white/10">
+            <div className="bg-card rounded-2xl overflow-hidden border border-border">
               <img
                 src={item?.image?.[0]?.url}
                 alt={item?.name}
@@ -56,49 +56,49 @@ const Page = ({ params }) => {
             <div className="flex flex-col gap-5">
               <h1 className="text-3xl font-bold">{item?.name}</h1>
 
-              <p className="text-gray-400">{item?.description}</p>
-              <p className="text-green-400">
+              <p className="text-muted">{item?.description}</p>
+              <p className="text-primary">
                 Farmer Name:
-                <span className="text-gray-400 ml-1">
+                <span className="text-muted ml-1">
                   {item.userId?.firstName} {item.userId?.lastName}
                 </span>
               </p>
-              <div className="text-2xl font-semibold text-green-400">
+              <div className="text-2xl font-semibold text-primary">
                 ₹ {item?.price}
               </div>
 
               {/* INFO BOX */}
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <p className="text-gray-400">Quantity</p>
+                <div className="bg-card p-3 rounded-xl border border-border">
+                  <p className="text-muted">Quantity</p>
                   <p>
                     {item?.quantity} {item?.unit}
                   </p>
                 </div>
 
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <p className="text-gray-400">Category</p>
+                <div className="bg-card p-3 rounded-xl border border-border">
+                  <p className="text-muted">Category</p>
                   <p>{item?.category}</p>
                 </div>
 
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <p className="text-gray-400">Location</p>
+                <div className="bg-card p-3 rounded-xl border border-border">
+                  <p className="text-muted">Location</p>
                   <p>{item?.location}</p>
                 </div>
 
-                <div className="bg-white/5 p-3 rounded-xl border border-white/10">
-                  <p className="text-gray-400">Organic</p>
+                <div className="bg-card p-3 rounded-xl border border-border">
+                  <p className="text-muted">Organic</p>
                   <p>{item?.organic ? "Yes 🌱" : "No"}</p>
                 </div>
               </div>
 
               {/* BUTTONS */}
               <div className="flex gap-4 mt-4">
-                <button className=" p-2 bg-green-500 text-white rounded-lg border-0 w-1/2 hover:bg-green-900 focus:bg-green-900"
+                <button className=" p-2 bg-primary text-foreground rounded-lg border-0 w-1/2 hover:bg-primary-hover focus:bg-primary-hover"
                   onClick={() => setSelectProduct(item._id)}
                 > Buy Now </button>
                 {selectProduct === item._id && (
-                  <div className='fixed inset-0 bg-black/70 backdrop-blur-sm flex items-end md:items-center justify-center z-50 p-3'>
+                  <div className='fixed inset-0 bg-card backdrop-blur-sm flex items-end md:items-center justify-center z-50 p-3'>
                     <Checkout productId={selectProduct} onClose={() => setSelectProduct(null)} />
                   </div>)}
                 <AddToCart product={item} />
@@ -110,7 +110,7 @@ const Page = ({ params }) => {
             <div>
               <ShowReview productId={id} />
             </div>
-            <button onClick={() => setOpenReport(true)} className="fixed md:top-10 top-50 right-[-3] bg-red-900 p-2 rounded-lg">Report</button>
+            <button onClick={() => setOpenReport(true)} className="fixed bottom-15 right-6 z-40 rounded-xl bg-red-600 px-4 py-2 font-medium text-white shadow-lg transition hover:bg-red-700 active:scale-95 dark:bg-red-500 dark:hover:bg-red-600">Report</button>
 
             {openReport && (
               <Report productId={id} setOpenReport={setOpenReport} />

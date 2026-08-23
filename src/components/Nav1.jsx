@@ -16,15 +16,15 @@ const Nav1 = ({ handleLogout }) => {
     const menuItem = (href, label) => {
         const isActive = pathname === href
         return (
-            <Link href={href} className={`hover:text-blue-400 transition`}>{label}</Link>
+            <Link href={href} className={`hover:text-foreground hover:underline transition`}>{label}</Link>
         )
     }
 
     return (
-        <div className="flex items-center justify-between bg-black/40 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 text-white">
-            {/* LOGO */}
+        <div className="flex items-center justify-between bg-transparent backdrop-blur-xl border border-input-boder rounded-full px-6 py-3 text-foreground">
+           
             <h1 className="text-xl font-bold tracking-wide">
-                <span className="text-green-400">Mero</span>Kheti
+                <span className="text-primary">Mero</span>Kheti
             </h1>
 
             {/* NAV LINKS */}
@@ -36,7 +36,7 @@ const Nav1 = ({ handleLogout }) => {
                 <li>
                     <button
                         onClick={handleLogout}
-                        className="hover:text-red-400 transition"
+                        className="hover:text-red-600 hover:dark:text-red-400 transition"
                     >
                         Logout
                     </button>

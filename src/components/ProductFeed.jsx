@@ -58,15 +58,15 @@ export default function ProductFeed({ products, setProducts, search }) {
   }, [page, hasMore, loading]);
 
   return (
-    <section className="min-h-screen bg-black text-white px-5 md:px-12 py-10">
+    <section className="min-h-screen bg-backgournd text-white px-5 md:px-12 py-10 w-full">
 
       {/* HEADER */}
       <div className="flex flex-col md:flex-row justify-between gap-4 mb-10">
         <div>
-          <h1 className="text-3xl font-bold text-green-400">
+          <h1 className="text-3xl font-bold text-primary">
             Fresh Marketplace 🌿
           </h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-muted text-sm mt-1">
             Direct from local farmers
           </p>
         </div>
@@ -74,10 +74,27 @@ export default function ProductFeed({ products, setProducts, search }) {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="bg-white/20 border border-green-900/40 px-4 py-2 rounded-lg text-green-200"
+          className="bg-background border border-border text-foreground px-4 py-2 rounded-lg outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20
+  "
         >
-          {["All categories", "vegetables", "fruits", "grains & cereals", "pulses & legumes", "seeds & nuts", "dairy & eggs", "meat & poultry", "herbs & spices", "organic products", "other"].map((cat) => (
-            <option key={cat} value={cat} className="text-black">
+          {[
+            "All categories",
+            "vegetables",
+            "fruits",
+            "grains & cereals",
+            "pulses & legumes",
+            "seeds & nuts",
+            "dairy & eggs",
+            "meat & poultry",
+            "herbs & spices",
+            "organic products",
+            "other",
+          ].map((cat) => (
+            <option
+              key={cat}
+              value={cat}
+              className="bg-card text-card-foreground"
+            >
               {cat === "All categories" ? "All Categories" : cat}
             </option>
           ))}
@@ -92,7 +109,7 @@ export default function ProductFeed({ products, setProducts, search }) {
           Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="h-90 rounded-xl bg-[#0b0f0c] animate-pulse border border-green-900/20 w-full gap-2"
+              className="h-90 rounded-xl bg-background animate-pulse border border-primary w-full gap-2"
             />
           ))}
 
@@ -137,105 +154,183 @@ function ProductCard({ item, selectProduct, setSelectProduct }) {
   }, [item.image]);
 
   return (
-    <div className="group bg-[#0b0f0c] border w-full border-green-900/20 rounded-xl overflow-hidden  hover:border-green-500/40 transition shadow-sm hover:shadow-[0_0_25px_rgba(34,197,94,0.08)]">
-      {/* IMAGE SLIDER */}
-      <div className="relative h-52 overflow-hidden">
+    <div
+      className="group w-full overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+      {/* IMAGE */}
+      <div className="relative h-56 overflow-hidden">
+
         <div
-          className="flex transition-transform duration-700 ease-in-out h-full"
-          style={{ transform: `translateX(-${index * 100}%)` }}
+          className="flex h-full transition-transform duration-700 ease-in-out"
+          style={{
+            transform: `translateX(-${index * 100}%)`,
+          }}
         >
           {item.image?.map((img) => (
             <img
               key={img._id}
               src={img.url}
-              className="w-full h-52 object-cover shrink-0"
-            />
+              alt={item.name}
+              className="h-56 w-full shrink-0 object-cover transition-transform duration-500 group-hover:scale-105 p-2" />
           ))}
         </div>
 
-        {/* overlay */}
-        <div className="absolute inset-0 bg-linear-to-t from-black via-black/20 to-transparent" />
-        {/* dots */}
-        <div className="absolute bottom-2 left-0 right-0 flex justify-center gap-1">
-          {item.image?.map((_, i) => (
-            <span
-              key={i}
-              className={`h-1.5 w-1.5 rounded-full ${i === index ? "bg-green-400" : "bg-gray-600"
-                }`}
-            />
-          ))}
-        </div>
+        {/* IMAGE OVERLAY */}
+        <div
+          className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
 
-        {/* badges */}
-        <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
+        {/* BADGES */}
+        <div className="absolute left-3 right-3 top-3 flex items-start justify-between">
 
-          {/* LEFT SIDE */}
-          <div className="flex gap-2 items-center">
+          {/* LEFT */}
+          <div className="flex flex-wrap gap-2">
+
             {item.organic && (
-              <span className="text-[10px] px-2 py-1 bg-green-500/20 text-green-300 rounded-full">
-                Organic
+              <span
+                className="
+              rounded-full
+              bg-green-500/90
+              px-2.5 py-1
+              text-[10px]
+              font-semibold
+              text-white
+              shadow-sm
+            "
+              >
+                🌱 Organic
               </span>
             )}
 
-            <span className="text-[10px] px-2 py-1 bg-black/60 text-green-200 rounded-full border border-green-900/40">
+            <span
+              className="
+            rounded-full
+            border border-white/20
+            bg-black/50
+            px-2.5 py-1
+            text-[10px]
+            font-medium
+            text-white
+            backdrop-blur-sm
+          "
+            >
               {item.category}
             </span>
+
           </div>
 
-          {/* RIGHT SIDE */}
-          <span className="text-[12px] px-2 py-1 bg-green-500 text-white rounded-full border border-green-900/40">
+          {/* FARMER */}
+          <span
+            className="max-w-[120px] truncate rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-semibold text-gray-900 shadow-sm">
             {item.userId?.firstName} {item.userId?.lastName}
           </span>
 
         </div>
+
+        {/* SLIDER DOTS */}
+        {item.image?.length > 1 && (
+          <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5">
+            {item.image.map((_, i) => (
+              <span
+                key={i}
+                className={`
+              h-1.5
+              rounded-full
+              transition-all
+              ${i === index
+                    ? "w-4 bg-white"
+                    : "w-1.5 bg-white/50"
+                  }
+            `}
+              />
+            ))}
+          </div>
+        )}
+
       </div>
 
       {/* CONTENT */}
-      <div className="p-4 space-y-2">
+      <div className="space-y-3 p-5">
 
-        <h3 className="text-green-100 font-semibold truncate">
-          {item.name}
-        </h3>
+        {/* PRODUCT NAME */}
+        <div>
+          <h3
+            className="truncate text-lg font-semibold text-card-foreground"
+          >
+            {item.name}
+          </h3>
 
-        <p className="text-gray-500 text-xs line-clamp-2">
-          {item.description}
-        </p>
-
-        {/* PRICE + QTY */}
-        <div className="flex justify-between items-center">
-          <span className="text-green-400 font-bold">
-            NPR {item.price}
-          </span>
-
-          <span className="text-xs text-gray-400">
-            {item.quantity} {item.unit}
-          </span>
+          <p
+            className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted">
+            {item.description}
+          </p>
         </div>
 
-        <p className="text-[11px] text-gray-600">
-          📍 {item.location}
-        </p>
+        {/* PRICE + QUANTITY */}
+        <div className="flex items-end justify-between">
+
+          <div>
+            <p className="text-xs text-muted">
+              Price
+            </p>
+
+            <p className="text-xl font-bold text-primary">
+              NPR {item.price}
+            </p>
+          </div>
+
+          <div className="text-right">
+            <p className="text-xs text-muted">
+              Available
+            </p>
+
+            <p className="text-sm font-medium text-card-foreground">
+              {item.quantity} {item.unit}
+            </p>
+          </div>
+
+        </div>
+
+        {/* LOCATION */}
+        <div
+          className="flex items-center gap-2 rounded-lg bg-muted-background px-3 py-2">
+          <span className="text-sm">
+            📍
+          </span>
+
+          <p className="truncate text-xs text-muted">
+            {item.location}
+          </p>
+        </div>
+
+        {/* DIVIDER */}
+        <div className="border-t border-border" />
 
         {/* ACTIONS */}
-        <div className="flex gap-2 pt-2">
-          <Link href={`/product/${item._id}`} className="flex-1">
-            <button className="w-full  py-2 rounded-lg border border-green-800/40 hover:bg-green-900/20">
-              View
+        <div className="flex gap-2">
+
+          <Link
+            href={`/product/${item._id}`}
+            className="flex-1"
+          >
+            <button
+              className=" w-full rounded-lg border border-border bg-transparent py-2.5 text-sm font-medium text-card-foreground transition hover:bg-muted-background">
+              View Details
             </button>
           </Link>
 
           <button
             onClick={() => setSelectProduct(item._id)}
-            className="flex-1 text-xs py-2 rounded-lg bg-green-600 hover:bg-green-500 text-black font-semibold"
-          >
-            Buy
+            className=" flex-1 rounded-lg bg-button py-2.5 text-sm font-semibold text-button-foreground transition hover:opacity-90">
+            Buy Now
           </button>
+
         </div>
+
       </div>
 
       {/* CHECKOUT MODAL */}
       {selectProduct === item._id && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
           <Checkout
             productId={selectProduct}
             onClose={() => setSelectProduct(null)}

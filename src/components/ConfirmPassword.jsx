@@ -15,7 +15,7 @@ const ConfirmPassword = ({
     <div className="w-full">
       <label
         htmlFor="confirmPassword"
-        className="block mb-3 text-green-200 font-medium"
+        className="block mb-3 text-primary font-medium"
       >
         Confirm Password
       </label>
@@ -23,10 +23,9 @@ const ConfirmPassword = ({
       <div
         className={`relative overflow-hidden rounded-2xl border 
           
-          ${
-            confirmPassword.length === 0
-              ? "border-green-800 bg-black/20"
-              : isMatch
+          ${confirmPassword.length === 0
+            ? "border-green-800 bg-black/20"
+            : isMatch
               ? "border-green-500 bg-green-500/10"
               : "border-red-500 bg-red-500/10"
           }
@@ -38,7 +37,7 @@ const ConfirmPassword = ({
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           placeholder="Confirm your password"
-          className="w-full bg-transparent p-4 pr-24 outline-none text-white placeholder:text-gray-400"
+          className="w-full bg-card p-4 pr-24 outline-none text-foreground placeholder:text-muted"
         />
 
         {/* Status Icon */}
@@ -47,10 +46,10 @@ const ConfirmPassword = ({
             (isMatch ? (
               <CheckCircle2
                 size={20}
-                className="text-green-400"
+                className="text-green-400 dark:text-green-600"
               />
             ) : (
-              <XCircle size={20} className="text-red-400" />
+              <XCircle size={20} className="text-red-400 dark:text-red-600" />
             ))}
         </div>
 
@@ -58,7 +57,7 @@ const ConfirmPassword = ({
         <button
           type="button"
           onClick={() => setShowConfirm(!showConfirm)}
-          className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white transition-all"
+          className="absolute right-4 top-1/2 -translate-y-1/2 text-foreground hover:text-muted transition-all"
         >
           {showConfirm ? (
             <EyeOff size={20} />
@@ -71,9 +70,9 @@ const ConfirmPassword = ({
       {/* Helper Text */}
       {confirmPassword.length > 0 && (
         <p
-          className={`mt-2 text-sm font-medium ${
-            isMatch ? "text-green-400" : "text-red-400"
-          }`}
+          className={`mt-2 text-sm font-medium ${isMatch ? "text-green-400 dark:text-green-600"
+              : "text-red-400 dark:text-red-600"
+            }`}
         >
           {isMatch
             ? "Passwords match"

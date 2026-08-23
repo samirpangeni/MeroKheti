@@ -28,7 +28,7 @@ const Review = ({ productId }) => {
     e.preventDefault();
     try {
       const response = await axios.post("/api/review", {
-       productId,
+        productId,
         rating,
         review
       });
@@ -41,14 +41,14 @@ const Review = ({ productId }) => {
 
 
   return (
-    <div className="w-full  bg-white/5 border border-white/10 backdrop-blur-xl rounded-3xl p-6 shadow-xl">
+    <div className="w-full  bg-card border border-border backdrop-blur-xl rounded-3xl p-6 shadow-xl">
 
       {/* TITLE */}
-      <h2 className="text-2xl font-bold text-white mb-2">
+      <h2 className="text-2xl font-bold text-foreground mb-2">
         Leave a Review
       </h2>
 
-      <p className="text-gray-400 text-sm mb-6">
+      <p className="text-muted text-sm mb-6">
         Share your experience about this product
       </p>
       <form onSubmit={handelSubmit} className="w-full">
@@ -65,7 +65,7 @@ const Review = ({ productId }) => {
             name="product-rating"
             value={rating}
             precision={0.5}
-          
+
             onChange={(event, newValue) => {
               setRating(newValue);
             }}
@@ -93,12 +93,12 @@ const Review = ({ productId }) => {
           placeholder="Write your review here..."
           value={review}
           onChange={(e) => setReview(e.target.value)}
-          className="w-full bg-white/10 border border-white/10 rounded-2xl p-4 text-white placeholder:text-gray-400 outline-none focus:border-green-500 transition resize-none"
+          className="w-full bg-card border border-border rounded-2xl p-4 text-foreground placeholder:text-muted outline-none focus:border-primary-hover transition resize-none"
         />
 
         {/* BUTTON */}
         <button
-          className="mt-5 w-full bg-green-500 hover:bg-green-600 transition-all duration-300 py-3 rounded-2xl font-semibold text-white shadow-lg"
+          className="mt-5 w-full bg-primary hover:bg-primary-hover transition-all duration-300 py-3 rounded-2xl font-semibold text-white shadow-lg"
         >
           Submit Review
         </button>

@@ -22,47 +22,97 @@ const Page = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-background text-foreground">
       <SlideBarForFarmer />
 
-      <div className="flex-1 p-8 p-2 md:pl-70">
-        <h1 className="text-4xl font-bold text-green-500 mb-2">
+      <div className="flex-1 p-8 md:pl-70">
+
+        {/* HEADER */}
+        <h1 className="mb-2 text-4xl font-bold text-primary">
           Farmer Leaderboard
         </h1>
 
-        <p className="text-gray-400 mb-8">Top performing farmers</p>
+        <p className="mb-8 text-muted">
+          Top performing farmers
+        </p>
 
-        <div className="bg-zinc-900 rounded-2xl overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-zinc-800">
-              <tr>
-                <th className="p-4 text-left">Rank</th>
-                <th className="p-4 text-left">Farmer</th>
-                <th className="p-4 text-left">Rating</th>
-                <th className="p-4 text-left">Products</th>
-                <th className="p-4 text-left">Sold</th>
-              </tr>
-            </thead>
+        {/* TABLE */}
+        <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[650px]">
 
-            <tbody>
-              {Array.isArray(farmers) &&
-                farmers.map((farmer, index) => (
-                  <tr
-                    key={farmer.farmerId || index}
-                    className="border-t border-zinc-800"
-                  >
-                    <td className="p-4">#{index + 1}</td>
-                    <td className="p-4 font-semibold">{farmer.name}</td>
-                    <td className="p-4 text-yellow-400">
-                      ⭐ {farmer.averageRating}
-                    </td>
-                    <td className="p-4">{farmer.totalProducts}</td>
-                    <td className="p-4 text-green-400">{farmer.totalSold}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+              {/* HEADER */}
+              <thead className="border-b border-border bg-muted-background">
+                <tr>
+                  <th className="p-4 text-left text-sm font-semibold text-foreground">
+                    Rank
+                  </th>
+
+                  <th className="p-4 text-left text-sm font-semibold text-foreground">
+                    Farmer
+                  </th>
+
+                  <th className="p-4 text-left text-sm font-semibold text-foreground">
+                    Rating
+                  </th>
+
+                  <th className="p-4 text-left text-sm font-semibold text-foreground">
+                    Products
+                  </th>
+
+                  <th className="p-4 text-left text-sm font-semibold text-foreground">
+                    Sold
+                  </th>
+                </tr>
+              </thead>
+
+              {/* BODY */}
+              <tbody>
+                {Array.isArray(farmers) &&
+                  farmers.map((farmer, index) => (
+                    <tr
+                      key={farmer.farmerId || index}
+                      className="
+                    border-b
+                    border-border
+                    transition
+                    hover:bg-muted-background
+                  "
+                    >
+
+                      {/* RANK */}
+                      <td className="p-4 font-semibold text-primary">
+                        #{index + 1}
+                      </td>
+
+                      {/* FARMER */}
+                      <td className="p-4 font-semibold text-card-foreground">
+                        {farmer.name}
+                      </td>
+
+                      {/* RATING */}
+                      <td className="p-4 font-medium text-yellow-500 dark:text-yellow-400">
+                        ⭐ {farmer.averageRating}
+                      </td>
+
+                      {/* PRODUCTS */}
+                      <td className="p-4 text-muted">
+                        {farmer.totalProducts}
+                      </td>
+
+                      {/* SOLD */}
+                      <td className="p-4 font-semibold text-primary">
+                        {farmer.totalSold}
+                      </td>
+
+                    </tr>
+                  ))}
+              </tbody>
+
+            </table>
+          </div>
         </div>
+
       </div>
     </div>
   );

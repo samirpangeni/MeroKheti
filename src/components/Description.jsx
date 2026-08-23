@@ -1,5 +1,5 @@
 import React from "react";
-import { FiAlignLeft, FiFeather } from "react-icons/fi";
+import { FiAlignLeft, FiFeather, FiCheck } from "react-icons/fi";
 
 const Description = ({
   description,
@@ -8,101 +8,94 @@ const Description = ({
   setOrganic,
 }) => {
   const maxLength = 500;
+  const characterPercentage = description.length / maxLength;
 
   return (
     <div className="space-y-6">
-      {/* Grid Layout */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {/* Description */}
-        <div className="md:col-span-2 space-y-2">
-          <label className="flex items-center gap-2 text-sm font-medium text-gray-300">
-            <FiAlignLeft className="text-green-400" />
+      <div>
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+          <FiAlignLeft className="text-primary" />
+          Product Details
+        </h2>
+
+        <p className="mt-1 text-sm text-muted">
+          Tell customers about your product and highlight if it is organic.
+        </p>
+      </div>
+
+      {/* DESCRIPTION */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-foreground">
             Product Description
-            <span className="text-red-400">*</span>
           </label>
-
-          <textarea
-            value={description}
-            onChange={(e) =>
-              setDescription(e.target.value.slice(0, maxLength))
-            }
-            placeholder="Describe your product... quality, taste, size, benefits, storage, etc."
-            className="
-              w-full
-              h-32
-              px-4
-              py-3
-              rounded-2xl
-              bg-black/40
-              border
-              border-green-900/40
-              text-white
-              placeholder:text-gray-500
-              outline-none
-              transition-all
-              duration-300
-              resize-none
-              focus:border-green-500
-              focus:ring-4
-              focus:ring-green-500/10
-              hover:border-green-700/50
-            "
-          />
-
-          {/* Counter */}
-          <div className="flex justify-between text-xs text-gray-500">
-            <span>
-              Help customers understand your product better
-            </span>
-            <span
-              className={
-                description.length > maxLength * 0.9
-                  ? "text-yellow-400"
-                  : "text-green-400"
-              }
-            >
-              {description.length}/{maxLength}
-            </span>
-          </div>
+          <span
+            className={`
+              text-xs
+              ${characterPercentage > 0.9
+                ? "text-yellow-600 dark:text-yellow-400"
+                : "text-muted"
+              }`}>
+            {description.length}/{maxLength}
+          </span>
         </div>
 
-        {/* Organic Card */}
-        <div className="flex">
-          <div className="w-full bg-black/40 border border-green-900/40 rounded-2xl p-5 hover:border-green-700/50 transition-all duration-300">
-            <label className="flex items-center gap-3 cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={organic}
-                onChange={(e) => setOrganic(e.target.checked)}
-                className="
-                  w-5
-                  h-5
-                  accent-green-500
-                  cursor-pointer
-                "
-              />
+        <textarea
+          value={description}
+          onChange={(e) =>
+            setDescription(e.target.value.slice(0, maxLength))
+          }
+          placeholder="Example: Fresh organic tomatoes grown locally. Juicy, naturally sweet, and perfect for salads and cooking..."
+          className="min-h-36 w-full resize-none rounded-2xl border border-input-border bg-input px-4 py-3 text-foreground placeholder:text-muted outline-none transition focus:border-primary focus:ring-4 focus:ring-primary/10 hover:border-primary/50" />
 
-              <div className="flex items-center gap-2">
-                <FiFeather className="text-green-400 text-lg" />
-                <span className="text-white font-medium">
-                  Organic Product
-                </span>
-              </div>
-            </label>
+        <p className="text-xs text-muted">
+          Include details such as quality, size, taste, storage,
+          benefits, or how the product is grown.
+        </p>
 
-            <p className="text-xs text-gray-500 mt-3 leading-relaxed">
-              Mark this if your product is grown without
-              chemical fertilizers or pesticides.
-            </p>
+      </div>
 
-            {/* Badge */}
+      {/* ORGANIC OPTION */}
+      <div>
+        <label
+          className={`flex cursor-pointer items-start gap-4 rounded-2xl border p-5 transition-all duration-200
+            ${organic
+              ? "border-primary bg-secondary"
+              : "border-border bg-card hover:border-primary/50"
+            }`}>
+          {/* CHECKBOX */}
+          <div className="relative mt-0.5">
+
+            <input
+              type="checkbox"
+              checked={organic}
+              onChange={(e) => setOrganic(e.target.checked)}
+              className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-input-border bg-input transition checked:border-primary checked:bg-primary" />
+
             {organic && (
-              <div className="mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs bg-green-500/10 border border-green-500/30 text-green-400">
-                ✓ Organic Certified
-              </div>
+              <FiCheck className="pointer-events-none absolute left-0.5 top-0.5 h-4 w-4 text-primary-foreground" />
             )}
           </div>
-        </div>
+          {/* ORGANIC CONTENT */}
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <FiFeather className="text-lg text-primary" />
+              <span className="font-semibold text-foreground">
+                Organic Product
+              </span>
+              {organic && (
+                <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold text-primary-foreground">
+                  SELECTED
+                </span>
+              )}
+            </div>
+
+            <p className="mt-1 text-sm leading-relaxed text-muted">
+              Mark this option if your product is grown without
+              chemical fertilizers or pesticides.
+            </p>
+          </div>
+        </label>
       </div>
     </div>
   );

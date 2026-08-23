@@ -74,7 +74,7 @@ export default function DeliveryMap({
             Distance
           </p>
 
-          <h3 className="text-2xl font-bold text-green-500">
+          <h3 className="text-2xl font-bold text-primary">
             🚚 {distance ?? "--"} km
           </h3>
         </div>
