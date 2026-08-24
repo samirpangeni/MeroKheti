@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PayWithEsewa from "@/components/PayWithEsewa";
+import Loading from "@/components/Loading"
 import PayWithKhalti from "@/components/PayWithKhalti";
 import Cash from "@/components/Cash";
 import { toast } from "react-toastify";
@@ -84,12 +85,7 @@ const Checkout = ({ productId, onClose }) => {
   }, []);
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen bg-background w-full">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-border border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="mt-4 text-primary">Loading Product...</p>
-        </div>
-      </div>
+      <Loading />
     );
   }
 
@@ -100,10 +96,10 @@ const Checkout = ({ productId, onClose }) => {
   const total = product.price * quantity;
 
   return (
-    <div className="fixed inset-0 bg-card backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <div className="w-full max-w-7xl bg-card rounded-3xl border border-border shadow-2xl overflow-hidden max-h-[95vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-transparent backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="w-full max-w-7xl bg-card rounded-3xl border border-border shadow-2xl overflow-hidden max-h-[95vh] overflow-y-auto scrollbar-hide">
         {/* Header */}
-        <div className="sticky top-0 z-20 bg-card border-b border-border px-6 py-5 flex items-center justify-between">
+        <div className="sticky top-0  bg-card border-b border-border px-6 py-5 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-foreground">Checkout</h2>
 

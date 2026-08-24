@@ -51,14 +51,11 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!isValid) {
       toast.error("Please fill all required fields");
       return;
     }
-
     setIsSubmitting(true);
-
     try {
       const formData = new FormData();
 
@@ -78,8 +75,8 @@ const Page = () => {
       files.forEach((file) => {
         formData.append("files", file);
       });
-      await axios.post("/api/product", formData);
-      toast.success(" Product added successfully!");
+      const res = await axios.post("/api/product", formData);
+
       setName("");
       setPrice("");
       setDescription("");
@@ -91,6 +88,9 @@ const Page = () => {
       setOrganic(false);
       setLocation("");
       setFiles([]);
+      if (res.data.success) {
+        toast.success("Account created successfully");
+      }
     } catch (err) {
       console.log(err)
       toast.error(

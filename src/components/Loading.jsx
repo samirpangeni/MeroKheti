@@ -2,16 +2,27 @@ import React from "react";
 
 const Loading = () => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center w-full h-screen bg-primary-hover md:pl-70">
-      <div className="relative w-16 h-16">
-        {/* Outer ring */}
-        <div className="absolute inset-0 rounded-full border-4 border-primary"></div>
+    <div className="fixed inset-0 z-50 flex h-screen w-full items-center justify-center bg-background">
+      <div className="flex flex-col items-center">
 
-        {/* Animated arc */}
-        <div className="absolute inset-0 rounded-full border-4 border-t-primary border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
+        <div className="relative h-12 w-12">
+          <div className="absolute inset-0 rounded-full border-[3px] border-border" />
 
-        {/* Inner dot */}
-        <div className="absolute inset-4 bg-muted rounded-full animate-pulse"></div>
+          <div className="absolute inset-0 animate-spin rounded-full border-[3px] border-transparent border-t-primary" />
+        </div>
+
+        <div className="mt-4 flex items-center gap-1">
+          <span className="text-sm font-medium text-foreground">
+            Loading
+          </span>
+
+          <span className="flex gap-1">
+            <span className="h-1 w-1 animate-bounce rounded-full bg-primary [animation-delay:-0.3s]" />
+            <span className="h-1 w-1 animate-bounce rounded-full bg-primary [animation-delay:-0.15s]" />
+            <span className="h-1 w-1 animate-bounce rounded-full bg-primary" />
+          </span>
+        </div>
+
       </div>
     </div>
   );

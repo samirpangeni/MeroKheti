@@ -1,5 +1,4 @@
 import connectDB from "../../../../lib/mongoose.js";
-
 import Cart from "../../../../models/Cart.js";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
@@ -15,8 +14,7 @@ export async function GET(req) {
     const decode = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decode.userId || decode.id || decode._id;
     const carts = await Cart.find({ userId: userId }).populate("productId", "price name location image quantity");
-    console.log(carts)
-    return NextResponse.json({ carts });
+    return NextResponse.json({ carts, success: true });
   } catch (err) {
     console.log(err);
     return NextResponse.json({ message: "error" }, { status: 500 });
@@ -38,12 +36,13 @@ export async function POST(req) {
       productId: productId,
     });
     if (existingCart) {
-      existingCart.quantity += 1;
-      await existingCart.save();
-      return NextResponse.json({
-        message: "Quantity updated",
-        success: true
-      });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "This product is already in your cart.",
+        },
+        { status: 409 }
+      );
     }
     await Cart.create({
       userId: userId,
@@ -51,7 +50,7 @@ export async function POST(req) {
       quantity: 1,
     });
 
-    return NextResponse.json({ message: "added to cart", success:true, existingCart });
+    return NextResponse.json({ message: "added to cart", success: true, existingCart });
   } catch (err) {
     console.log(err);
     return NextResponse.json({ message: "error" }, { status: 500 });
@@ -63,19 +62,18 @@ export async function DELETE(req) {
     connectDB();
     const { searchParams } = new URL(req.url);
     const cartId = searchParams.get("id");
-    
     const token = req.cookies.get("token")?.value;
-
     if (!token) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const decode = jwt.verify(token, process.env.JWT_SECRET);
     const userId = decode.userId || decode.id || decode._id;
-    await Cart.findOneAndDelete({
+   const deleteCard = await Cart.findOneAndDelete({
       _id: cartId,
-      user: userId,
+      userId: userId,
     });
-    return NextResponse.json({ message: "successfully Removed" });
+    console.log(deleteCard)
+    return NextResponse.json({ message: "successfully Removed", success:true});
   } catch (err) {
     console.log(err);
     return NextResponse.json({ message: "error" }, { status: 500 });

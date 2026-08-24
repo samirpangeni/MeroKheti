@@ -34,7 +34,7 @@ const page = () => {
         setActivity(activity)
         setOrder(order)
         setCart(cart)
-        setUser(userRes.data)
+        setUser(customerRes.data)
       } catch (err) {
         console.log(err);
       } finally {

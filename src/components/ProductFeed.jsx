@@ -74,9 +74,7 @@ export default function ProductFeed({ products, setProducts, search }) {
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="bg-background border border-border text-foreground px-4 py-2 rounded-lg outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20
-  "
-        >
+          className="bg-background border border-border text-foreground px-4 py-2 rounded-lg outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20">
           {[
             "All categories",
             "vegetables",
@@ -103,8 +101,6 @@ export default function ProductFeed({ products, setProducts, search }) {
 
       {/* GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 w-full p-2">
-
-        {/* LOADING */}
         {loading &&
           Array.from({ length: 6 }).map((_, i) => (
             <div
@@ -128,11 +124,11 @@ export default function ProductFeed({ products, setProducts, search }) {
       {/* INFINITE SCROLL */}
       <div ref={observerRef} className="h-20 flex items-center justify-center mt-10">
         {loadingMore && (
-          <p className="text-green-400 animate-pulse">Loading more...</p>
+          <p className="text-primary animate-pulse">Loading more...</p>
         )}
 
         {!hasMore && !loading && (
-          <p className="text-gray-600 pb-6">No more products 🌿</p>
+          <p className="text-muted pb-6">No more products 🌿</p>
         )}
       </div>
     </section>
@@ -141,24 +137,18 @@ export default function ProductFeed({ products, setProducts, search }) {
 
 function ProductCard({ item, selectProduct, setSelectProduct }) {
   const [index, setIndex] = useState(0);
-
-  // AUTO SLIDER
   useEffect(() => {
     if (!item.image?.length) return;
-
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % item.image.length);
     }, 2500);
-
     return () => clearInterval(interval);
   }, [item.image]);
 
   return (
     <div
-      className="group w-full overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-      {/* IMAGE */}
+      className="group w-full overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm transition-all duration-300  hover:shadow-lg">
       <div className="relative h-56 overflow-hidden">
-
         <div
           className="flex h-full transition-transform duration-700 ease-in-out"
           style={{
@@ -175,19 +165,15 @@ function ProductCard({ item, selectProduct, setSelectProduct }) {
         </div>
 
         {/* IMAGE OVERLAY */}
-        <div className="absolute inset-0 bg-linear-to-t from-background via-secondary to-transparent" />
-        {/* BADGES */}
+        <div className="absolute inset-0 bg-transparent" /> 
         <div className="absolute left-3 right-3 top-3 flex items-start justify-between">
-          {/* LEFT */}
           <div className="flex flex-wrap gap-2">
-
             {item.organic && (
               <span
                 className="rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold text-foreground shadow-sm">
                 🌱 Organic
               </span>
             )}
-
             <span
               className="rounded-full border border-border bg-card px-2.5 py-1 text-[10px] font-medium text-foreground backdrop-blur-sm">
               {item.category}
@@ -227,29 +213,23 @@ function ProductCard({ item, selectProduct, setSelectProduct }) {
 
       {/* CONTENT */}
       <div className="space-y-3 p-5">
-
         {/* PRODUCT NAME */}
         <div>
-          <h3
-            className="truncate text-lg font-semibold text-card-foreground"
-          >
+          <h3 className="truncate text-lg font-semibold text-card-foreground">
             {item.name}
           </h3>
 
-          <p
-            className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted">
+          <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted">
             {item.description}
           </p>
         </div>
 
         {/* PRICE + QUANTITY */}
         <div className="flex items-end justify-between">
-
           <div>
             <p className="text-xs text-muted">
               Price
             </p>
-
             <p className="text-xl font-bold text-primary">
               NPR {item.price}
             </p>
@@ -259,12 +239,10 @@ function ProductCard({ item, selectProduct, setSelectProduct }) {
             <p className="text-xs text-muted">
               Available
             </p>
-
             <p className="text-sm font-medium text-card-foreground">
               {item.quantity} {item.unit}
             </p>
           </div>
-
         </div>
 
         {/* LOCATION */}
@@ -308,7 +286,7 @@ function ProductCard({ item, selectProduct, setSelectProduct }) {
       {/* CHECKOUT MODAL */}
       {selectProduct === item._id && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+          className="fixed inset-0 z-50 flex items-center justify-center bg-background p-4 backdrop-blur-sm">
           <Checkout
             productId={selectProduct}
             onClose={() => setSelectProduct(null)}

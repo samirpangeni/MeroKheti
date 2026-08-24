@@ -48,7 +48,7 @@ const PasswordUI  = ({
       </label>
 
       {/* Input */}
-      <div className="relative rounded-2xl border border-border bg-card  focus-within:border-primary-hover">
+      <div className="relative rounded-2xl border border-border bg-card focus:border-primary-hover focus:bg-red-600">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-primary">
           <ShieldCheck size={20} />
         </div>
@@ -64,7 +64,7 @@ const PasswordUI  = ({
             setPassword(value);
             setStrength(checkPassword(value));
           }}
-          className="w-full bg-transparent py-4 pl-12 pr-14 outline-none text-foreground placeholder:text-muted"
+          className="w-full bg-card py-4 pl-12 pr-14 outline-none text-foreground placeholder:text-muted rounded-2xl focus:border-primary-hover"
         />
 
         {/* Eye Toggle */}

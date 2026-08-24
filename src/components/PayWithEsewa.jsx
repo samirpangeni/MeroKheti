@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import Loading from "./Loading";
-
+import { toast } from "react-toastify"
 const PayWithEsewa = ({ payMethod, price, productId, location }) => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,6 +15,10 @@ const PayWithEsewa = ({ payMethod, price, productId, location }) => {
         setProduct(res.data.product);
       } catch (err) {
         console.log(err);
+        toast.error(
+          err.response?.data?.message ||
+          "Registration failed. Please try again."
+        );
       } finally {
         setLoading(false);
       }

@@ -31,7 +31,7 @@ export async function GET(req) {
         const [cart, order, review, activity] = await Promise.all([
             Cart.find({ userId }).lean(),
             Order.find({ userId }).lean(),
-            Review.find({ userId }).lean(),
+            Review.find({ userId }).lean().populate("productId", "name image price"),
             Activity.find({ userId })
                 .populate({
                     path: "productId",

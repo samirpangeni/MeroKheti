@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import StarIcon from "@mui/icons-material/Star";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const labels = {
   0.5: "Poor",
@@ -32,8 +33,10 @@ const Review = ({ productId }) => {
         rating,
         review
       });
+      toast.success("Reivew submitted successfully, Thank you")
     } catch (error) {
       console.error("Error submitting review:", error);
+      toast.error("Something wrong try again later")
     }
     setRating(0);
     setReview("");

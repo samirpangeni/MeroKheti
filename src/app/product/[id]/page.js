@@ -8,7 +8,9 @@ import Review from "@/components/Review";
 import ShowReview from "@/components/ShowReview";
 import AddToCart from "@/components/AddToCart";
 import Checkout from "@/components/Checkout"
+import Loading from "@/components/Loading"
 import Report from "@/components/Report";
+import { useRouter } from "next/navigation";
 const Page = ({ params }) => {
   const [openReport, setOpenReport] = useState(false);
   const [selectProduct, setSelectProduct] = useState(null);
@@ -17,7 +19,7 @@ const Page = ({ params }) => {
   const { id } = resolvedParams;
 
   const [item, setItem] = useState(null);
-
+  const router = useRouter();
   useEffect(() => {
     if (!id) return;
 
@@ -34,13 +36,17 @@ const Page = ({ params }) => {
   }, [id]);
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-background via-card to-background text-foreground">
+    <div className="relative min-h-screen bg-linear-to-br from-background via-card to-background text-foreground">
       <Navbar />
-
-      {/* MAIN CONTAINER */}
       <div className="max-w-6xl mx-auto px-6 py-16 sm:mt-1">
+        <button
+          onClick={() => router.back()}
+          className="fixed right-6 top-15 z-50 flex md:h-15 h-10 w-10 md:w-15 text-2xl p-2 items-center justify-center rounded-full border-input-border text-foreground shadow-md transition hover:bg-red-400 dark:hover:bg-secondary bg-input"
+        >
+          ✕
+        </button>
         {!item ? (
-          <div className="text-center text-muted">Loading product...</div>
+         <Loading />
         ) : (
           <div className="grid md:grid-cols-2 gap-10">
             {/* LEFT - IMAGE */}
@@ -94,7 +100,7 @@ const Page = ({ params }) => {
 
               {/* BUTTONS */}
               <div className="flex gap-4 mt-4">
-                <button className=" p-2 bg-primary text-foreground rounded-lg border-0 w-1/2 hover:bg-primary-hover focus:bg-primary-hover"
+                <button className=" p-2 bg-primary text-button-foreground rounded-lg border-0 w-1/2 hover:bg-primary-hover focus:bg-primary-hover"
                   onClick={() => setSelectProduct(item._id)}
                 > Buy Now </button>
                 {selectProduct === item._id && (

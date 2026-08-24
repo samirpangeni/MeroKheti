@@ -6,6 +6,7 @@ import Link from "next/link";
 import DashboardNav from "@/components/DashboardNav";
 import Loading from "@/components/Loading";
 import Checkout from "@/components/Checkout";
+import { toast } from "react-toastify";
 
 const Page = () => {
   const [data, setData] = useState([]);
@@ -19,7 +20,6 @@ const Page = () => {
           withCredentials: true,
         });
         setData(response.data.carts || []);
-        console.log(response.data.carts.productId.price)
       } catch (err) {
         console.log(err);
       } finally {
@@ -31,13 +31,16 @@ const Page = () => {
 
   const removeCart = async (id) => {
     try {
-      await axios.delete(`/api/cart?id=${id}`, {
+     const res = await axios.delete(`/api/cart?id=${id}`, {
         withCredentials: true,
       });
-
+      if(res.data.success){
+        toast.success("Product remover successfully")
+      }
       setData((prev) => prev.filter((item) => item._id !== id));
     } catch (err) {
       console.log(err);
+       toast.error("Something went wrong, Please try later")
     }
   };
   const totalItems = data.reduce((sum, item) => sum + item.quantity, 0);

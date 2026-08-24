@@ -8,18 +8,14 @@ import Activity from "../../../../models/Activity";
 export async function GET(req) {
   try {
     await connectDB();
-
     const token = req.cookies.get("token")?.value;
-
     if (!token) {
       return NextResponse.json({ message: "Not logged in" }, { status: 401 });
     }
-   
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(
       decoded.userId || decoded.id || decoded._id,
     ).select("-password");
-
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
@@ -70,10 +66,21 @@ export async function POST(req) {
       process.env.JWT_SECRET,
       { expiresIn: "30d" },
     );
+    if (!role) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Please select a role.",
+        },
+        { status: 400 }
+      );
+    }
     const response = NextResponse.json(
-      { message: "User Create" },
+      { message: "User Create", success: true },
       { status: 201 },
+
     );
+
     response.cookies.set("token", token, {
       path: "/",
       secure: process.env.NODE_ENV === "production",
@@ -83,8 +90,51 @@ export async function POST(req) {
     });
     return response;
   } catch (err) {
-    console.log(err);
-    return NextResponse.json({ message: "Server error" }, { status: 500 });
+
+    console.error("Registration error:", err);
+    // Mongoose validation error
+    if (err.name === "ValidationError") {
+      const errors = Object.values(err.errors);
+
+      for (const error of errors) {
+        if (error.path === "role") {
+          return NextResponse.json(
+            {
+              success: false,
+              message: "Please select a role.",
+            },
+            { status: 400 }
+          );
+        }
+      }
+
+      return NextResponse.json(
+        {
+          success: false,
+          message: errors[0]?.message || "Please check your information.",
+        },
+        { status: 400 }
+      );
+    }
+
+    // Duplicate email
+    if (err.code === 11000) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "An account with this email already exists.",
+        },
+        { status: 409 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Something went wrong. Please try again.",
+      },
+      { status: 500 }
+    );
   }
 }
 export async function PUT(req) {
