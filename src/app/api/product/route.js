@@ -84,10 +84,9 @@ export async function POST(req) {
     const longitude = formData.get("longitude");
     const latitude = formData.get("latitude");
     const harvestDate = formData.get("harvestDate");
-    const organic = formData.get("organic") === "true"; // Convert to boolean
+    const organic = formData.get("organic") === "true"; 
 
-    const files = formData.getAll("files"); // multiple images
-
+    const files = formData.getAll("files"); 
     if (!files || files.length === 0) {
       return NextResponse.json(
         { message: "No files uploaded" },
@@ -143,6 +142,7 @@ export async function POST(req) {
     return NextResponse.json({
       message: "Product added",
       product,
+      success: true
     });
   } catch (err) {
     console.log("ERROR:", err);
@@ -176,8 +176,8 @@ export async function DELETE(req) {
     await Promise.all([
       Review.deleteMany({ productId: id }),
       Report.deleteMany({ productId: id }),
-      Order.deleteMany({ productId: id }), // Change this if productId is nested
-      Activity.deleteMany({ productId: id }), // Optional
+      Order.deleteMany({ productId: id }), 
+      Activity.deleteMany({ productId: id }), 
     ]);
 
     return NextResponse.json({

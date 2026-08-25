@@ -10,8 +10,8 @@ const DateSection = ({
   // Auto format DD/MM/YYYY
   const formatDate = (value) => {
     let v = value.replace(/\D/g, "");
-    if (v.length > 2) v = v.slice(0, 2) + "/" + v.slice(2);
-    if (v.length > 5) v = v.slice(0, 5) + "/" + v.slice(5, 9);
+    if (v.length > 2) v = v.slice(0, 2) + "-" + v.slice(2);
+    if (v.length > 5) v = v.slice(0, 5) + "-" + v.slice(5, 9);
     return v;
   };
 
@@ -44,32 +44,13 @@ const DateSection = ({
 
           <input
             type="text"
-            placeholder="DD/MM/YYYY"
+            placeholder="DD-MM-YYYY"
             value={harvestDate}
             maxLength={10}
             onChange={(e) =>
               setHarvestDate(formatDate(e.target.value))
             }
-            className="
-              w-full
-              px-4
-              py-3
-              rounded-2xl
-              bg-input
-              border
-              border-border
-              text-foreground
-              placeholder:text-muted
-              outline-none
-              transition-all
-              duration-300
-              focus:border-primary
-              focus:ring-4
-              focus:ring-primary/10
-              hover:border-primary-hover
-            "
-          />
-
+            className="w-full px-4 py-3 rounded-2xl bg-input border border-border text-foreground placeholder:text-muted outline-none transition-all duration-300 focus:border-primary focus:ring-4 focus:ring-primary/10 hover:border-primary-hover" />
           <p className="text-xs text-muted">
             When was this product harvested?
           </p>
@@ -84,13 +65,13 @@ const DateSection = ({
 
           <input
             type="text"
-            placeholder="DD/MM/YYYY"
+            placeholder="DD-MM-YYYY"
             value={expiryDate}
             maxLength={10}
             onChange={(e) =>
               setExpiryDate(formatDate(e.target.value))
             }
-            className="w-full px-4 py-3 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted outline-none transition-all duration-300 focus:border-primary focus:ring-4 focus:ring-primary/10 hover:border-primary-hover"/>
+            className="w-full px-4 py-3 rounded-2xl bg-card border border-border text-foreground placeholder:text-muted outline-none transition-all duration-300 focus:border-primary focus:ring-4 focus:ring-primary/10 hover:border-primary-hover" />
           <p className="text-xs text-muted">
             Best before / expiry date (if applicable)
           </p>

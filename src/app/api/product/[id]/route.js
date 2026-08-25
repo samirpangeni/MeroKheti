@@ -14,7 +14,7 @@ export async function GET(req, { params }) {
       "userId",
       "firstName lastName",
     );
-
+    console.log(product)
     if (!product) {
       return NextResponse.json(
         { message: "Product not found" },

@@ -50,7 +50,7 @@ const Page = () => {
           </div>
 
           <Link href="/addProduct">
-            <button className="bg-button hover:bg-green-700 text-foreground px-6 py-3 rounded-xl font-semibold transition">
+            <button className="bg-button hover:bg-primary-hover text-foreground px-6 py-3 rounded-xl font-semibold transition">
               + Add Product
             </button>
           </Link>
@@ -82,27 +82,41 @@ const Page = () => {
 
         {/* Filters */}
         <div className="bg-card border border-border rounded-2xl p-5 mb-8 gap-2 justify-between">
-          <div className="grid md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="bg-backgouund border border-border text-foreground rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary w-3/2"
-            />
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_220px] md:items-center">
+            {/* Search */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full rounded-xl border border-border bg-background py-3 pl-11 pr-4 text-foreground placeholder:text-muted outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
 
+            {/* Category */}
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="bg-background border border-border text-foreground rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary w-1/2"
+              className="w-full cursor-pointer rounded-xl border border-border bg-background px-4 py-3 text-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20"
             >
-              {["All categories", "vegetables", "fruits", "grains & cereals", "pulses & legumes", "seeds & nuts", "dairy & eggs", "meat & poultry", "herbs & spices", "organic products", "other"].map(
-                  (item, idx) => (
-                    <option key={idx} value={item}>
-                      {item}
-                    </option>
-                  ),
-                )}
+              {[
+                "All categories",
+                "vegetables",
+                "fruits",
+                "grains & cereals",
+                "pulses & legumes",
+                "seeds & nuts",
+                "dairy & eggs",
+                "meat & poultry",
+                "herbs & spices",
+                "organic products",
+                "other",
+              ].map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
             </select>
           </div>
         </div>

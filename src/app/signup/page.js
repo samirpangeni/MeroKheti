@@ -48,9 +48,7 @@ const Page = () => {
       setMobile("");
 
       if (res.data.success) {
-        toast.success("Your product will be live within 24 hours");
-      }
-      if (res.data.success) {
+        toast.success("your account is successfully create");
         router.push("/")
       }
     } catch (err) {

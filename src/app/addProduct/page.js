@@ -3,6 +3,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 import "react-toastify/dist/ReactToastify.css";
 
 import Image from "../../components/Image";
@@ -30,7 +31,7 @@ const Page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const totalStep = 5;
-
+  const router = useRouter();
   const nextStep = () => {
     setCurrentStep((prev) => Math.min(prev + 1, totalStep));
   };
@@ -89,7 +90,8 @@ const Page = () => {
       setLocation("");
       setFiles([]);
       if (res.data.success) {
-        toast.success("Account created successfully");
+        toast.success("Your product will be live within 24 hours");
+        router.push("/")
       }
     } catch (err) {
       console.log(err)

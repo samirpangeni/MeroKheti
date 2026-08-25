@@ -80,6 +80,15 @@ const productSchema = new mongoose.Schema(
       ],
       required: true,
     },
+    rejectionReason: {
+      type: String,
+      default: "",
+    },
+
+    reappliedAt: {
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true }
 );

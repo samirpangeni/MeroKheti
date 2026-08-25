@@ -19,7 +19,6 @@ export async function GET(req) {
     const search = searchParams.get("search");
     let filter = {
       userId,
-      status: "approved",
     };
 
     if (category && category !== "All categories") {

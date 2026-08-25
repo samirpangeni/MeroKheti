@@ -2,6 +2,7 @@
 
 import DeleteModal from "@/components/DeleteModels";
 import SlideBarForFarmer from "@/components/SlideBarForFarmer";
+import Loading from "@/components/Loading";
 import axios from "axios";
 import { useRouter, useParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
@@ -13,6 +14,8 @@ const Page = () => {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [harvestDate, setHarvestDate] = useState("");
   const [description, setDescription] = useState("");
   const [open, setOpen] = useState(false)
 
@@ -21,6 +24,7 @@ const Page = () => {
       try {
         const res = await axios.get(`/api/product/${id}`);
         setProduct(res.data.product);
+        console.log(res.data.product);
       } catch (err) {
         console.log(err);
       }
@@ -32,6 +36,9 @@ const Page = () => {
   const handleData = async () => {
     try {
       await axios.put(`/api/product/${id}`, {
+        status: product.status,
+        harvestDate: harvestDate || product.harvestDate,
+        expiryDate: expiryDate || product.expiryDate,
         name: name || product.name,
         quantity: quantity || product.quantity,
         description: description || product.description,
@@ -44,11 +51,21 @@ const Page = () => {
       toast.error("Update Failed try again");
     }
   };
+  const handelReapply = async () => {
+    const res = await axios.post("/api/product")
+  }
+  const formatDate = (value) => {
+    let v = value.replace(/\D/g, "");
+    if (v.length > 2) v = v.slice(0, 2) + "-" + v.slice(2);
+    if (v.length > 5) v = v.slice(0, 5) + "-" + v.slice(5, 9);
+    return v;
+  };
+
 
   if (!product) {
     return (
       <div className="min-h-screen bg-background flex justify-center items-center text-primary text-2xl">
-        Loading Product...
+        <Loading />
       </div>
     );
   }
@@ -137,6 +154,7 @@ const Page = () => {
                     className="w-full bg-background border border-boder text-foreground p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
                   />
                 </div>
+
                 <div className="flex flex-col">
                   <label className="text-muted block mb-2">Change Quantity</label>
 
@@ -148,7 +166,6 @@ const Page = () => {
                   />
                 </div>
               </div>
-
               <div>
                 <label className="text-muted block mb-2">Category</label>
 
@@ -158,7 +175,71 @@ const Page = () => {
                   className="w-full bg-card border border-border text-muted p-4 rounded-xl"
                 />
               </div>
+              {product?.status === "pending" || product?.status === "rejected" && (
+                <div className="flex gap-4">
+                  {/* Current Harvest Date */}
+                  <div className="flex flex-1 flex-col">
+                    <label className="mb-2 block text-muted">
+                      Current Harvest Date:
+                    </label>
+
+                    <input
+                      type="date"
+                      value={product?.harvestDate?.split("T")[0] || ""}
+                      readOnly
+                      className="w-full rounded-xl border border-border bg-background p-4 text-foreground focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Change Harvest Date */}
+                  <div className="flex flex-1 flex-col">
+                    <label className="mb-2 block text-muted">
+                      Change Harvest Date:
+                    </label>
+
+                    <input
+                      type="text"
+                      value={harvestDate ? harvestDate.split("T")[0] : ""}
+                      onChange={(e) => setHarvestDate(formatDate(e.target.value))}
+                      className="w-full rounded-xl border border-border bg-background p-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {product?.status === "pending" || product?.status === "rejected" && (
+                <div className="mt-4 flex gap-4">
+                  {/* Current Expiry Date */}
+                  <div className="flex flex-1 flex-col">
+                    <label className="mb-2 block text-muted">
+                      Current Expiry Date:
+                    </label>
+
+                    <input
+                      type="date"
+                      value={product?.expiryDate?.split("T")[0] || ""}
+                      readOnly
+                      className="w-full rounded-xl border border-border bg-background p-4 text-foreground focus:outline-none"
+                    />
+                  </div>
+
+                  {/* Change Expiry Date */}
+                  <div className="flex flex-1 flex-col">
+                    <label className="mb-2 block text-muted">
+                      Change Expiry Date:
+                    </label>
+
+                    <input
+                      type="text"
+                      value={expiryDate ? expiryDate.split("T")[0] : ""}
+                      onChange={(e) => setExpiryDate(formatDate(e.target.value))}
+                      className="w-full rounded-xl border border-border bg-background p-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
+
 
             <div className="mt-6">
               <label className="text-muted block mb-2">Description</label>
@@ -172,12 +253,22 @@ const Page = () => {
             </div>
 
             <div className="flex gap-4 mt-8">
-              <button
-                onClick={() => { setOpen(true) }}
-                className="flex-1 bg-primary hover:bg-primary-hover text-foreground py-4 rounded-xl font-bold text-lg transition"
-              >
-                Save Changes
-              </button>
+              {product.status === "appropver" && (
+                <button
+
+                  onClick={() => { setOpen(true) }}
+                  className="flex-1 bg-primary hover:bg-primary-hover text-foreground py-4 rounded-xl font-bold text-lg transition"
+                >
+                  Save Changes
+                </button>
+              )}
+              {product.status === "pending" && (
+                <button
+                  onClick={handelReapply}
+                  className="flex-1 bg-primary hover:bg-primary-hover text-foreground py-4 rounded-xl font-bold text-lg transition">
+                  Reapply
+                </button>
+              )}
 
               <button
                 onClick={() => router.back()}
