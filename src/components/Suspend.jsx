@@ -1,182 +1,81 @@
-"use client";
+import React from "react";
 
-import { useEffect, useState } from "react";
-import { Clock, ShieldAlert, HelpCircle } from "lucide-react";
-
-export default function SuspendPage() {
-    const [timeLeft, setTimeLeft] = useState("");
-    const [expired, setExpired] = useState(false);
-
-    // You should get this from your API/session
-    const suspendedUntil = "2026-09-08T11:13:45.422Z";
-    const reason = "very bad";
-
-    useEffect(() => {
-        const updateCountdown = () => {
-            const end = new Date(suspendedUntil).getTime();
-            const now = Date.now();
-
-            const difference = end - now;
-
-            if (difference <= 0) {
-                setExpired(true);
-                setTimeLeft("");
-                return;
-            }
-
-            const days = Math.floor(
-                difference / (1000 * 60 * 60 * 24)
-            );
-
-            const hours = Math.floor(
-                (difference / (1000 * 60 * 60)) % 24
-            );
-
-            const minutes = Math.floor(
-                (difference / (1000 * 60)) % 60
-            );
-
-            const seconds = Math.floor(
-                (difference / 1000) % 60
-            );
-
-            setTimeLeft(
-                `${days}d ${hours}h ${minutes}m ${seconds}s`
-            );
-        };
-
-        updateCountdown();
-
-        const interval = setInterval(updateCountdown, 1000);
-
-        return () => clearInterval(interval);
-    }, [suspendedUntil]);
+const Suspend = ({ isSuspend, onClose, onConfirm, type, message, reason, setReason, days, setDays }) => {
+    if (!isSuspend) return null;
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-background px-4 py-10">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background backdrop-blur-sm p-4">
+            <div className="w-full max-w-md rounded-2xl bg-card shadow-2xl overflow-hidden">
 
-            <div className="w-full max-w-2xl">
+                {/* Header */}
+                <div className="border-b px-6 py-4">
+                    <h2 className="text-2xl font-bold text-foreground">
+                        {type} User
+                    </h2>
+                    <p className="mt-1 text-sm text-muted">
+                        {message}
+                    </p>
+                </div>
 
-                {/* Main Card */}
-                <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-xl">
+                {/* Body */}
+                <div className="px-6 py-5 space-y-5">
 
-                    {/* Header */}
-                    <div className="border-b border-border px-6 py-8 text-center sm:px-10">
+                    {/* Reason */}
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold text-gray-700">
+                            Suspension Reason
+                        </label>
 
-                        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 dark:bg-red-950/40">
-                            <ShieldAlert
-                                size={32}
-                                className="text-red-600 dark:text-red-400"
-                            />
-                        </div>
-
-                        <h1 className="text-3xl font-bold text-foreground">
-                            Account Suspended
-                        </h1>
-
-                        <p className="mx-auto mt-3 max-w-lg text-muted">
-                            Your account has been temporarily suspended by an
-                            administrator.
-                        </p>
-
+                        <textarea
+                            value={reason}
+                            onChange={(e) => setReason(e.target.value)}
+                            rows={4}
+                            placeholder="Enter the reason for suspending this user..."
+                            className=" w-full resize-none rounded-xl border border-input-border bg-input px-4 py-3 text-foreground outline-none transition placeholder:text-muted focus:border-red-500 focus:ring-2 focus:ring-red-200 dark:focus:ring-red-900/30" />
                     </div>
 
-                    {/* Body */}
-                    <div className="space-y-5 px-6 py-8 sm:px-10">
+                    {/* Days */}
+                    <div>
+                        <label className="mb-2 block text-sm font-semibold text-muted">
+                            Suspension Duration (Days)
+                        </label>
 
-                        {/* Access Restricted */}
-                        <div className="rounded-2xl border border-red-200 bg-red-50 p-5 dark:border-red-900/50 dark:bg-red-950/20">
-
-                            <div className="flex gap-4">
-
-                                <ShieldAlert
-                                    className="mt-0.5 shrink-0 text-red-600 dark:text-red-400"
-                                    size={22}
-                                />
-
-                                <div>
-                                    <h2 className="font-semibold text-red-700 dark:text-red-400">
-                                        Access Restricted
-                                    </h2>
-
-                                    <p className="mt-1 text-sm leading-6 text-red-600 dark:text-red-300">
-                                        You cannot use your account until the suspension
-                                        period ends.
-                                    </p>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                        {/* Reason */}
-                        <div className="rounded-2xl border border-border bg-background p-5">
-
-                            <p className="text-sm font-semibold text-muted">
-                                Suspension Reason
-                            </p>
-
-                            <p className="mt-2 text-base font-medium text-foreground">
-                                {reason || "No reason provided."}
-                            </p>
-
-                        </div>
-
-                        {/* Countdown */}
-                        <div className="rounded-2xl border border-border bg-background p-6 text-center">
-
-                            <div className="mb-3 flex items-center justify-center gap-2">
-                                <Clock
-                                    size={20}
-                                    className="text-primary"
-                                />
-
-                                <h2 className="font-semibold text-foreground">
-                                    Suspension Ends In
-                                </h2>
-                            </div>
-
-                            {expired ? (
-                                <p className="text-xl font-bold text-green-600 dark:text-green-400">
-                                    Suspension Expired
-                                </p>
-                            ) : (
-                                <p className="text-3xl font-bold tracking-wide text-primary">
-                                    {timeLeft}
-                                </p>
-                            )}
-
-                            <p className="mt-3 text-sm text-muted">
-                                {new Date(suspendedUntil).toLocaleString()}
-                            </p>
-
-                        </div>
-
-                        {/* Assistance */}
-                        <div className="rounded-2xl border border-border bg-background p-5">
-
-                            <div className="flex gap-4">
-
-                                <HelpCircle
-                                    className="mt-0.5 shrink-0 text-primary"
-                                    size={22}
-                                />
-
-                                <div>
-                                    <h2 className="font-semibold text-foreground">
-                                        Need Assistance?
-                                    </h2>
-
-                                    <p className="mt-1 text-sm leading-6 text-muted">
-                                        If you believe this suspension was made in error,
-                                        please contact the administrator for assistance.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        <select
+                            value={days}
+                            onChange={(e) => setDays(Number(e.target.value))}
+                            className="w-full rounded-xl border p-3 text-background">
+                            <option value={1}>1 Day</option>
+                            <option value={3}>3 Days</option>
+                            <option value={7}>7 Days (Default)</option>
+                            <option value={14}>14 Days</option>
+                            <option value={30}>30 Days</option>
+                            <option value={90}>90 Days</option>
+                        </select>
+                        <p className="mt-2 text-xs text-muted">
+                            Default suspension is <strong>7 days</strong>. You can increase or decrease it.
+                        </p>
                     </div>
                 </div>
+
+                {/* Footer */}
+                <div className="flex justify-end gap-3 border-t bg-background px-6 py-4">
+                    <button
+                        onClick={onClose}
+                        className="rounded-xl border border-border px-5 py-2.5 font-medium text-muted transition hover:bg-muted"
+                    >
+                        Cancel
+                    </button>
+
+                    <button
+                        onClick={() => onConfirm(days, reason)}
+                        className=" rounded-xl bg-red-600 px-5 py-2.5 font-medium text-white transition hover:bg-red-700 active:scale-95 dark:bg-red-500 dark:hover:bg-red-600">
+                        Confirm {type}
+                    </button>
+                </div>
+
             </div>
         </div>
     );
-}
+};
+
+export default Suspend;
