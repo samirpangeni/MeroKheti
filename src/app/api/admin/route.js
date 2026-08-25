@@ -10,13 +10,18 @@ import Cart from "../../../../models/Cart.js"
 export async function GET(req) {
   try {
     await connectDB();
+
     const { searchParams } = new URL(req.url);
-    const status = searchParams.get("status");
+    const statusParam = searchParams.get("status");
 
     const filter = {};
 
-    if (status && status !== "All") {
-      filter.status = status;
+    if (statusParam && statusParam !== "All") {
+      const statuses = statusParam.split(",");
+
+      filter.status = {
+        $in: statuses,
+      };
     }
 
     const product = await Product.find(filter)
@@ -87,10 +92,8 @@ export async function DELETE(req) {
       );
     }
 
-    // Delete Product
     await Product.findByIdAndDelete(productId);
 
-    // Delete everything related to this product
     await Promise.all([
       // Orders
       Order.deleteMany({
@@ -125,7 +128,6 @@ export async function DELETE(req) {
       ),
     ]);
 
-    // Optional: create admin activity log
     await Activity.create({
       type: "delete",
       productId,
@@ -155,21 +157,52 @@ export async function PUT(req) {
   try {
     await connectDB();
     const body = await req.json();
-    const { status, selectionId } = body;
+    const { status, selectionId, reason } = body;
+    if (!selectionId || !status) {
+      return NextResponse.json(
+        { message: "Missing fields" },
+        { status: 400 }
+      );
+    }
+    let updateData = {
+      status,
+    }
+    if (status === "rejected") {
+      if (!reason?.trim()) {
+        return NextResponse.json(
+          { message: "Rejection reason is required" },
+          { status: 400 }
+        );
+      }
+
+      updateData.rejectedAt = new Date();
+      updateData.rejectionReason = reason.trim();
+    }
+
+    if (status === "approved") {
+      updateData.rejectedAt = null;
+      updateData.rejectionReason = null;
+    }
     const updateProduct = await Product.findByIdAndUpdate(
       selectionId,
-      { status },
-      { new: true },
+      updateData,
+      {
+        returnDocument: "after",
+      }
     );
-    if (!selectionId || !status) {
-      return NextResponse.json({ message: "Missing fields" }, { status: 400 });
+
+    if (!updateProduct) {
+      return NextResponse.json(
+        { message: "Product not found" },
+        { status: 404 }
+      );
     }
     await Activity.create({
       message: `Admin ${status} ${updateProduct.name}`,
-      productId: updateProduct,
+      productId: updateProduct._id,
       type: "approved",
     });
-    const searchParams = new URL(req.url);
+    const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
     const user = await User.findByIdAndUpdate(
       id,
@@ -181,7 +214,10 @@ export async function PUT(req) {
       { new: true },
     );
     return NextResponse.json({
-      message: "updated successfully",
+      message:
+        status === "rejected"
+          ? "Product rejected. It will be deleted after 24 hours."
+          : "Product approved successfully.",
       updateProduct,
       user,
     });

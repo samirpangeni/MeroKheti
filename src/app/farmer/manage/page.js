@@ -13,6 +13,30 @@ const Page = () => {
   const [loading, setLoading] = useState(true);
   const [selectionId, setSelectionId] = useState(null);
   const [open, setOpen] = useState(false)
+  const [imageIndexes, setImageIndexes] = useState({});
+
+  useEffect(() => {
+    if (!products?.length) return;
+
+    const interval = setInterval(() => {
+      setImageIndexes((prev) => {
+        const updated = { ...prev };
+
+        products.forEach((item) => {
+          if (item?.image?.length > 1) {
+            const currentIndex = prev[item._id] || 0;
+
+            updated[item._id] =
+              (currentIndex + 1) % item.image.length;
+          }
+        });
+
+        return updated;
+      });
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [products]);
 
   const fetchProducts = async () => {
     try {
@@ -126,25 +150,46 @@ const Page = () => {
         {/* LOADING */}
         {loading ? (
           <div className="flex justify-center py-24">
-            <div className="w-14 h-14 border-4 border-green-500 border-t-transparent rounded-full animate-spin" />
+            <div className="w-14 h-14 border-4 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
         ) : filtered.length === 0 ? (
-          <div className="mt-10 bg-card rounded-2xl p-10 text-center border border-zinc-800">
-            <h2 className="text-xl text-zinc-400">No products found</h2>
+          <div className="mt-10 bg-card rounded-2xl p-10 text-center border border-card">
+            <h2 className="text-xl text-muted">No products found</h2>
           </div>
         ) : (
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6 mt-8">
             {filtered.map((p) => (
               <div
                 key={p._id}
-                className=" bg-card border border-zinc-800 rounded-3xl overflow-hidden hover:border-green-500 transition-all duration-300">
+                className=" bg-card border border-card rounded-3xl overflow-hidden hover:border-primary-hover transition-all duration-300">
                 {/* IMAGE */}
                 <div className="relative">
-                  <img
-                    src={p.image?.[0]?.url}
-                    alt={p.name}
-                    className="w-full h-56 object-cover"
-                  />
+                  <div className="relative h-80 w-full overflow-hidden rounded-2xl border border-border">
+                    <img
+                      src={
+                        p?.image?.[imageIndexes[p._id] || 0]?.url
+                      }
+                      alt={p?.name || "Product"}
+                      className="h-full w-full object-cover transition-opacity duration-500"
+                    />
+
+                    {/* Image indicators */}
+                    {p.image.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() =>
+                          setImageIndexes((prev) => ({
+                            ...prev,
+                            [p._id]: index,
+                          }))
+                        }
+                        className={`h-2 rounded-full transition-all ${(imageIndexes[p._id] || 0) === index
+                          ? "w-6 bg-white"
+                          : "w-2 bg-white/50"
+                          }`}
+                      />
+                    ))}
+                  </div>
 
                   {/* STATUS */}
                   <div className="absolute top-4 left-4">

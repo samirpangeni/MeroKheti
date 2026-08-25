@@ -4,17 +4,27 @@ import { jwtVerify } from "jose";
 export async function middleware(req) {
   const pathname = req.nextUrl.pathname;
   const token = req.cookies.get("token")?.value;
+
   const publicPages = ["/login", "/user"];
   const publicApis = ["/api/login", "/api/user"];
-  // Allow login/register pages without login
+
+  // =========================
+  // PUBLIC PAGES
+  // =========================
   if (publicPages.includes(pathname) && !token) {
     return NextResponse.next();
   }
-  // Allow login/register APIs
+
+  // =========================
+  // PUBLIC APIs
+  // =========================
   if (publicApis.includes(pathname)) {
     return NextResponse.next();
   }
-  // User must be logged in
+
+  // =========================
+  // NO TOKEN
+  // =========================
   if (!token) {
     if (pathname.startsWith("/api")) {
       return NextResponse.json(
@@ -22,121 +32,199 @@ export async function middleware(req) {
         { status: 401 }
       );
     }
-    return NextResponse.redirect(new URL("/login", req.url));
+
+    return NextResponse.redirect(
+      new URL("/login", req.url)
+    );
   }
 
   try {
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET);
+    const secret = new TextEncoder().encode(
+      process.env.JWT_SECRET
+    );
+
     const { payload } = await jwtVerify(token, secret);
+
     const role = payload.role;
     const isSuspended = payload.isSuspended;
     const suspendUntil = payload.suspendUntil;
+
     const now = new Date();
 
-    if (
+    // =========================
+    // SUSPENSION CHECK
+    // =========================
+    const currentlySuspended =
       isSuspended &&
       suspendUntil &&
-      now < new Date(suspendUntil)
-    ) {
-      // Allow the suspended page and logout
-      if (
-        pathname !== "/suspend" &&
-        pathname !== "/api/logout"
-      ) {
-        return NextResponse.redirect(new URL("/suspend", req.url));
-      }
-    }
-    // Logged-in users cannot visit login/register
-    if (publicPages.includes(pathname)) {
-      if (role === "admin") {
-        return NextResponse.redirect(new URL("/admin", req.url));
-      }
-      if (role === "farmer") {
-        return NextResponse.redirect(new URL("/farmer", req.url));
-      }
-      return NextResponse.redirect(new URL("/customer", req.url));
-    }
+      now < new Date(suspendUntil);
 
-    // Hide API routes from browser address bar
-    if (pathname.startsWith("/api")) {
+    if (currentlySuspended) {
 
-      if (
-        isSuspended &&
-        suspendUntil &&
-        new Date() < new Date(suspendUntil)
-      ) {
+      // Allow suspended page
+      if (pathname === "/suspend") {
+        return NextResponse.next();
+      }
+
+      // Allow logout
+      if (pathname === "/api/logout") {
+        return NextResponse.next();
+      }
+
+      // Block everything else
+      if (pathname.startsWith("/api")) {
         return NextResponse.json(
-          { message: "Your account has been suspended." },
+          {
+            message: "Your account has been suspended.",
+            suspendedUntil: suspendUntil,
+          },
           { status: 403 }
         );
       }
-      const mode = req.headers.get("sec-fetch-mode");
-      if (mode === "navigate") {
-        return NextResponse.rewrite(new URL("/404", req.url));
+
+      return NextResponse.redirect(
+        new URL("/suspend", req.url)
+      );
+    }
+
+    // =========================
+    // LOGGED-IN USERS
+    // CANNOT VISIT LOGIN
+    // =========================
+    if (publicPages.includes(pathname)) {
+      if (role === "admin") {
+        return NextResponse.redirect(
+          new URL("/admin", req.url)
+        );
       }
+
+      if (role === "farmer") {
+        return NextResponse.redirect(
+          new URL("/farmer", req.url)
+        );
+      }
+
+      return NextResponse.redirect(
+        new URL("/customer", req.url)
+      );
+    }
+
+    // =========================
+    // API ROUTES
+    // =========================
+    if (pathname.startsWith("/api")) {
+
+      const mode = req.headers.get("sec-fetch-mode");
+
+      // Prevent directly navigating to API URL
+      if (mode === "navigate") {
+        return NextResponse.rewrite(
+          new URL("/404", req.url)
+        );
+      }
+
       return NextResponse.next();
     }
 
-    // Customer restrictions
+    // =========================
+    // CUSTOMER RESTRICTIONS
+    // =========================
     if (
       role === "customer" &&
-      (pathname.startsWith("/admin") ||
-        pathname.startsWith("/farmer"))
+      (
+        pathname.startsWith("/admin") ||
+        pathname.startsWith("/farmer")
+      )
     ) {
-      return NextResponse.redirect(new URL("/customer", req.url));
+      return NextResponse.redirect(
+        new URL("/customer", req.url)
+      );
     }
 
-    // Farmer restrictions
+    // =========================
+    // FARMER RESTRICTIONS
+    // =========================
     if (
       role === "farmer" &&
-      (pathname.startsWith("/admin") ||
-        pathname.startsWith("/customer"))
+      (
+        pathname.startsWith("/admin") ||
+        pathname.startsWith("/customer")
+      )
     ) {
-      return NextResponse.redirect(new URL("/farmer", req.url));
+      return NextResponse.redirect(
+        new URL("/farmer", req.url)
+      );
     }
 
-    // Admin restrictions
+    // =========================
+    // ADMIN RESTRICTIONS
+    // =========================
     if (
       role === "admin" &&
-      (pathname.startsWith("/farmer") ||
-        pathname.startsWith("/customer"))
+      (
+        pathname.startsWith("/farmer") ||
+        pathname.startsWith("/customer")
+      )
     ) {
-      return NextResponse.redirect(new URL("/admin", req.url));
+      return NextResponse.redirect(
+        new URL("/admin", req.url)
+      );
     }
 
     return NextResponse.next();
+
   } catch (err) {
-    console.log(err);
+    console.log("JWT ERROR:", err);
+
+    // =========================
+    // EXPIRED / INVALID TOKEN
+    // =========================
     if (
-      err.code == "ERR_JWT_EXPIRED" ||
-      err.code == "ERR_JWT_INVALID" ||
-      err.code == "ERR_JWT_INVALID"
+      err.code === "ERR_JWT_EXPIRED" ||
+      err.code === "ERR_JWS_INVALID" ||
+      err.code === "ERR_JWT_INVALID"
     ) {
       if (pathname.startsWith("/api")) {
-        const response = NextResponse.json({ message: "session expired.Please login again." }, { status: 401 })
+        const response = NextResponse.json(
+          {
+            message: "Session expired. Please login again.",
+          },
+          { status: 401 }
+        );
+
         response.cookies.delete("token");
-        return response
+
+        return response;
       }
+
       const response = NextResponse.redirect(
         new URL("/login", req.url)
       );
+
       response.cookies.delete("token");
+
       return response;
     }
+
+    // =========================
+    // OTHER TOKEN ERRORS
+    // =========================
     if (pathname.startsWith("/api")) {
-      return NextResponse.json({ message: "Invalid token" }, { status: 401 })
+      return NextResponse.json(
+        {
+          message: "Invalid token",
+        },
+        { status: 401 }
+      );
     }
-    if (
-      pathname === "/suspend" &&
-      (
-        !isSuspended ||
-        !suspendUntil ||
-        now >= new Date(suspendUntil)
-      )
-    ) {
-      return NextResponse.redirect(new URL("/", req.url));
-    }
-    return NextResponse.redirect(new URL("/login", req.url));
+
+    const response = NextResponse.redirect(
+      new URL("/login", req.url)
+    );
+
+    response.cookies.delete("token");
+
+    return response;
   }
 }
 

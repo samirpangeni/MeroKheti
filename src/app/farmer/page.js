@@ -27,13 +27,13 @@ const Page = () => {
       try {
         const res = await axios.get("/api/farmer");
         setData(res.data.dashboard);
+        console.log(res.data.dashboard.rejectProducts)
       } catch (err) {
         console.log(err);
       } finally {
         setLoading(false);
       }
     };
-
     getData();
   }, []);
 
@@ -55,14 +55,17 @@ const Page = () => {
     {
       name: "Approved",
       value: data.approvedProducts || 0,
+      color: "#22c55e", // Green
     },
     {
       name: "Pending",
       value: data.pendingProducts || 0,
+      color: "#eab308", // Yellow
     },
     {
       name: "Rejected",
-      value: data.rejectedProducts || 0,
+      value: data.rejectProducts || 0,
+      color: "#ef4444", // Red
     },
   ];
 
@@ -106,7 +109,7 @@ const Page = () => {
     },
     {
       title: "Rejected Products",
-      value: data.rejectedProducts,
+      value: data.rejectProducts,
       accent: "text-red-600 dark:text-red-400",
       iconBg: "bg-red-100 dark:bg-red-900/30",
     },
@@ -141,7 +144,7 @@ const Page = () => {
             Farmer Dashboard
           </h1>
 
-          <p className="text-secondary mt-2">
+          <p className="text-foreground mt-2">
             Welcome back! Here's an overview of your business.
           </p>
         </div>
@@ -156,8 +159,6 @@ const Page = () => {
               <p className="text-sm font-medium uppercase tracking-widest text-muted">
                 {item.title}
               </p>
-
-              {/* VALUE */}
               <h2
                 className={`mt-3 text-4xl font-bold ${item.accent}`}
               >
@@ -180,16 +181,16 @@ const Page = () => {
               <PieChart>
                 <Pie
                   data={pieData}
+                  dataKey="value"
+                  nameKey="name"
                   cx="50%"
                   cy="50%"
-                  outerRadius={110}
-                  dataKey="value"
-                  label
+                  outerRadius={100}
                 >
-                  {pieData.map((_, index) => (
+                  {pieData.map((entry, index) => (
                     <Cell
-                      key={index}
-                      fill={COLORS[index % COLORS.length]}
+                      key={`cell-${index}`}
+                      fill={entry.color}
                     />
                   ))}
                 </Pie>

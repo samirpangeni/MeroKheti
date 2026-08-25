@@ -5,6 +5,7 @@ import SlideBarForAdmin from "@/components/SlideBarForAdmin";
 import axios from "axios";
 import Loading from "@/components/Loading";
 import DeleteModal from "@/components/DeleteModels";
+import RejectProduct from "@/components/RejectProudct"
 
 const Page = () => {
   const [product, setProduct] = useState([]);
@@ -13,12 +14,13 @@ const Page = () => {
   const [category, setCategory] = useState("");
   const [organic, setOrganic] = useState("");
   const [selectionId, setSelectionId] = useState(null)
-  const [open, setOpen] = useState(false)
+  const [reason, SetReason] = useState("");
+  const [rejectOpen, setRejectOpen] = useState(false)
+  const [imageIndexes, setImageIndexes] = useState({});
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-
         const res = await axios.get("/api/admin/product?status=approved");
         setProduct(res.data.products || []);
       } catch (err) {
@@ -31,17 +33,46 @@ const Page = () => {
     fetchData();
   }, []);
 
-  const deleteProduct = async (id) => {
+  const openModal = async (id) => {
     setSelectionId(id)
-    setOpen(true)
+    setRejectOpen(true)
   };
-  const confirmDelete = async () => {
+  const handleReject = async () => {
     try {
-      await axios.delete(`/api/admin?id=${selectionId}`);
-      setProduct((prev) => prev.filter((item) => item._id !== selectionId));
-      setOpen(false)
+      if (!reason.trim()) {
+        toast.error("Please provide a rejection reason");
+        return;
+      }
+
+      await axios.put("/api/admin", {
+        selectionId,
+        status: "rejected",
+        reason: reason.trim(),
+      });
+
+      setProduct((prev) =>
+        prev.map((item) =>
+          item._id === selectionId
+            ? {
+              ...item,
+              status: "rejected",
+              rejectedAt: new Date(),
+              rejectionReason: reason.trim(),
+            }
+            : item
+        )
+      );
+
+      setRejectOpen(false);
+      setSelectionId(null);
+      SetReason("");
+
+      toast.success(
+        "Product rejected. It will be deleted after 24 hours."
+      );
     } catch (err) {
       console.log(err);
+      toast.error("Something went wrong");
     }
   };
 
@@ -61,7 +92,28 @@ const Page = () => {
 
     return matchSearch && matchCategory && matchOrganic;
   });
+  useEffect(() => {
+    if (!product?.length) return;
 
+    const interval = setInterval(() => {
+      setImageIndexes((prev) => {
+        const updated = { ...prev };
+
+        product.forEach((item) => {
+          if (item?.image?.length > 1) {
+            const currentIndex = prev[item._id] || 0;
+
+            updated[item._id] =
+              (currentIndex + 1) % item.image.length;
+          }
+        });
+
+        return updated;
+      });
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [product]);
   return (
     <div className="flex min-h-screen bg-background text-white">
       <SlideBarForAdmin />
@@ -129,11 +181,32 @@ const Page = () => {
               >
                 {/* IMAGE */}
                 <div className="relative">
-                  <img
-                    src={item.image?.[0]?.url}
-                    alt={item.name}
-                    className="w-full h-56 object-cover p-2 rounded-2xl"
-                  />
+                  <div className="relative h-80 w-full overflow-hidden rounded-2xl border border-border">
+                    <img
+                      src={
+                        item?.image?.[imageIndexes[item._id] || 0]?.url
+                      }
+                      alt={item?.name || "Product"}
+                      className="h-full w-full object-cover transition-opacity duration-500"
+                    />
+
+                    {/* Image indicators */}
+                    {item.image.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() =>
+                          setImageIndexes((prev) => ({
+                            ...prev,
+                            [item._id]: index,
+                          }))
+                        }
+                        className={`h-2 rounded-full transition-all ${(imageIndexes[item._id] || 0) === index
+                          ? "w-6 bg-white"
+                          : "w-2 bg-white/50"
+                          }`}
+                      />
+                    ))}
+                  </div>
 
                   <span
                     className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold ${item.organic
@@ -276,10 +349,14 @@ const Page = () => {
                     </button>
 
                     <button
-                      onClick={() => deleteProduct(item._id)}
-                      className="flex-1 bg-red-600 dark:bg-red-400 hover:bg-red-600 hover:dark:bg-red-400 py-2 rounded-lg font-medium transition"
+                      onClick={() => openModal(item._id, "reject")}
+                      disabled={item.status === "rejected"}
+                      className={`flex-1 py-2 rounded-lg font-medium transition ${item.status === "rejected"
+                        ? "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+                        : "bg-red-400 dark:bg-red-600 hover:bg-red-600 hover:dark:bg-red-400"
+                        }`}
                     >
-                      Delete
+                      {item.status === "rejected" ? "Rejected" : "Reject"}
                     </button>
                   </div>
                 </div>
@@ -296,13 +373,20 @@ const Page = () => {
           </div>
         )}
       </div>
-      <DeleteModal
-        isOpen={open}
-        onClose={() => { setOpen(false) }}
-        onConfirm={confirmDelete}
-        type='Delete'
-        message='This action cannot be undone. Are you sure you want to delete product'
-        confirmText='Delete' />
+
+      {/* Reject Modal */}
+      <RejectProduct
+        isOpen={rejectOpen}
+        onClose={() => {
+          setRejectOpen(false);
+          setSelectionId(null);
+          SetReason("");
+        }}
+        reason={reason}
+        SetReason={SetReason}
+        productId={selectionId}
+        onConfirm={handleReject}
+      />
     </div>
   );
 };

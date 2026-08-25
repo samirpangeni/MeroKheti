@@ -6,17 +6,47 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import DeleteModels from "@/components/DeleteModels"
+import RejectProduct from "@/components/RejectProudct"
 const Page = () => {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(false)
   const [selectionId, setSelection] = useState(null)
+  const [rejectOpen, setRejectOpen] = useState(false);
   const [open, setOpen] = useState(false)
   const [actionType, setActionType] = useState("");
+  const [reason, SetReason] = useState("");
+  const [imageIndexes, setImageIndexes] = useState({});
+
+  useEffect(() => {
+    if (!product?.length) return;
+
+    const interval = setInterval(() => {
+      setImageIndexes((prev) => {
+        const updated = { ...prev };
+
+        product.forEach((item) => {
+          if (item?.image?.length > 1) {
+            const currentIndex = prev[item._id] || 0;
+
+            updated[item._id] =
+              (currentIndex + 1) % item.image.length;
+          }
+        });
+
+        return updated;
+      });
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [product]);
+
   useEffect(() => {
     const getData = async () => {
       try {
         setLoading(true)
-        const res = await axios.get("/api/admin?status=pending");
+        const res = await axios.get(
+          "/api/admin?status=pending,rejected"
+        );
         setProduct(res.data.product);
       } catch (err) {
         console.log(err);
@@ -42,15 +72,6 @@ const Page = () => {
         toast.success("Product approved successfully");
       }
 
-      if (actionType === "delete") {
-        await axios.delete(`/api/product?id=${selectionId}`);
-
-        setProduct((prev) =>
-          prev.filter((item) => item._id !== selectionId)
-        );
-
-        toast.success("Product deleted successfully");
-      }
       setOpen(false);
       setSelection(null);
       setActionType("");
@@ -59,8 +80,55 @@ const Page = () => {
       toast.error("Something went wrong");
     }
   };
+
+  const handleReject = async () => {
+    try {
+      if (!reason.trim()) {
+        toast.error("Please provide a rejection reason");
+        return;
+      }
+
+      await axios.put("/api/admin", {
+        selectionId,
+        status: "rejected",
+        reason: reason.trim(),
+      });
+
+      setProduct((prev) =>
+        prev.map((item) =>
+          item._id === selectionId
+            ? {
+              ...item,
+              status: "rejected",
+              rejectedAt: new Date(),
+              rejectionReason: reason.trim(),
+            }
+            : item
+        )
+      );
+
+      setRejectOpen(false);
+      setSelection(null);
+      SetReason("");
+
+      toast.success(
+        "Product rejected. It will be deleted after 24 hours."
+      );
+    } catch (err) {
+      console.log(err);
+      toast.error("Something went wrong");
+    }
+  };
+
   const openModal = (id, action) => {
     setSelection(id);
+
+    if (action === "reject") {
+      SetReason("");
+      setRejectOpen(true);
+      return;
+    }
+
     setActionType(action);
     setOpen(true);
   };
@@ -102,10 +170,32 @@ const Page = () => {
                 className="bg-card border border-muted rounded-3xl overflow-hidden hover:border-primary-hover transition"
               >
                 {/* MAIN IMAGE */}
-                <img
-                  src={item.image?.[0]?.url}
-                  className="w-full h-52 object-cover p-2 rounded-2xl"
-                />
+                <div className="relative h-80 w-full overflow-hidden rounded-2xl border border-border">
+                  <img
+                    src={
+                      item?.image?.[imageIndexes[item._id] || 0]?.url
+                    }
+                    alt={item?.name || "Product"}
+                    className="h-full w-full object-cover transition-opacity duration-500"
+                  />
+
+                  {/* Image indicators */}
+                  {item.image.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() =>
+                        setImageIndexes((prev) => ({
+                          ...prev,
+                          [item._id]: index,
+                        }))
+                      }
+                      className={`h-2 rounded-full transition-all ${(imageIndexes[item._id] || 0) === index
+                        ? "w-6 bg-white"
+                        : "w-2 bg-white/50"
+                        }`}
+                    />
+                  ))}
+                </div>
 
                 {/* THUMBNAILS */}
                 <div className="flex gap-2 p-2">
@@ -156,12 +246,15 @@ const Page = () => {
                         Organic
                       </span>
                     )}
-
-                    <span className="bg-yellow-400 dark:bg-yellow-600 text-background px-2 py-1 text-xs rounded">
-                      Pending
+                    <span
+                      className={`text-background px-2 py-1 text-xs rounded ${item.status === "rejected"
+                        ? "bg-red-500 dark:bg-red-600"
+                        : "bg-yellow-400 dark:bg-yellow-600"
+                        }`}
+                    >
+                      {item.status}
                     </span>
                   </div>
-
                   {/* DESCRIPTION */}
                   <p className="text-muted text-sm mt-3 line-clamp-2">
                     {item.description}
@@ -177,10 +270,14 @@ const Page = () => {
                     </button>
 
                     <button
-                      onClick={() => openModal(item._id, "delete")}
-                      className="flex-1 bg-red-400 hover:bg-red-600 dark:bg-red-600 hover:dark:bg-red-400 text-foreground font-bold py-2 rounded-xl"
+                      onClick={() => openModal(item._id, "reject")}
+                      disabled={item.status === "rejected"}
+                      className={`flex-1 py-2 rounded-lg font-medium transition ${item.status === "rejected"
+                        ? "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+                        : "bg-red-400 dark:bg-red-600 hover:bg-red-600 hover:dark:bg-red-400"
+                        }`}
                     >
-                      Reject
+                      {item.status === "rejected" ? "Rejected" : "Reject"}
                     </button>
                   </div>
                 </div>
@@ -192,21 +289,30 @@ const Page = () => {
       <div>
         <DeleteModels
           isOpen={open}
-          onClose={() => { setOpen(false) }}
+          onClose={() => {
+            setOpen(false);
+            setSelection(null);
+            setActionType("");
+          }}
           onConfirm={handleConfirm}
-          type={
-            actionType === "approve"
-              ? "Approve Product"
-              : "Delete Product"
-          }
-          message={
-            actionType === "approve"
-              ? "Are you sure you want to approve this product?"
-              : "Are you sure you want to permanently delete this product?"
-          }
-          confirmText={actionType === "approve" ?
-            "Approved" : "Reject"
-          } />
+          type="Approve Product"
+          message="Are you sure you want to approve this product?"
+          confirmText="Approve"
+        />
+
+        {/* Reject Modal */}
+        <RejectProduct
+          isOpen={rejectOpen}
+          onClose={() => {
+            setRejectOpen(false);
+            setSelection(null);
+            SetReason("");
+          }}
+          reason={reason}
+          SetReason={SetReason}
+          productId={selectionId}
+          onConfirm={handleReject}
+        />
       </div>
     </div>
   );

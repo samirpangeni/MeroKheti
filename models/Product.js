@@ -80,6 +80,14 @@ const productSchema = new mongoose.Schema(
       ],
       required: true,
     },
+    rejectedAt:{
+      type: Date,
+      default: null,
+      index:{
+        expireAfterSeconds: 86400,
+      },
+    },
+    
     rejectionReason: {
       type: String,
       default: "",

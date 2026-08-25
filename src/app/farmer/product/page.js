@@ -13,6 +13,28 @@ const Page = () => {
   const [category, setCategory] = useState("");
   const [openDelete, setOpenDelete] = useState(false)
   const [selectionId, setSelectionId] = useState(null)
+  const [imageIndexes, setImageIndexes] = useState({});
+  useEffect(() => {
+    if (!product?.length) return;
+
+    const interval = setInterval(() => {
+      setImageIndexes((prev) => {
+        const updated = { ...prev };
+
+        product.forEach((item) => {
+          if (item?.image?.length > 1) {
+            const currentIndex = prev[item._id] || 0;
+            updated[item._id] =
+              (currentIndex + 1) % item.image.length;
+          }
+        });
+        return updated;
+      });
+    }, 2500);
+
+    return () => clearInterval(interval);
+  }, [product]);
+
   useEffect(() => {
     const getData = async () => {
       const res = await axios.get(
@@ -128,11 +150,32 @@ const Page = () => {
               <div key={item._id}
                 className="bg-card border border-border rounded-3xl overflow-hidden hover:border-border-500 transition duration-300 hover:shadow-lg hover:shadow-border/30"
               >
-                <img
-                  src={item.image?.[0]?.url}
-                  alt={item.name}
-                  className="w-full h-56 object-cover p-2 rounded-3xl"
-                />
+                <div className="relative h-80 w-full overflow-hidden rounded-2xl border border-border">
+                  <img
+                    src={
+                      item?.image?.[imageIndexes[item._id] || 0]?.url
+                    }
+                    alt={item?.name || "Product"}
+                    className="h-full w-full object-cover transition-opacity duration-500"
+                  />
+
+                  {/* Image indicators */}
+                  {item.image.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() =>
+                        setImageIndexes((prev) => ({
+                          ...prev,
+                          [item._id]: index,
+                        }))
+                      }
+                      className={`h-2 rounded-full transition-all ${(imageIndexes[item._id] || 0) === index
+                          ? "w-6 bg-white"
+                          : "w-2 bg-white/50"
+                        }`}
+                    />
+                  ))}
+                </div>
 
                 <div className="p-5">
                   <div className="flex justify-between items-start">
