@@ -27,17 +27,148 @@ const Page = () => {
   const [category, setCategory] = useState("");
   const [organic, setOrganic] = useState(false);
   const [location, setLocation] = useState("");
-  const [farmerLocation, setFarmerLocation] = useState("");
+  const [farmerLocation, setFarmerLocation] = useState({
+    lat: "",
+    lng: "",
+  });
+  const [locationLoading, setLocationLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+
   const totalStep = 5;
+
   const router = useRouter();
+
+  useEffect(() => {
+    const getLocation = () => {
+      if (!navigator.geolocation) {
+        console.log("Geolocation is not supported");
+
+        setLocationLoading(false);
+
+        toast.error("Geolocation is not supported by your device");
+
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setFarmerLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+
+          setLocationLoading(false);
+        },
+        (error) => {
+          console.log("Location error:", error);
+
+          setLocationLoading(false);
+
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              toast.error(
+                "Please allow location permission to add a product"
+              );
+              break;
+
+            case error.POSITION_UNAVAILABLE:
+              toast.error("Unable to determine your location");
+              break;
+
+            case error.TIMEOUT:
+              toast.error("Location request timed out");
+              break;
+
+            default:
+              toast.error("Unable to get your location");
+          }
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
+      );
+    };
+
+    getLocation();
+  }, []);
+
+
+  const validateStep = () => {
+    if (currentStep === 1) {
+      if (!name.trim()) {
+        toast.error("Please enter product name");
+        return false;
+      }
+
+      if (!category) {
+        toast.error("Please select a category");
+        return false;
+      }
+
+      if (files.length < 2) {
+        toast.error("Please add at least 2 product images");
+        return false;
+      }
+    }
+
+    if (currentStep === 2) {
+      if (!price) {
+        toast.error("Please enter product price");
+        return false;
+      }
+
+      if (!quantity) {
+        toast.error("Please enter product quantity");
+        return false;
+      }
+
+      if (!unit) {
+        toast.error("Please select a unit");
+        return false;
+      }
+    }
+
+    if (currentStep === 3) {
+      if (!location.trim()) {
+        toast.error("Please select your location");
+        return false;
+      }
+
+      if (!harvestDate) {
+        toast.error("Please select harvest date");
+        return false;
+      }
+
+      if (!expiryDate) {
+        toast.error("Please select expiry date");
+        return false;
+      }
+    }
+
+    if (currentStep === 4) {
+      if (!description.trim()) {
+        toast.error("Please enter product description");
+        return false;
+      }
+    }
+
+    return true;
+  };
+
   const nextStep = () => {
+    if (!validateStep()) {
+      return;
+    }
+
     setCurrentStep((prev) => Math.min(prev + 1, totalStep));
   };
+
   const previousStep = () => {
-    setCurrentStep((prev) => Math.min(prev - 1, 1))
-  }
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+  };
 
   const isValid =
     name.trim() &&
@@ -47,19 +178,38 @@ const Page = () => {
     unit &&
     description.trim() &&
     location.trim() &&
-    files.length >= 2;
+    harvestDate &&
+    expiryDate &&
+    files.length >= 2 &&
+    farmerLocation.lat &&
+    farmerLocation.lng;
 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check all required fields
     if (!isValid) {
       toast.error("Please fill all required fields");
       return;
     }
+
+    if (!farmerLocation.lat || !farmerLocation.lng) {
+      toast.error(
+        "Your location is not available. Please allow location access."
+      );
+      return;
+    }
+
+    if (files.length < 2) {
+      toast.error("Please add at least 2 product images");
+      return;
+    }
+
     setIsSubmitting(true);
+
     try {
       const formData = new FormData();
-
       formData.append("name", name);
       formData.append("price", price);
       formData.append("description", description);
@@ -70,115 +220,138 @@ const Page = () => {
       formData.append("category", category);
       formData.append("organic", organic.toString());
       formData.append("location", location);
-      formData.append("latitude", farmerLocation.lat)
-      formData.append("longitude", farmerLocation.lng)
+
+      formData.append(
+        "latitude",
+        farmerLocation.lat.toString()
+      );
+
+      formData.append(
+        "longitude",
+        farmerLocation.lng.toString()
+      );
 
       files.forEach((file) => {
         formData.append("files", file);
       });
-      const res = await axios.post("/api/product", formData);
 
-      setName("");
-      setPrice("");
-      setDescription("");
-      setExpiryDate("");
-      setHarvestDate("");
-      setQuantity("");
-      setUnit("");
-      setCategory("");
-      setOrganic(false);
-      setLocation("");
-      setFiles([]);
+      const res = await axios.post(
+        "/api/product",
+        formData
+      );
+
       if (res.data.success) {
-        toast.success("Your product will be live within 24 hours");
-        router.push("/")
+        toast.success(
+          "Your product will be live within 24 hours"
+        );
+        setName("");
+        setPrice("");
+        setDescription("");
+        setExpiryDate("");
+        setHarvestDate("");
+        setQuantity("");
+        setUnit("");
+        setCategory("");
+        setOrganic(false);
+        setLocation("");
+        setFiles([]);
+
+        setCurrentStep(1);
+
+        router.push("/");
       }
     } catch (err) {
-      console.log(err)
+      console.error("Product submission error:", err);
       toast.error(
-        err.response?.data?.message || "❌ Failed to add product"
+        err.response?.data?.message ||
+        "❌ Failed to add product"
       );
     } finally {
       setIsSubmitting(false);
     }
   };
-  useEffect(() => {
-    const getLocation = () => {
-      if (!navigator.geolocation) {
-        alert("Geolocation is not supported");
-        return;
-      }
 
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setFarmerLocation({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-        },
-        (error) => {
-          console.log(error);
-        }
-      );
-    };
+  const getStepTitle = () => {
+    switch (currentStep) {
+      case 1:
+        return "Basic Information";
+      case 2:
+        return "Price & Quantity";
+      case 3:
+        return "Location & Date";
+      case 4:
+        return "Description";
 
-    getLocation();
-  }, []);
+      case 5:
+        return "Review & Submit";
+      default:
+        return "";
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-background via-secondary to-card text-foreground relative overflow-hidden">
-
+    <div
+      className="relative min-h-screen overflow-hidden bg-linear-to-br from-background via-secondary to-card text-foreground">
       <Navbar />
-      <div className="max-w-4xl mx-auto px-4 py-10">
-
-        {/* Header */}
+      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 md:px-8">
         <div className="mb-10 mt-20">
-          <h1 className="text-4xl md:text-5xl font-extrabold mt-5  bg-linear-to-r from-primary via-primary-hover to-primary bg-clip-text text-transparent">
+
+          <h1
+            className="mt-5 text-3xl font-extrabold bg-linear-to-r from-primary via-primary-hover to-primary bg-clip-text text-transparent sm:text-4xl md:text-5xl">
             Add Your Product
           </h1>
 
-          <p className="text-muted mt-3 text-lg max-w-2xl">
-            Sell fresh vegetables, fruits and grains directly to customers
+          <p className=" mt-3 max-w-2xl text-base text-muted sm:text-lg">
+            Sell fresh vegetables, fruits and grains
+            directly to customers
           </p>
         </div>
+
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-3">
+
+          <div className="mb-3 flex items-center justify-between gap-3">
+
             <div>
+
               <p className="text-sm text-muted">
                 Step {currentStep} of {totalStep}
               </p>
 
-              <h2 className="text-xl font-semibold text-foreground">
-                {currentStep === 1 && "Basic Information"}
-                {currentStep === 2 && "Price & Quantity"}
-                {currentStep === 3 && "Location & Date"}
-                {currentStep === 4 && "Description"}
-                {currentStep === 5 && "Review & Submit"}
+              <h2 className="text-lg font-semibold text-foreground sm:text-xl">
+                {getStepTitle()}
               </h2>
+
             </div>
 
-            <span className="text-sm font-medium text-primary">
-              {Math.round((currentStep / totalStep) * 100)}%
+            <span className="shrink-0 text-sm font-medium text-primary">
+              {Math.round(
+                (currentStep / totalStep) * 100
+              )}
+              %
             </span>
+
           </div>
 
-          <div className="h-2 w-full rounded-full bg-muted-background overflow-hidden">
+          <div
+            className=" h-2 w-full overflow-hidden rounded-full bg-muted-background ">
             <div
               className="h-full rounded-full bg-primary transition-all duration-500"
               style={{
-                width: `${(currentStep / totalStep) * 100}%`,
+                width: `${(currentStep / totalStep) * 100
+                  }%`,
               }}
             />
           </div>
+
         </div>
 
-        {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="bg-linear-to-b from-background to-card border border-border shadow-2xl shadow-green-950/40 rounded-3xl p-6 md:p-10 space-y-8 backdrop-blur-xl"
-        >
+          className=" space-y-8 rounded-3xl border border-border bg-linear-to-b from-background to-card p-5 shadow-2xl shadow-green-950/40 backdrop-blur-xl sm:p-6 md:p-10">
+
           {currentStep === 1 && (
-            <div>
+            <div className="space-y-8">
+
               <BasicInfo
                 name={name}
                 setName={setName}
@@ -186,11 +359,17 @@ const Page = () => {
                 setCategory={setCategory}
               />
 
-              <Image files={files} setFiles={setFiles} />
+              <Image
+                files={files}
+                setFiles={setFiles}
+              />
+
             </div>
           )}
+
           {currentStep === 2 && (
             <div>
+
               <PriceInput
                 price={price}
                 setPrice={setPrice}
@@ -199,10 +378,13 @@ const Page = () => {
                 unit={unit}
                 setUnit={setUnit}
               />
+
             </div>
           )}
+
           {currentStep === 3 && (
-            <div>
+            <div className="space-y-8">
+
               <Location
                 location={location}
                 setLocation={setLocation}
@@ -214,8 +396,10 @@ const Page = () => {
                 harvestDate={harvestDate}
                 setHarvestDate={setHarvestDate}
               />
+
             </div>
           )}
+
           {currentStep === 4 && (
             <Description
               description={description}
@@ -225,9 +409,9 @@ const Page = () => {
             />
           )}
 
-          {/* Submit */}
           {currentStep === 5 && (
-            <div className="pt-6 border-t border-border">
+            <div className="border-t border-border pt-6">
+
               <Button
                 name={name}
                 category={category}
@@ -243,34 +427,31 @@ const Page = () => {
                 isSubmitting={isSubmitting}
                 isValid={isValid}
               />
+
             </div>
           )}
-          <div className="flex items-center justify-between border-t border-border pt-6 mt-8">
-
-            {/* BACK */}
+          <div className=" mt-8 flex items-center justify-between gap-3 border-t border-border pt-6">
             <button
               type="button"
               onClick={previousStep}
               disabled={currentStep === 1}
-              className="rounded-xl border border-border bg-card px-5 py-2.5 font-medium text-muted transition hover:bg-muted-background hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40">
+              className="rounded-xl border border-border bg-card px-4 py-2.5 text-sm font-medium text-muted transition hover:bg-muted-background hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40 sm:px-5 sm:text-base">
               ← Back
             </button>
-
 
             {currentStep < totalStep && (
               <button
                 type="button"
                 onClick={nextStep}
-                className="rounded-xl bg-button px-6 py-2.5 font-semibold text-button-foreground transition hov er:bg-primary-hover"
-              >
+                className="rounded-xl bg-button px-5 py-2.5 text-sm font-semibold text-button-foreground transition hover:bg-primary-hover active:scale-95 sm:px-6 sm:text-base">
                 Continue →
               </button>
             )}
 
           </div>
         </form>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 
