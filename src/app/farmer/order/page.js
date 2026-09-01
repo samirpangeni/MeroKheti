@@ -39,14 +39,36 @@ const Page = () => {
   };
   const confirmUpdate = async () => {
     try {
-      await axios.put(`/api/order`, {
-        selectionId,
+      const res = await axios.put("/api/order/cash", {
+        orderId,
       });
 
-      toast.success("Payment confirmed");
+      if (!res.data.success) {
+        throw new Error(res.data.message);
+      }
+
+      if (res.data.deleted) {
+        toast.success("Order completed and removed!");
+      } else {
+        toast.success(
+          "Cash received! Waiting for customer confirmation."
+        );
+      }
+
+      // Remove from farmer's UI if deleted
+      if (res.data.deleted) {
+        setOrders((prev) =>
+          prev.filter((order) => order._id !== orderId)
+        );
+      }
+
     } catch (err) {
-      console.log(err);
-      toast.error("Failed to confirm payment");
+      console.error("CASH ERROR:", err);
+
+      toast.error(
+        err.response?.data?.message ||
+        "Failed to confirm cash"
+      );
     }
   };
   if (loading) {
@@ -222,8 +244,8 @@ const Page = () => {
 
                       <h3
                         className={`mt-2 font-semibold ${order.paymentStatus === "paid"
-                            ? "text-primary"
-                            : "text-yellow-400"
+                          ? "text-primary"
+                          : "text-yellow-400"
                           }`}
                       >
                         {order.paymentStatus}

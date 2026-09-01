@@ -4,6 +4,8 @@ const orderSchema = new mongoose.Schema(
   {
     khalti_pidx: {
       type: String,
+      unique: true,
+      sparse: true,
     },
     transaction_uuid: {
       type: String,
@@ -39,6 +41,10 @@ const orderSchema = new mongoose.Schema(
       lng: {
         type: Number,
       },
+      address: {
+        type: String,
+        default: "",
+      },
     },
     paymentMethod: {
       type: String,
@@ -56,6 +62,15 @@ const orderSchema = new mongoose.Schema(
       type: String,
       enum: ["pending", "confirmed", "shipped", "delivered", "cancelled"],
       default: "pending",
+    },
+    customerReceived: {
+      type: Boolean,
+      default: false,
+    },
+
+    cashReceived: {
+      type: Boolean,
+      default: false,
     },
   },
   {

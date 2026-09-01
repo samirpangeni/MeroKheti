@@ -35,16 +35,41 @@ const Page = () => {
     setSelectionId(id);
     SetOpen(true);
   };
+
   const confirmReceived = async () => {
     try {
-      await axios.put(`/api/OrderReport`, {
-        selectionId,
+      const res = await axios.put("/api/order", {
+        orderId: selectionId,
+        action: "customer_received",
       });
-      toast.success("product update successfully");
-      SetOpen(false)
+
+      if (!res.data.success) {
+        throw new Error(res.data.message);
+      }
+
+      if (res.data.deleted) {
+        toast.success("Order completed!");
+      } else {
+        toast.success(
+          "Product received! Waiting for cash confirmation."
+        );
+      }
+
+      // Remove from current UI
+      setOrders((prev) =>
+        prev.filter((order) => order._id !== selectionId)
+      );
+
+      SetOpen(false);
+      setSelectionId(null);
+
     } catch (err) {
-      console.log(err);
-      toast.error("Failed to update product");
+      console.error("RECEIVE PRODUCT ERROR:", err);
+
+      toast.error(
+        err.response?.data?.message ||
+        "Failed to confirm product"
+      );
     }
   };
 

@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import SlideBarForAdmin from "@/components/SlideBarForAdmin";
+import BigImage from "@/components/BigImage";
+
 import axios from "axios";
 import Loading from "@/components/Loading";
 import DeleteModal from "@/components/DeleteModels";
@@ -17,6 +19,7 @@ const Page = () => {
   const [reason, SetReason] = useState("");
   const [rejectOpen, setRejectOpen] = useState(false)
   const [imageIndexes, setImageIndexes] = useState({});
+  const [selectedImage, setSelectedImage] = useState(null);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -187,8 +190,20 @@ const Page = () => {
                         item?.image?.[imageIndexes[item._id] || 0]?.url
                       }
                       alt={item?.name || "Product"}
+                      onClick={() =>
+                        setSelectedImage(
+                          item?.image?.[imageIndexes[item._id] || 0]?.url
+                        )
+                      }
                       className="h-full w-full object-cover transition-opacity duration-500"
                     />
+                    {selectedImage && (
+                      <BigImage
+                        image={selectedImage}
+                        alt={item?.name || "Product"}
+                        onClose={() => setSelectedImage(null)}
+                      />
+                    )}
 
                     {/* Image indicators */}
                     {item.image.map((_, index) => (

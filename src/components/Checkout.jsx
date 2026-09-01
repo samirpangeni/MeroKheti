@@ -17,6 +17,7 @@ const Checkout = ({ productId, onClose }) => {
   const [location, setLocation] = useState({
     lat: null,
     lng: null,
+    address: "",
   });
 
   useEffect(() => {
@@ -36,28 +37,44 @@ const Checkout = ({ productId, onClose }) => {
 
   const handleOrder = async (e) => {
     e.preventDefault();
-
-    if (!location.lat || !location.lng) {
-      toast.error("Location not available");
+    if (payMethod !== "Cash") {
       return;
     }
-
+    if (
+      !location.address?.trim() &&
+      (!location.lat || !location.lng)
+    ) {
+      toast.error("Please provide your delivery location.");
+      return;
+    }
     try {
       setOrdering(true);
-
       const res = await axios.post("/api/order", {
         productId,
-        quantity,
-        payMethod,
+        quantity: Number(quantity),
+        payMethod: "Cash",
+        message,
         latitude: location.lat,
         longitude: location.lng,
+        address: location.address?.trim() || "",
       });
-
+      if (!res.data.success) {
+        throw new Error(
+          res.data.message || "Order failed"
+        );
+      }
       toast.success("Order placed successfully!");
       onClose?.();
     } catch (err) {
-      console.log(err);
-      toast.error("Order failed, try again");
+      console.error("ORDER ERROR:", err);
+      console.error(
+        "SERVER RESPONSE:",
+        err.response?.data
+      );
+      toast.error(
+        err.response?.data?.message ||
+        "Order failed, try again"
+      );
     } finally {
       setOrdering(false);
     }
@@ -65,22 +82,29 @@ const Checkout = ({ productId, onClose }) => {
   useEffect(() => {
     const getLocation = () => {
       if (!navigator.geolocation) {
-        alert("Geolocation is not supported");
+        toast.error("GPS is not supported on this device.");
         return;
       }
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          setLocation({
+          setLocation((prev) => ({
+            ...prev,
             lat: position.coords.latitude,
             lng: position.coords.longitude,
-          });
+          }));
         },
         (error) => {
-          console.log(error);
+          console.log("GPS ERROR:", error);
         },
+        {
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
+        }
       );
     };
+
     getLocation();
   }, []);
   if (loading) {
@@ -231,25 +255,128 @@ const Checkout = ({ productId, onClose }) => {
 
             {/* Delivery Location */}
 
-            <div className="bg-card rounded-3xl p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">
-                Delivery Location
-              </h3>
+            <div className="bg-card rounded-3xl p-6 border border-border">
+              <div className="mb-5">
+                <h3 className="text-lg font-semibold text-foreground">
+                  Delivery Location
+                </h3>
 
-              {location.lat ? (
-                <div className="space-y-2">
-                  <p className="text-primary">📍 Location Detected</p>
+                <p className="text-sm text-muted mt-1">
+                  Use your current location or enter your delivery
+                  address manually.
+                </p>
+              </div>
 
-                  <p className="text-muted text-sm break-all">
-                    Latitude : {location.lat}
-                  </p>
+              {/* GPS Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  if (!navigator.geolocation) {
+                    toast.error("GPS is not supported on this device.");
+                    return;
+                  }
 
-                  <p className="text-muted text-sm break-all">
-                    Longitude : {location.lng}
-                  </p>
+                  navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                      setLocation((prev) => ({
+                        ...prev,
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                      }));
+
+                      toast.success("Current location detected!");
+                    },
+                    (error) => {
+                      console.error("GPS ERROR:", error);
+
+                      toast.error(
+                        "Unable to get GPS location. You can enter your address manually."
+                      );
+                    },
+                    {
+                      enableHighAccuracy: true,
+                      timeout: 10000,
+                      maximumAge: 0,
+                    }
+                  );
+                }}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-2xl border border-primary/30 bg-primary/10 text-primary font-medium hover:bg-primary/20 active:scale-[0.98] transition"
+              >
+                📍 Use My Current Location
+              </button>
+
+              {/* OR */}
+              <div className="flex items-center gap-3 my-5">
+                <div className="h-px flex-1 bg-border" />
+
+                <span className="text-xs text-muted font-medium">
+                  OR
+                </span>
+
+                <div className="h-px flex-1 bg-border" />
+              </div>
+
+              {/* Manual Address */}
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Delivery Address
+                </label>
+
+                <textarea
+                  value={location.address}
+                  onChange={(e) =>
+                    setLocation((prev) => ({
+                      ...prev,
+                      address: e.target.value,
+                    }))
+                  }
+                  rows={4}
+                  placeholder="Example: Kathmandu, Baneshwor, near Civil Hospital"
+                  className="w-full rounded-2xl bg-background border border-border p-4 text-sm text-foreground placeholder:text-muted outline-none resize-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition"
+                />
+
+                <p className="text-xs text-muted mt-2">
+                  Please provide a clear address so the farmer can
+                  find your delivery location.
+                </p>
+              </div>
+
+              {/* Selected Location */}
+              {(location.lat || location.lng || location.address) && (
+                <div className="mt-5 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+                  <div className="flex items-center gap-2">
+                    <span className="text-primary">✓</span>
+
+                    <p className="text-sm font-medium text-primary">
+                      Delivery location selected
+                    </p>
+                  </div>
+
+                  {location.address && (
+                    <div className="mt-3">
+                      <p className="text-xs text-muted">
+                        Address
+                      </p>
+
+                      <p className="text-sm text-foreground mt-1">
+                        {location.address}
+                      </p>
+                    </div>
+                  )}
+
+                  {location.lat && location.lng && (
+                    <div className="mt-3">
+                      <p className="text-xs text-muted">
+                        GPS Coordinates
+                      </p>
+
+                      <p className="text-xs text-muted mt-1 break-all">
+                        {location.lat.toFixed(6)},{" "}
+                        {location.lng.toFixed(6)}
+                      </p>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <p className="text-red-400 dark:text-red-600">Unable to fetch location.</p>
               )}
             </div>
 
@@ -292,6 +419,7 @@ const Checkout = ({ productId, onClose }) => {
                   price={total}
                   message={message}
                   location={location}
+
                 />
 
                 <Cash

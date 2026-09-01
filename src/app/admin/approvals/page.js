@@ -7,6 +7,7 @@ import React, { useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import DeleteModels from "@/components/DeleteModels"
 import RejectProduct from "@/components/RejectProudct"
+import BigImage from "@/components/BigImage";
 const Page = () => {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(false)
@@ -16,6 +17,7 @@ const Page = () => {
   const [actionType, setActionType] = useState("");
   const [reason, SetReason] = useState("");
   const [imageIndexes, setImageIndexes] = useState({});
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     if (!product?.length) return;
@@ -176,8 +178,20 @@ const Page = () => {
                       item?.image?.[imageIndexes[item._id] || 0]?.url
                     }
                     alt={item?.name || "Product"}
+                    onClick={() =>
+                      setSelectedImage(
+                        item?.image?.[imageIndexes[item._id] || 0]?.url
+                      )
+                    }
                     className="h-full w-full object-cover transition-opacity duration-500"
                   />
+                  {selectedImage && (
+                    <BigImage
+                      image={selectedImage}
+                      alt={item?.name || "Product"}
+                      onClose={() => setSelectedImage(null)}
+                    />
+                  )}
 
                   {/* Image indicators */}
                   {item.image.map((_, index) => (

@@ -35,7 +35,8 @@ const PayWithEsewa = ({ payMethod, price, productId, location }) => {
         quantity,
         payMethod: "esewa",
         lat: location.lat,
-        lng: location.lng
+        lng: location.lng,
+        address: location.address,
       });
       const orderId = orderRes.data.orderId;
 

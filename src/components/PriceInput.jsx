@@ -1,5 +1,6 @@
+
 import React from "react";
-import { FiDollarSign } from "react-icons/fi";
+import { FiDollarSign, FiInfo } from "react-icons/fi";
 
 const PriceInput = ({
   price,
@@ -30,8 +31,8 @@ const PriceInput = ({
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-3 border-b border-border pb-4">
-        <div className="w-10 h-10 rounded-xl bg-card border border-border flex items-center justify-center">
-          <FiDollarSign className="text-primary text-lg" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border bg-card">
+          <FiDollarSign className="text-lg text-primary" />
         </div>
 
         <div>
@@ -39,31 +40,52 @@ const PriceInput = ({
             Pricing & Stock
           </h2>
           <p className="text-sm text-muted">
-            Set a fair price and available quantity
+            Set your price and available quantity
           </p>
         </div>
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {/* Farmer Tip */}
+      <div className="flex gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4">
+        <FiInfo className="mt-0.5 shrink-0 text-lg text-primary" />
+
+        <div>
+          <p className="text-sm font-semibold text-foreground">
+            Farmer Tip
+          </p>
+
+          <p className="mt-1 text-xs leading-5 text-muted">
+            Please set a price that you think is fair for your product.
+            Consider your production cost, quality, and quantity when
+            deciding the price. You don't have to simply follow the current
+            market price — you know the value of your own produce best.
+          </p>
+        </div>
+      </div>
+
+      {/* Price & Quantity */}
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
         {/* PRICE */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-muted">
-            Price <span className="dark:text-red-400 text-red-600">*</span>
+            Price{" "}
+            <span className="text-red-600 dark:text-red-400">*</span>
           </label>
 
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary text-sm font-medium">
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-medium text-primary">
               NPR
             </span>
 
             <input
               type="number"
+              min="0"
+              step="0.01"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               placeholder="0.00"
-              step="0.01"
-              className="w-full pl-14 pr-4 py-3 rounded-2xl bg-input border border-border text-foreground placeholder:text-muted outline-none transition-all duration-300 focus:border-primary focus:ring-4 focus:ring-card hover:border-primary-hover"/>
+              className="w-full rounded-2xl border border-border bg-input px-4 py-3 pl-14 text-foreground outline-none transition-all duration-300 placeholder:text-muted hover:border-primary-hover focus:border-primary focus:ring-4 focus:ring-card"
+            />
           </div>
 
           {formattedPrice && (
@@ -76,7 +98,8 @@ const PriceInput = ({
         {/* QUANTITY + UNIT */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-muted">
-            Quantity & Unit <span className="dark:text-red-400 text-red-900">*</span>
+            Quantity & Unit{" "}
+            <span className="text-red-600 dark:text-red-400">*</span>
           </label>
 
           <div className="flex gap-3">
@@ -88,14 +111,14 @@ const PriceInput = ({
               value={quantity}
               onChange={(e) => setQuantity(e.target.value)}
               placeholder="Qty"
-              className="w-1/2 px-4 py-3 rounded-2xl bg-input border border-border text-foreground placeholder:text-muted outline-none transition-all duration-300 focus:border-primary focus:ring-4 focus:ring-primary-foreground hover:border-primary-hover"/>
+              className="w-1/2 rounded-2xl border border-border bg-input px-4 py-3 text-foreground outline-none transition-all duration-300 placeholder:text-muted hover:border-primary-hover focus:border-primary focus:ring-4 focus:ring-primary-foreground"
+            />
 
-            {/* UNIT */}
+            {/* Unit */}
             <select
               value={unit}
               onChange={(e) => setUnit(e.target.value)}
-              className=" w-1/2 px-4 py-3 rounded-2xl bg-input border border-border text-foreground outline-none transition-all duration-300 focus:border-primary focus:ring-4 focus:ring-primary-foreground hover:border-primary-hover cursor-pointer
-              "
+              className="w-1/2 cursor-pointer rounded-2xl border border-border bg-input px-4 py-3 text-foreground outline-none transition-all duration-300 hover:border-primary-hover focus:border-primary focus:ring-4 focus:ring-primary-foreground"
             >
               <option value="" className="bg-input text-muted">
                 Select Unit
@@ -123,3 +146,4 @@ const PriceInput = ({
 };
 
 export default PriceInput;
+

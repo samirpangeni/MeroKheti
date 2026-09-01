@@ -12,51 +12,78 @@ import Order from "../../../../models/Order";
 export async function GET(req) {
   try {
     await connectDB();
+
     const { searchParams } = new URL(req.url);
-    const status = searchParams.get("status");
-    const search = searchParams.get("search");
+
+    const search = searchParams.get("search")?.trim();
     const category = searchParams.get("category");
     const organic = searchParams.get("organic");
+
     let filter = {
-      status: "approved", // use the exact value stored in MongoDB
+      status: "approved",
     };
 
-    if (
-      category &&
-      category !== "All categories"
-    ) {
+    // -------------------------
+    // Category filter
+    // -------------------------
+    if (category && category !== "All categories") {
       filter.category = {
         $regex: category,
         $options: "i",
       };
     }
 
+    // -------------------------
+    // Organic filter
+    // -------------------------
     if (organic === "true") {
       filter.organic = true;
     }
 
+    // -------------------------
+    // Search filter
+    // -------------------------
     if (search) {
-      filter.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
-        { category: { $regex: search, $options: "i" } },
-        { location: { $regex: search, $options: "i" } },
-      ];
+      const searchTerms = search.split(/\s+/).filter(Boolean);
+
+      filter.$and = searchTerms.map((term) => {
+        const regex = {
+          $regex: term,
+          $options: "i",
+        };
+
+        return {
+          $or: [
+            { name: regex },
+            { description: regex },
+            { category: regex },
+            { location: regex },
+          ],
+        };
+      });
     }
+
+    console.log("SEARCH:", search);
+    console.log("FILTER:", JSON.stringify(filter, null, 2));
 
     const product = await Product.find(filter)
       .populate("userId", "firstName lastName")
       .sort({ createdAt: -1 });
 
     return NextResponse.json({
+      success: true,
       message: "success",
       product,
     });
   } catch (err) {
-    console.log(err);
+    console.error("PRODUCT SEARCH ERROR:", err);
+
     return NextResponse.json(
-      { message: "sorry bro your code have error" },
-      { status: 500 },
+      {
+        success: false,
+        message: err.message || "Server error",
+      },
+      { status: 500 }
     );
   }
 }
@@ -84,9 +111,9 @@ export async function POST(req) {
     const longitude = formData.get("longitude");
     const latitude = formData.get("latitude");
     const harvestDate = formData.get("harvestDate");
-    const organic = formData.get("organic") === "true"; 
+    const organic = formData.get("organic") === "true";
 
-    const files = formData.getAll("files"); 
+    const files = formData.getAll("files");
     if (!files || files.length === 0) {
       return NextResponse.json(
         { message: "No files uploaded" },
@@ -176,8 +203,8 @@ export async function DELETE(req) {
     await Promise.all([
       Review.deleteMany({ productId: id }),
       Report.deleteMany({ productId: id }),
-      Order.deleteMany({ productId: id }), 
-      Activity.deleteMany({ productId: id }), 
+      Order.deleteMany({ productId: id }),
+      Activity.deleteMany({ productId: id }),
     ]);
 
     return NextResponse.json({

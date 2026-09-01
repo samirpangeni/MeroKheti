@@ -154,8 +154,6 @@ const Image = ({ files, setFiles }) => {
       {/* Camera */}
       {cameraOpen ? (
         <div className="relative overflow-hidden rounded-3xl bg-black">
-
-          {/* Live camera */}
           <video
             ref={videoRef}
             autoPlay

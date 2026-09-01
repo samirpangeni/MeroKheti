@@ -30,6 +30,7 @@ const PayWithKhalti = ({ payMethod, price, productId, quantity, message, locatio
                 message,
                 longitude: location.lat,
                 latitude: location.lng,
+                address: location.address,
             })
             const orderId = orderRes.data.orderId;
             const res = await axios.post("/api/payment/khalti/initiate", {
