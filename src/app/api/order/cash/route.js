@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import connectDB from "../../../../../lib/connectDB";
+import connectDB from "../../../../../lib/mongoose";
 import Order from "../../../../../models/Order";
 import Product from "../../../../../models/Product";
 import jwt from "jsonwebtoken";
