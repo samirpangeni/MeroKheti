@@ -8,7 +8,7 @@ import DeleteModal from "@/components/DeleteModels";
 import ReportOrder from "@/components/ReportOrder";
 import dynamic from "next/dynamic";
 
-const DeliveryMap = dynamic(() => import("@/components/DeliveryMap"), {
+const DeliveryMap = dynamic(() => import("@/components/DeliveryMapClient"), {
   ssr: false,
 });
 const Page = () => {
@@ -292,48 +292,68 @@ const Page = () => {
                       </button>
                     )}
                   {/* Delivery Route */}
-                  {order.location &&
-                    order.product?.[0]?.productId?.farmerLocation && (
-                      <div className="bg-card rounded-2xl p-4 border border-border">
-                        <div className="flex justify-between items-center mb-4">
-                          <div>
-                            <h3 className="font-semibold text-primary">
-                              🚚 Delivery Route
-                            </h3>
-
-                            <p className="text-sm text-muted">
-                              Farmer → Customer
-                            </p>
+                  {order.location && (
+                    <div className="bg-card rounded-2xl p-4 border border-border">
+                      {/* Delivery Address */}
+                      {order.location.address && (
+                        <div className="mb-5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xl">📍</span>
+                            <div>
+                              <h3 className="font-semibold text-primary"> Delivery Address </h3>
+                              <p className="text-xs text-muted"> Customer's delivery location </p>
+                            </div>
                           </div>
-
-                          <button
-                            onClick={() => {
-                              const farmer =
-                                order.product[0].productId.farmerLocation;
-
-                              const customer = order.location;
-
-                              window.open(
-                                `https://www.google.com/maps/dir/${farmer.lat},${farmer.lng}/${customer.lat},${customer.lng}`,
-                                "_blank",
-                              );
-                            }}
-                            className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 transition"
-                          >
-                            Open Maps
-                          </button>
+                          <div className="bg-background rounded-xl p-4 border border-border">
+                            <p className="text-sm text-foreground leading-relaxed"> {order.location.address} </p>
+                          </div> </div>)}
+                      {/* GPS Location */} {order.location.lat && order.location.lng && (
+                        <div className="mb-5">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-xl">🛰️</span>
+                            <h3 className="font-semibold text-primary"> GPS Location </h3>
+                          </div>
+                          <div className="bg-background rounded-xl p-4 border border-border">
+                            <p className="text-xs text-muted"> Latitude </p>
+                            <p className="text-sm text-foreground mb-2"> {Number(order.location.lat).toFixed(6)} </p>
+                            <p className="text-xs text-muted"> Longitude </p>
+                            <p className="text-sm text-foreground">
+                              {Number(order.location.lng).toFixed(6)} </p>
+                          </div>
+                        </div>)}
+                      {/* Delivery Route */}
+                      {order.product?.[0]?.productId?.farmerLocation && order.location.lat && order.location.lng && (
+                        <div className="border-t border-border pt-5">
+                          <div className="flex justify-between items-center mb-4">
+                            <div>
+                              <h3 className="font-semibold text-primary"> 🚚 Delivery Route </h3>
+                              <p className="text-sm text-muted"> Farmer → Customer </p>
+                            </div>
+                            <button
+                              onClick={() => {
+                                const farmer = order.product[0].productId.farmerLocation;
+                                const customer = order.location; window.open(`https://www.google.com/maps/dir/${farmer.lat},${farmer.lng}/${customer.lat},${customer.lng}`, "_blank");
+                              }}
+                              className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 transition" > Open Maps </button>
+                          </div>
+                          <div className="overflow-hidden rounded-xl">
+                            {/* <DeliveryMap
+                              orderId={order._id}
+                              farmerLocation={
+                                order.product[0].productId.farmerLocation
+                              }
+                              customerLocation={order.location}
+                            /> */}
+                          </div>
+                        </div>)}
+                      {/* Address Only Notice */}
+                      {order.location.address && (!order.location.lat || !order.location.lng) && (
+                        <div className="mt-4 p-3 rounded-xl bg-yellow-500/10 border border-yellow-500/20">
+                          <p className="text-sm text-yellow-400"> ⚠️ Customer provided a manual address. GPS coordinates are not available, so the delivery map cannot be displayed. </p>
                         </div>
-
-                        <div className="overflow-hidden rounded-xl">
-                          <DeliveryMap
-                            farmerLocation={
-                              order.product[0].productId.farmerLocation
-                            }
-                            customerLocation={order.location}
-                          />
-                        </div>
-                      </div>
-                    )}
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             ))

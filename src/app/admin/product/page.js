@@ -190,16 +190,20 @@ const Page = () => {
                         item?.image?.[imageIndexes[item._id] || 0]?.url
                       }
                       alt={item?.name || "Product"}
-                      onClick={() =>
-                        setSelectedImage(
-                          item?.image?.[imageIndexes[item._id] || 0]?.url
-                        )
-                      }
+                      onClick={() => {
+                        const index = imageIndexes[item._id] || 0;
+                        setSelectedImage({
+                          productId: item._id,
+                          index: index,
+                        });
+                      }}
                       className="h-full w-full object-cover transition-opacity duration-500"
                     />
-                    {selectedImage && (
+
+                    {selectedImage?.productId === item._id && (
                       <BigImage
-                        image={selectedImage}
+                        images={item?.image?.map((img) => img.url) || []}
+                        initialIndex={selectedImage.index}
                         alt={item?.name || "Product"}
                         onClose={() => setSelectedImage(null)}
                       />
