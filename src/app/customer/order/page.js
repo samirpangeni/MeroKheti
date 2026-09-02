@@ -69,11 +69,6 @@ const Page = () => {
           "Product received! Waiting for cash confirmation."
         );
       }
-
-      setOrders((prev) =>
-        prev.filter((order) => order._id !== selectionId)
-      );
-
       SetOpen(false);
       setSelectionId(null);
     } catch (err) {

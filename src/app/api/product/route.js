@@ -23,9 +23,6 @@ export async function GET(req) {
       status: "approved",
     };
 
-    // -------------------------
-    // Category filter
-    // -------------------------
     if (category && category !== "All categories") {
       filter.category = {
         $regex: category,
@@ -33,16 +30,11 @@ export async function GET(req) {
       };
     }
 
-    // -------------------------
-    // Organic filter
-    // -------------------------
     if (organic === "true") {
       filter.organic = true;
     }
 
-    // -------------------------
-    // Search filter
-    // -------------------------
+
     if (search) {
       const searchTerms = search.split(/\s+/).filter(Boolean);
 
@@ -62,9 +54,6 @@ export async function GET(req) {
         };
       });
     }
-
-    console.log("SEARCH:", search);
-    console.log("FILTER:", JSON.stringify(filter, null, 2));
 
     const product = await Product.find(filter)
       .populate("userId", "firstName lastName")

@@ -93,23 +93,34 @@ export async function POST(req) {
       );
     }
 
-    // Location validation
-    const lat = Number(latitude);
-    const lng = Number(longitude);
+    const lat =
+      latitude !== undefined &&
+        latitude !== null &&
+        latitude !== "" &&
+        Number.isFinite(Number(latitude))
+        ? Number(latitude)
+        : null;
 
-    if (
-      !Number.isFinite(lat) ||
-      !Number.isFinite(lng)
-    ) {
+    const lng =
+      longitude !== undefined &&
+        longitude !== null &&
+        longitude !== "" &&
+        Number.isFinite(Number(longitude))
+        ? Number(longitude)
+        : null;
+
+    const deliveryAddress = address?.trim() || "";
+
+    // Customer must provide either GPS or manual address
+    if (!deliveryAddress && (lat === null || lng === null)) {
       return NextResponse.json(
         {
           success: false,
-          message: "Valid delivery location is required",
+          message: "Please provide your delivery location.",
         },
         { status: 400 }
       );
     }
-
     const product = await Product.findById(productId);
 
     if (!product) {

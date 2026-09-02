@@ -6,6 +6,7 @@ import SlideBarForFarmer from "@/components/SlideBarForFarmer";
 import { toast } from "react-toastify";
 import DeleteModal from "@/components/DeleteModels";
 import ReportOrder from "@/components/ReportOrder";
+import Loading from "@/components/Loading";
 import dynamic from "next/dynamic";
 
 const DeliveryMap = dynamic(() => import("@/components/DeliveryMapClient"), {
@@ -24,7 +25,7 @@ const Page = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("/api/farmer/product");
+      const res = await axios.get("/api/farmer");
       setOrders(res.data.order || []);
     } catch (err) {
       console.log(err);
@@ -40,13 +41,11 @@ const Page = () => {
   const confirmUpdate = async () => {
     try {
       const res = await axios.put("/api/order/cash", {
-        orderId,
+        orderId: selectionId,
       });
-
       if (!res.data.success) {
         throw new Error(res.data.message);
       }
-
       if (res.data.deleted) {
         toast.success("Order completed and removed!");
       } else {
@@ -55,13 +54,7 @@ const Page = () => {
         );
       }
 
-      // Remove from farmer's UI if deleted
-      if (res.data.deleted) {
-        setOrders((prev) =>
-          prev.filter((order) => order._id !== orderId)
-        );
-      }
-
+      setOpen(false);
     } catch (err) {
       console.error("CASH ERROR:", err);
 
@@ -74,7 +67,7 @@ const Page = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center text-primary text-xl">
-        Loading Orders...
+        <Loading />
       </div>
     );
   }
@@ -244,11 +237,13 @@ const Page = () => {
 
                       <h3
                         className={`mt-2 font-semibold ${order.paymentStatus === "paid"
-                          ? "text-primary"
-                          : "text-yellow-400"
+                            ? "text-primary"
+                            : "text-yellow-400"
                           }`}
                       >
-                        {order.paymentStatus}
+                        {order.paymentStatus === "paid"
+                          ? "Paid"
+                          : "Pending"}
                       </h3>
                     </div>
 

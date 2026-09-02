@@ -26,7 +26,6 @@ export async function PUT(req) {
     );
 
     const farmerId = decoded.userId || decoded.id;
-
     const { orderId } = await req.json();
 
     if (!orderId) {
@@ -87,10 +86,8 @@ export async function PUT(req) {
       );
     }
 
-    // Farmer received cash
     order.cashReceived = true;
-
-    // Customer already received product?
+    order.paymentStatus = "paid";
     if (order.customerReceived) {
       await order.deleteOne();
 
